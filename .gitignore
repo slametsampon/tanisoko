@@ -1,0 +1,10 @@
+# .gitignore
+node_modules/
+build/
+dist/
+.env
+*.log
+.DS_Store
+backend/data/*.db
+backend/data/*.sqlite
+esp/*/build/
