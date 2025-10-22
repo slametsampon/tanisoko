@@ -111,5 +111,5 @@ TaniSoko dirancang dengan pendekatan **Separation of Concern (SoC)** untuk menja
 Terima kasih telah bergabung dalam perjalanan kami membangun masa depan pertanian Indonesia yang lebih cerdas dan berdaya saing.  
 Mari bersama membangun **ekosistem teknologi agribisnis** yang tangguh dan adaptif melalui **TaniSoko** — _Pilar Digital Pertanian Modern_.
 
-> **GitHub:** [github.com/tanisoko](https://github.com/tanisoko) _(placeholder, sesuaikan dengan repo Anda)_  
+> **GitHub:** [github.com-tanisoko](https://github.com/slametsampon/tanisoko) _(placeholder, sesuaikan dengan repo Anda)_  
 > **Kontak:** `info@tanisoko.id` _(placeholder email, ubah sesuai kebutuhan)_
