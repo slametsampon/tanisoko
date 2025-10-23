@@ -1,0 +1,31 @@
+@import 'tailwindcss';
+
+/* Kunci: Selector lengkap dengan dark variant */
+header {
+  @apply transition-colors duration-300 bg-green-100 text-black;
+}
+
+html.dark header {
+  @apply bg-gray-900 text-white;
+}
+
+footer {
+  @apply fixed bottom-0 left-0 w-full z-50
+         bg-white text-black border-t transition-colors duration-300;
+}
+
+footer .container {
+  @apply max-w-6xl mx-auto px-4 py-6 flex items-center justify-between text-sm;
+}
+
+footer a {
+  @apply hover:underline;
+}
+
+html.dark footer {
+  @apply bg-gray-900 text-white border-slate-700;
+}
+
+html.dark footer a {
+  @apply text-white;
+}

@@ -1,0 +1,28 @@
+{
+  "users": [
+    {
+      "username": "admin",
+      "passwordHash": "admin123",
+      "role": "admin",
+      "avatarUrl": "https://i.pravatar.cc/100?img=1"
+    },
+    {
+      "username": "engineer",
+      "passwordHash": "engineer123",
+      "role": "engineer",
+      "avatarUrl": "https://i.pravatar.cc/100?img=3"
+    },
+    {
+      "username": "operator",
+      "passwordHash": "operator123",
+      "role": "operator",
+      "avatarUrl": "https://i.pravatar.cc/100?img=2"
+    },
+    {
+      "username": "guest",
+      "passwordHash": "guest123",
+      "role": "guest",
+      "avatarUrl": "https://i.pravatar.cc/100?img=4"
+    }
+  ]
+}

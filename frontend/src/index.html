@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <base href="__BASE_PATH__" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- ✅ SEO Meta Tags -->
+    <title>TaniVerse – Platform Pertanian Cerdas Berbasis IoT</title>
+    <meta
+      name="description"
+      content="TaniVerse adalah platform pertanian cerdas berbasis ESP32, Raspberry Pi, dan teknologi open-source untuk monitoring dan kontrol lingkungan pertanian secara real-time."
+    />
+    <meta
+      name="keywords"
+      content="TaniVerse, IoT, ESP32, Raspberry Pi, MQTT, pertanian cerdas, monitoring, fastify, lit, tailwind"
+    />
+    <meta name="author" content="Tim TaniVerse" />
+
+    <!-- ✅ Open Graph / Social Media Sharing -->
+    <meta
+      property="og:title"
+      content="TaniVerse – Pertanian Cerdas Berbasis IoT"
+    />
+    <meta
+      property="og:description"
+      content="Platform open-source untuk pertanian presisi berbasis ESP32 & Raspberry Pi. Monitoring, kontrol, dan edge computing dalam satu sistem."
+    />
+    <meta property="og:image" content="./assets/raw-logo-crop.png" />
+    <meta
+      property="og:url"
+      content="https://slametsampon.github.io/taniverse/"
+    />
+    <meta property="og:type" content="website" />
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="./assets/raw-logo-crop.png" />
+    <meta
+      name="twitter:title"
+      content="TaniVerse – Pertanian Cerdas Berbasis IoT"
+    />
+    <meta
+      name="twitter:description"
+      content="Platform open-source untuk pertanian presisi berbasis ESP32 & Raspberry Pi. Monitoring, kontrol, dan edge computing dalam satu sistem."
+    />
+    <meta name="twitter:image" content="./assets/raw-logo-crop.png" />
+    <meta name="twitter:site" content="@yourtwitter" />
+
+    <link rel="icon" type="image/x-icon" href="./assets/favicon.ico" />
+    <link rel="stylesheet" href="./style.css" />
+    <!-- DEV ONLY: arahkan ke backend lokal -->
+    <script>
+      // kosongkan "" jika same-origin / reverse proxy
+      window.__API_BASE__ = 'http://127.0.0.1:8080';
+    </script>
+    <script type="module" src="./main.js"></script>
+  </head>
+  <body class="bg-gray-100 font-sans">
+    <app-shell></app-shell>
+    <device-dialog></device-dialog>
+    <plant-detail-dialog></plant-detail-dialog>
+    <species-detail-dialog></species-detail-dialog>
+    <livestock-detail-dialog></livestock-detail-dialog>
+  </body>
+</html>

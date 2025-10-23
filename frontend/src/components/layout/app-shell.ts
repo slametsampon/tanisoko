@@ -7,10 +7,10 @@ import './app-header.js';
 import './app-footer.js';
 import './app-main.js';
 
-import { AuthService } from '../../services/auth-service.js';
+import { AuthService } from '../../services/auth-service';
+import type { AuthUser } from '../../services/auth-service';
 import { themeContext, Theme } from '../../context/theme-context.js';
 import { userContext } from '../../context/user-context.js';
-import type { AuthUser } from '../../services/auth-service.js';
 
 import {
   mqttContext,
