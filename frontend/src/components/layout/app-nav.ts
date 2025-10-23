@@ -65,11 +65,7 @@ export class AppNav extends LitElement {
           class="max-w-screen-xl mx-auto px-4 py-2 flex justify-between items-center"
         >
           <a href="/" @click=${this._navigate} class=${this.isActive('')}>
-            <img
-              src="./assets/logo-88x45.png"
-              alt="Logo"
-              class="rounded-xl h-[30px]"
-            />
+            Lit-Template
           </a>
           <!-- Hamburger for small screens -->
           <button
