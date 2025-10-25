@@ -23,7 +23,7 @@ export class AppFooter extends LitElement {
           <div class="flex items-center gap-2">
             <span class="text-base">©</span>
             <span>
-              ${new Date().getFullYear()} spa-template v${__APP_VERSION__} — All
+              ${new Date().getFullYear()} TaniSoko v${__APP_VERSION__} — All
               rights reserved.
             </span>
           </div>
