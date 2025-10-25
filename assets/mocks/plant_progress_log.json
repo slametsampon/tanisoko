@@ -1,0 +1,42 @@
+[
+  {
+    "id": 1,
+    "batch_id": 1,
+    "timestamp": "2025-10-15",
+    "height_cm": 10,
+    "health_score": "baik",
+    "observation_notes": "Pertumbuhan normal, tidak ada hama"
+  },
+  {
+    "id": 2,
+    "batch_id": 1,
+    "timestamp": "2025-10-17",
+    "height_cm": 15,
+    "health_score": "baik",
+    "observation_notes": "Pertumbuhan baik, daun mulai melebar"
+  },
+  {
+    "id": 3,
+    "batch_id": 1,
+    "timestamp": "2025-10-20",
+    "height_cm": 22,
+    "health_score": "baik",
+    "observation_notes": "Pertumbuhan cepat, tidak ada kelainan"
+  },
+  {
+    "id": 4,
+    "batch_id": 1,
+    "timestamp": "2025-10-22",
+    "height_cm": 27,
+    "health_score": "cukup",
+    "observation_notes": "Sedikit layu di beberapa daun bawah"
+  },
+  {
+    "id": 5,
+    "batch_id": 1,
+    "timestamp": "2025-10-25",
+    "height_cm": 30,
+    "health_score": "baik",
+    "observation_notes": "Pemulihan baik setelah penyiraman tambahan"
+  }
+]

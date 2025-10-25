@@ -1,0 +1,47 @@
+[
+  {
+    "id": 1,
+    "name": "Broiler FastGrow",
+    "description": "Ayam pedaging cepat panen",
+    "growth_duration_days": 35,
+    "feed_type": "starter-finisher",
+    "ideal_temperature_min": 28,
+    "ideal_temperature_max": 32
+  },
+  {
+    "id": 2,
+    "name": "Layer GoldenEgg",
+    "description": "Ayam petelur dengan produksi tinggi",
+    "growth_duration_days": 120,
+    "feed_type": "layer",
+    "ideal_temperature_min": 24,
+    "ideal_temperature_max": 28
+  },
+  {
+    "id": 3,
+    "name": "Kampung Super",
+    "description": "Ayam kampung unggul hasil persilangan",
+    "growth_duration_days": 70,
+    "feed_type": "campuran",
+    "ideal_temperature_min": 26,
+    "ideal_temperature_max": 30
+  },
+  {
+    "id": 4,
+    "name": "Ayam Arab",
+    "description": "Ayam petelur kecil dengan produktivitas tinggi",
+    "growth_duration_days": 110,
+    "feed_type": "layer",
+    "ideal_temperature_min": 23,
+    "ideal_temperature_max": 27
+  },
+  {
+    "id": 5,
+    "name": "Broiler JumboMax",
+    "description": "Ayam pedaging dengan bobot besar",
+    "growth_duration_days": 42,
+    "feed_type": "starter-finisher",
+    "ideal_temperature_min": 27,
+    "ideal_temperature_max": 31
+  }
+]

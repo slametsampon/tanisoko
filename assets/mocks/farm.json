@@ -1,0 +1,23 @@
+[
+  {
+    "id": 1,
+    "user_id": 2,
+    "name": "Kebun Hidroponik A",
+    "location": "Bandung",
+    "type": "hydroponic"
+  },
+  {
+    "id": 2,
+    "user_id": 2,
+    "name": "Kolam Lele B",
+    "location": "Bogor",
+    "type": "fishery"
+  },
+  {
+    "id": 3,
+    "user_id": 2,
+    "name": "Kandang Ayam C",
+    "location": "Garut",
+    "type": "poultry"
+  }
+]
