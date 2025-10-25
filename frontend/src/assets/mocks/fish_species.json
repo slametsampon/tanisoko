@@ -1,14 +1,52 @@
-{
-  "fish_species": [
-    {
-      "id": 1,
-      "name": "Lele",
-      "scientific_name": "Clarias sp.",
-      "description": "Ikan air tawar populer di Indonesia",
-      "ideal_temperature_min": 26,
-      "ideal_temperature_max": 32,
-      "feeding_frequency": 3,
-      "ideal_harvest_day": 60
-    }
-  ]
-}
+[
+  {
+    "id": 1,
+    "name": "Lele",
+    "scientific_name": "Clarias sp.",
+    "description": "Ikan air tawar populer di Indonesia",
+    "ideal_temperature_min": 26,
+    "ideal_temperature_max": 32,
+    "feeding_frequency": 3,
+    "ideal_harvest_day": 60
+  },
+  {
+    "id": 2,
+    "name": "Nila Merah",
+    "scientific_name": "Oreochromis niloticus",
+    "description": "Ikan konsumsi dengan pertumbuhan cepat",
+    "ideal_temperature_min": 25,
+    "ideal_temperature_max": 30,
+    "feeding_frequency": 2,
+    "ideal_harvest_day": 90
+  },
+  {
+    "id": 3,
+    "name": "Gurame",
+    "scientific_name": "Osphronemus goramy",
+    "description": "Ikan dengan nilai jual tinggi di pasar lokal",
+    "ideal_temperature_min": 27,
+    "ideal_temperature_max": 31,
+    "feeding_frequency": 2,
+    "ideal_harvest_day": 180
+  },
+  {
+    "id": 4,
+    "name": "Patin",
+    "scientific_name": "Pangasius sp.",
+    "description": "Ikan budidaya yang digemari karena dagingnya lembut",
+    "ideal_temperature_min": 26,
+    "ideal_temperature_max": 32,
+    "feeding_frequency": 3,
+    "ideal_harvest_day": 100
+  },
+  {
+    "id": 5,
+    "name": "Mas Koki",
+    "scientific_name": "Carassius auratus",
+    "description": "Ikan hias yang juga dibudidayakan secara intensif",
+    "ideal_temperature_min": 22,
+    "ideal_temperature_max": 28,
+    "feeding_frequency": 2,
+    "ideal_harvest_day": 120
+  }
+]

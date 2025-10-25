@@ -1,0 +1,38 @@
+[
+  {
+    "id": 1,
+    "farm_id": 1,
+    "start_date": "2025-10-01",
+    "expected_harvest_date": "2025-10-30",
+    "status": "aktif",
+    "domain": "hydroponic",
+    "plant_id": 1,
+    "zone_id": 1,
+    "total_planted": 100,
+    "notes": "Batch percobaan musim hujan"
+  },
+  {
+    "id": 2,
+    "farm_id": 2,
+    "start_date": "2025-10-01",
+    "expected_harvest_date": "2025-11-30",
+    "status": "aktif",
+    "domain": "fishery",
+    "fish_species_id": 1,
+    "pond_id": 2,
+    "total_stocked": 400,
+    "notes": "Budidaya lele fase awal"
+  },
+  {
+    "id": 3,
+    "farm_id": 3,
+    "start_date": "2025-10-10",
+    "expected_harvest_date": "2025-11-15",
+    "status": "aktif",
+    "domain": "poultry",
+    "chicken_breed_id": 1,
+    "coop_id": 3,
+    "total_stocked": 800,
+    "notes": "Broiler fase 1"
+  }
+]

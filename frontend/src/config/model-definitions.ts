@@ -1,6 +1,5 @@
 // frontend/src/config/model-definitions.ts
 
-import { z } from 'zod';
 import { ChickenBreedSchema } from '../../../models/chicken-breed.model';
 import { DeviceLogSchema } from '../../../models/device-log.model';
 import { DeviceSchema } from '../../../models/device.model';

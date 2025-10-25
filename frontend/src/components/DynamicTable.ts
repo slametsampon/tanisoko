@@ -35,25 +35,25 @@ export class DynamicTable extends LitElement {
         <table
           class="min-w-full text-sm text-left border border-gray-200 bg-white dark:bg-gray-900"
         >
-          <thead
-            class="bg-gray-100 dark:bg-gray-800 font-semibold text-gray-700 dark:text-gray-300"
-          >
+          <thead>
             <tr>
               <th class="p-3 border-b">ID</th>
-              ${this.columns.map(
-                (col) => html`<th class="p-3 border-b capitalize">${col}</th>`
-              )}
+              ${this.columns
+                .filter((col) => col !== 'id') // 👈 Hindari duplikasi ID
+                .map(
+                  (col) => html`<th class="p-3 border-b capitalize">${col}</th>`
+                )}
               <th class="p-3 border-b text-center">Aksi</th>
             </tr>
           </thead>
           <tbody>
             ${this.items.map(
               (item) => html`
-                <tr class="border-b hover:bg-gray-50 dark:hover:bg-gray-800">
+                <tr>
                   <td class="p-3">${item.id}</td>
-                  ${this.columns.map(
-                    (col) => html`<td class="p-3">${item[col]}</td>`
-                  )}
+                  ${this.columns
+                    .filter((col) => col !== 'id') // 👈 Sama di body
+                    .map((col) => html`<td class="p-3">${item[col]}</td>`)}
                   <td class="p-3 text-center space-x-2">
                     <button
                       class="text-yellow-600 hover:text-yellow-800"

@@ -5,6 +5,7 @@ import { customElement, property, state } from 'lit/decorators.js';
 import { modelDefinitions } from 'src/config/model-definitions';
 import { getService } from 'src/services/getService';
 import { ZodSchema, ZodNumber, ZodObject, ZodTypeAny } from 'zod';
+import { ifDefined } from 'lit/directives/if-defined.js';
 
 @customElement('dynamic-form')
 export class DynamicForm extends LitElement {
@@ -93,18 +94,18 @@ export class DynamicForm extends LitElement {
                       rows="3"
                       placeholder=${f.label}
                       .value=${this.formData[f.key] ?? ''}
-                      autofocus=${i === 0}
+                      ?autofocus=${i === 0}
                       @input=${(e: any) =>
                         this.handleChange(f.key, e.target.value)}
                     ></textarea>
                   `
                 : html`
                     <input
-                      class="border rounded px-3 py-2 text-sm bg-white dark:bg-gray-800 dark:text-white"
+                      class="border rounded px-3 py-2"
                       type=${isNumber ? 'number' : 'text'}
+                      step=${ifDefined(isNumber ? 0.01 : undefined)}
                       placeholder=${f.label}
                       .value=${this.formData[f.key] ?? ''}
-                      autofocus=${i === 0}
                       @input=${(e: any) =>
                         this.handleChange(
                           f.key,

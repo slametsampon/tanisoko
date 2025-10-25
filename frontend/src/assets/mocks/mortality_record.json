@@ -1,0 +1,20 @@
+[
+  {
+    "id": 1,
+    "cycle_id": 2,
+    "timestamp": "2025-10-24T17:00:00Z",
+    "unit_type": "pond",
+    "unit_id": 2,
+    "count": 3,
+    "reason": "Oksigen rendah"
+  },
+  {
+    "id": 2,
+    "cycle_id": 3,
+    "timestamp": "2025-10-24T18:00:00Z",
+    "unit_type": "coop",
+    "unit_id": 3,
+    "count": 5,
+    "reason": "Heat stress"
+  }
+]
