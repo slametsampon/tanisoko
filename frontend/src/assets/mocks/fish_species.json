@@ -1,0 +1,14 @@
+{
+  "fish_species": [
+    {
+      "id": 1,
+      "name": "Lele",
+      "scientific_name": "Clarias sp.",
+      "description": "Ikan air tawar populer di Indonesia",
+      "ideal_temperature_min": 26,
+      "ideal_temperature_max": 32,
+      "feeding_frequency": 3,
+      "ideal_harvest_day": 60
+    }
+  ]
+}

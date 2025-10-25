@@ -1,0 +1,12 @@
+{
+  "plant_progress_logs": [
+    {
+      "id": 1,
+      "batch_id": 1,
+      "timestamp": "2025-10-15",
+      "height_cm": 10,
+      "health_score": "baik",
+      "observation_notes": "Pertumbuhan normal, tidak ada hama"
+    }
+  ]
+}

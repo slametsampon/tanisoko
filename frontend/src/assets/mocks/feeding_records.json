@@ -1,0 +1,24 @@
+{
+  "feeding_records": [
+    {
+      "id": 1,
+      "cycle_id": 2,
+      "timestamp": "2025-10-25T08:00:00Z",
+      "unit_type": "pond",
+      "unit_id": 2,
+      "amount_gram": 3000,
+      "feed_type": "pelet F999",
+      "note": "Pakan pagi"
+    },
+    {
+      "id": 2,
+      "cycle_id": 3,
+      "timestamp": "2025-10-25T08:00:00Z",
+      "unit_type": "coop",
+      "unit_id": 3,
+      "amount_gram": 5000,
+      "feed_type": "starter",
+      "note": "Dosis normal pagi"
+    }
+  ]
+}

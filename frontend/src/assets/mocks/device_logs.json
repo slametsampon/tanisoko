@@ -1,0 +1,21 @@
+{
+  "device_logs": [
+    {
+      "id": 1,
+      "device_id": 1,
+      "timestamp": "2025-10-25T10:00:00Z",
+      "type": "read",
+      "value": 26.5,
+      "recorded_by": "system"
+    },
+    {
+      "id": 2,
+      "device_id": 2,
+      "timestamp": "2025-10-25T10:05:00Z",
+      "type": "write",
+      "value": "on",
+      "previous_value": "off",
+      "recorded_by": "user:admin"
+    }
+  ]
+}

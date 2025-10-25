@@ -1,0 +1,13 @@
+{
+  "chicken_breed": [
+    {
+      "id": 1,
+      "name": "Broiler FastGrow",
+      "description": "Ayam pedaging cepat panen",
+      "growth_duration_days": 35,
+      "feed_type": "starter-finisher",
+      "ideal_temperature_min": 28,
+      "ideal_temperature_max": 32
+    }
+  ]
+}

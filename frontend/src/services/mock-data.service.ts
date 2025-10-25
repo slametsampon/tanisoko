@@ -6,7 +6,7 @@
  * @returns Parsed JSON as type T
  */
 export async function fetchMockData<T>(filename: string): Promise<T> {
-  const path = `./assets/mock/${filename}`;
+  const path = `./assets/mocks/${filename}`;
   console.log(`📥 [fetchMockData] Fetching mock data: ${path}`);
 
   try {
