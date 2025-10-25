@@ -15627,7 +15627,7 @@ function createMockRepository(model) {
   let idCounter = 100;
   const load = async () => {
     if (items.length > 0) return;
-    const url2 = `/assets/mocks/${model}.json`;
+    const url2 = `./assets/mocks/${model}.json`;
     console.log(`${prefix} Loading data from: ${url2}`);
     try {
       const res = await fetch(url2);
