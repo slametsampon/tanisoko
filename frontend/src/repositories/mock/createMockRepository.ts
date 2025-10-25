@@ -11,7 +11,7 @@ export function createMockRepository<T>(model: string): BaseRepository<T> {
   const load = async () => {
     if (items.length > 0) return;
 
-    const url = `/assets/mocks/${model}.json`;
+    const url = `./assets/mocks/${model}.json`;
     console.log(`${prefix} Loading data from: ${url}`);
 
     try {
