@@ -16,10 +16,10 @@ export class PageHome extends LitElement {
       <section class="p-6 space-y-6">
         <div>
           <h1 class="text-2xl font-bold text-green-800 mb-2">
-            🌿 Selamat Datang di TaniVerse
+            🌿 Selamat Datang di TaniSoko
           </h1>
           <p class="text-gray-700">
-            TaniVerse adalah platform monitoring dan kontrol berbasis IoT untuk
+            TaniSoko adalah platform monitoring dan kontrol berbasis IoT untuk
             sistem pertanian cerdas di berbagai sektor.
           </p>
         </div>

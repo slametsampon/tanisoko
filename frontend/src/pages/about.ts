@@ -11,11 +11,11 @@ export class AboutPage extends LitElement {
     return html`
       <section class="p-6 md:p-10 max-w-5xl mx-auto">
         <h1 class="text-3xl font-bold text-center text-green-700 mb-6">
-          Tentang TaniVerse
+          Tentang TaniSoko
         </h1>
 
         <p class="text-base text-gray-700 leading-relaxed mb-4">
-          <span class="font-semibold text-green-600">TaniVerse</span> adalah
+          <span class="font-semibold text-green-600">TaniSoko</span> adalah
           sistem pertanian presisi berbasis IoT yang dirancang untuk membantu
           petani dan pengelola lahan dalam memantau dan mengontrol kondisi
           lingkungan secara real-time. Dengan teknologi edge-computing dan
@@ -35,7 +35,7 @@ export class AboutPage extends LitElement {
 
         <p class="text-base text-gray-700 leading-relaxed mb-2">
           Seluruh stack
-          <span class="font-semibold text-green-600">TaniVerse</span> dibangun
+          <span class="font-semibold text-green-600">TaniSoko</span> dibangun
           menggunakan teknologi open-source berbasis
           <span class="font-semibold">TypeScript</span> dan
           <span class="font-semibold">JavaScript</span> dari sisi frontend
@@ -105,11 +105,11 @@ export class AboutPage extends LitElement {
         </div>
 
         <h2 class="text-xl font-semibold text-green-700 mt-10 mb-4">
-          Arsitektur Sistem IoT TaniVerse
+          Arsitektur Sistem IoT TaniSoko
         </h2>
 
         <p class="text-base text-gray-700 leading-relaxed mb-4">
-          Untuk mendukung keberlanjutan dan skalabilitas, sistem TaniVerse
+          Untuk mendukung keberlanjutan dan skalabilitas, sistem TaniSoko
           dibangun dengan pendekatan
           <span class="font-semibold text-green-600"
             >Separation of Concern (SoC)</span
@@ -165,7 +165,7 @@ export class AboutPage extends LitElement {
         </div>
 
         <p class="text-base text-gray-700 leading-relaxed mt-4">
-          Pendekatan ini memastikan bahwa sistem TaniVerse dapat dikembangkan
+          Pendekatan ini memastikan bahwa sistem TaniSoko dapat dikembangkan
           secara modular dan efisien. Raspberry Pi berfungsi sebagai pusat
           komputasi ringan dan komunikasi, memungkinkan kontrol penuh terhadap
           seluruh ekosistem IoT pertanian dari satu perangkat edge server.

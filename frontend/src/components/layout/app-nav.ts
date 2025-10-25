@@ -65,7 +65,7 @@ export class AppNav extends LitElement {
           class="max-w-screen-xl mx-auto px-4 py-2 flex justify-between items-center"
         >
           <a href="/" @click=${this._navigate} class=${this.isActive('')}>
-            Lit-Template
+            TaniSoko
           </a>
           <!-- Hamburger for small screens -->
           <button

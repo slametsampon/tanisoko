@@ -1,6 +1,6 @@
 {
   "name": "tanisoko",
-  "version": "1.0.4",
+  "version": "1.1.4",
   "description": "Platform for building and running agro apps",
   "main": "index.js",
   "scripts": {

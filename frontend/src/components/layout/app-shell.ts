@@ -25,7 +25,7 @@ export class AppShell extends LitElement {
   }
 
   private readonly basePath =
-    window.location.hostname === '127.0.0.1' ? '/' : '/taniverse/';
+    window.location.hostname === '127.0.0.1' ? '/' : '/tanisoko/';
 
   @state() private currentPath = window.location.pathname;
   @state() private theme: Theme = 'light';

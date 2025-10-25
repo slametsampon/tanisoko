@@ -1,4 +1,5 @@
 // frontend/src/components/layout/app-main.ts
+
 import { LitElement, html } from 'lit';
 import { customElement, property, state, query } from 'lit/decorators.js';
 import { Router } from '@vaadin/router';
@@ -20,11 +21,10 @@ export class AppMain extends LitElement {
   firstUpdated() {
     this.router = new Router(this.outletEl, { baseUrl: this.basePath });
 
-    // ==== GUARD INLINE ====
     const requireLogin = (ctx: any, commands: any) => {
       if (!AuthService.isLoggedIn()) {
         sessionStorage.setItem('next_path', ctx.pathname + (ctx.search || ''));
-        return commands.redirect('/login'); // tanpa query string → hindari error router
+        return commands.redirect('/login');
       }
       return undefined;
     };
@@ -44,101 +44,56 @@ export class AppMain extends LitElement {
         return commands.redirect('/not-authorized');
       return undefined;
     };
-    // =======================
 
     this.router.setRoutes([
       {
         path: '/login',
+        component: 'page-login',
         action: async () => {
           await import('../../pages/login');
         },
-        component: 'page-login',
       },
-      // {
-      //   path: '/dashboard', // minimal operator
-      //   action: async (ctx, commands) => {
-      //     const g = requireRoleAtLeast('operator')(ctx, commands);
-      //     if (g) return g;
-      //     await import('../../pages/dashboard');
-      //   },
-      //   component: 'page-dashboard',
-      // },
-      // {
-      //   path: '/config', // minimal engineer (admin juga boleh)
-      //   action: async (ctx, commands) => {
-      //     const g = requireRoleAtLeast('engineer')(ctx, commands);
-      //     if (g) return g;
-      //     await import('../../pages/config');
-      //   },
-      //   component: 'page-config',
-      // },
-      // {
-      //   path: '/control', // perlu permission spesifik operate equipment
-      //   action: async (ctx, commands) => {
-      //     const g = requirePerm(PERMS.OPERATE_EQUIPMENT)(ctx, commands);
-      //     if (g) return g;
-      //     await import('../pages/control');
-      //   },
-      //   component: 'page-control',
-      // },
       {
         path: '/about',
+        component: 'page-about',
         action: async () => {
           await import('../../pages/about');
         },
-        component: 'page-about',
       },
       {
         path: '/not-authorized',
+        component: 'page-not-authorized',
         action: async () => {
           await import('../../pages/not-authorized');
         },
-        component: 'page-not-authorized',
       },
-      { path: '/', component: 'page-home' },
-      // {
-      //   path: '/produksi/hidroponik',
-      //   action: async (ctx, commands) => {
-      //     const g = requireRoleAtLeast('operator')(ctx, commands);
-      //     if (g) return g;
-      //     await import('../../pages/produksi/hidroponik');
-      //   },
-      //   component: 'hidroponik-page',
-      // },
-      // {
-      //   path: '/produksi/hortikultura',
-      //   action: async (ctx, commands) => {
-      //     const g = requireRoleAtLeast('operator')(ctx, commands);
-      //     if (g) return g;
-      //     await import('../../pages/produksi/hortikultura');
-      //   },
-      //   component: 'hortikultura-page',
-      // },
-      // {
-      //   path: '/produksi/akuakultur',
-      //   action: async (ctx, commands) => {
-      //     const g = requireRoleAtLeast('operator')(ctx, commands);
-      //     if (g) return g;
-      //     await import('../../pages/produksi/akuakultur');
-      //   },
-      //   component: 'akuakultur-page',
-      // },
-      // {
-      //   path: '/produksi/peternakan',
-      //   action: async (ctx, commands) => {
-      //     const g = requireRoleAtLeast('operator')(ctx, commands);
-      //     if (g) return g;
-      //     await import('../../pages/produksi/peternakan');
-      //   },
-      //   component: 'peternakan-page',
-      // },
-      // {
-      //   path: '(.*)',
-      //   action: async () => {
-      //     await import('../../pages/not-found');
-      //   },
-      //   component: 'page-not-found',
-      // },
+      {
+        path: '/konfigurasi/:model',
+        component: 'page-konfigurasi-model',
+        action: async (ctx) => {
+          console.log('[router] Route matched:', ctx.pathname);
+          console.log('[router] Params:', ctx.params);
+          await import('../../pages/konfigurasi/model-page');
+        },
+      },
+      {
+        path: '/konfigurasi',
+        component: 'page-not-found',
+        action: async () => {
+          await import('../../pages/not-found');
+        },
+      },
+      {
+        path: '/',
+        component: 'page-home',
+      },
+      {
+        path: '(.*)',
+        component: 'page-not-found',
+        action: async () => {
+          await import('../../pages/not-found');
+        },
+      },
     ]);
 
     window.addEventListener('popstate', this._onPopState);

@@ -34,3 +34,7 @@ export const LoginSchema = z.object({
 });
 
 export type LoginInput = z.infer<typeof LoginSchema>;
+
+// user.model.ts
+export const UserSchema = UserInputSchema;
+export type User = z.infer<typeof UserSchema>;

@@ -1,0 +1,53 @@
+[
+  {
+    "id": 1,
+    "name": "Bayam",
+    "variety": "Hijau Lokal",
+    "description": "Bayam hijau lokal cocok ditanam di dataran rendah.",
+    "ideal_duration_days": 30,
+    "average_yield_gram": 200,
+    "nutrient_requirement": "Nitrogen tinggi",
+    "temperature_min": 20,
+    "temperature_max": 30,
+    "humidity_min": 60,
+    "humidity_max": 80,
+    "ph_min": 6.0,
+    "ph_max": 7.0,
+    "ec_min": 1.2,
+    "ec_max": 2.0
+  },
+  {
+    "id": 2,
+    "name": "Kangkung",
+    "variety": "Darat Super",
+    "description": "Kangkung jenis darat, tumbuh cepat dan populer di pasaran.",
+    "ideal_duration_days": 25,
+    "average_yield_gram": 180,
+    "nutrient_requirement": "Fosfor tinggi",
+    "temperature_min": 22,
+    "temperature_max": 32,
+    "humidity_min": 70,
+    "humidity_max": 85,
+    "ph_min": 6.5,
+    "ph_max": 7.5,
+    "ec_min": 1.5,
+    "ec_max": 2.2
+  },
+  {
+    "id": 3,
+    "name": "Selada",
+    "variety": "Keriting Hijau",
+    "description": "Selada keriting cocok untuk hidroponik dan sejuk.",
+    "ideal_duration_days": 35,
+    "average_yield_gram": 150,
+    "nutrient_requirement": "Kalium dan kalsium",
+    "temperature_min": 18,
+    "temperature_max": 26,
+    "humidity_min": 65,
+    "humidity_max": 85,
+    "ph_min": 5.8,
+    "ph_max": 6.5,
+    "ec_min": 1.0,
+    "ec_max": 1.8
+  }
+]

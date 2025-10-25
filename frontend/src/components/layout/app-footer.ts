@@ -17,11 +17,11 @@ export class AppFooter extends LitElement {
       <footer>
         <div class="container">
           <div>
-            © ${new Date().getFullYear()} Taniverse v${__APP_VERSION__}. All
+            © ${new Date().getFullYear()} TaniSoko v${__APP_VERSION__}. All
             rights reserved.
           </div>
           <div>
-            <a href="https://github.com/slametsampon/taniverse" target="_blank"
+            <a href="https://github.com/slametsampon/tanisoko" target="_blank"
               >GitHub</a
             >
             <a href="about">About</a>
