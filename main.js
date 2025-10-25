@@ -16822,7 +16822,7 @@ var AppFooter = class extends i4 {
           <div class="flex items-center gap-2">
             <span class="text-base">©</span>
             <span>
-              ${(/* @__PURE__ */ new Date()).getFullYear()} spa-template v${"1.1.4"} — All
+              ${(/* @__PURE__ */ new Date()).getFullYear()} TaniSoko v${"1.1.4"} — All
               rights reserved.
             </span>
           </div>
