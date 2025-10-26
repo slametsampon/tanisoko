@@ -16329,19 +16329,133 @@ var init_model_page = __esm({
   }
 });
 
-// src/pages/konfigurasi.ts
-var konfigurasi_exports = {};
-__export(konfigurasi_exports, {
-  PageKonfigurasi: () => PageKonfigurasi
-});
-var PageKonfigurasi;
-var init_konfigurasi = __esm({
-  "src/pages/konfigurasi.ts"() {
+// src/components/konfigurasi/sidebar-model-menu.ts
+var SidebarModelMenu;
+var init_sidebar_model_menu = __esm({
+  "src/components/konfigurasi/sidebar-model-menu.ts"() {
     "use strict";
     init_lit();
     init_decorators();
     init_service_map();
+    SidebarModelMenu = class extends i4 {
+      constructor() {
+        super(...arguments);
+        this.currentModel = null;
+      }
+      createRenderRoot() {
+        return this;
+      }
+      handleNavClick(model) {
+        this.dispatchEvent(
+          new CustomEvent("model-select", {
+            detail: { model },
+            bubbles: true,
+            composed: true
+          })
+        );
+      }
+      renderMenuItems() {
+        return Object.keys(serviceMap).map(
+          (key) => x`
+        <button
+          class="block w-full text-left p-2 rounded hover:bg-green-100 capitalize ${this.currentModel === key ? "bg-green-200 font-semibold" : ""}"
+          @click=${() => this.handleNavClick(key)}
+        >
+          🧩 ${key.replace(/_/g, " ")}
+        </button>
+      `
+        );
+      }
+      render() {
+        return x`
+      <!-- Sidebar -->
+      <div class="hidden md:block border-r-2 px-4 py-6 max-w-[180px]">
+        <nav class="space-y-2">${this.renderMenuItems()}</nav>
+      </div>
+    `;
+      }
+    };
+    __decorateClass([
+      n4({ type: String })
+    ], SidebarModelMenu.prototype, "currentModel", 2);
+    SidebarModelMenu = __decorateClass([
+      t3("sidebar-model-menu")
+    ], SidebarModelMenu);
+  }
+});
+
+// src/components/konfigurasi/dynamic-main-content.ts
+var DynamicMainContent;
+var init_dynamic_main_content = __esm({
+  "src/components/konfigurasi/dynamic-main-content.ts"() {
+    "use strict";
+    init_lit();
+    init_decorators();
+    DynamicMainContent = class extends i4 {
+      constructor() {
+        super(...arguments);
+        this.model = null;
+      }
+      createRenderRoot() {
+        return this;
+      }
+      getBgColorForModel(model) {
+        const colorMap = {
+          sensor_suhu: "bg-green-50",
+          relay_aktuator: "bg-blue-50",
+          komunikasi_wifi: "bg-yellow-50",
+          konfigurasi_umum: "bg-gray-50"
+        };
+        return colorMap[model] || "bg-slate-50";
+      }
+      render() {
+        if (!this.model) {
+          return x`
+        <main class="bg-white rounded-xl shadow p-4">
+          <h2 class="text-2xl font-bold mb-4">📁 Panel Konfigurasi Sistem</h2>
+          <p class="text-gray-700 mb-2">
+            Selamat datang di halaman konfigurasi sistem IoT. Silakan pilih
+            jenis entitas di panel kiri untuk mulai mengatur parameter
+            masing-masing komponen.
+          </p>
+          <p class="text-gray-600 text-sm italic">
+            Contoh entitas: sensor suhu, aktuator relay, modul komunikasi, dsb.
+          </p>
+        </main>
+      `;
+        }
+        return x`
+      <main
+        class="${this.getBgColorForModel(this.model)} rounded-xl shadow p-4"
+      >
+        <page-konfigurasi-model .model=${this.model}></page-konfigurasi-model>
+      </main>
+    `;
+      }
+    };
+    __decorateClass([
+      n4({ type: String })
+    ], DynamicMainContent.prototype, "model", 2);
+    DynamicMainContent = __decorateClass([
+      t3("dynamic-main-content")
+    ], DynamicMainContent);
+  }
+});
+
+// src/pages/konfigurasi_hmi.ts
+var konfigurasi_hmi_exports = {};
+__export(konfigurasi_hmi_exports, {
+  PageKonfigurasi: () => PageKonfigurasi
+});
+var PageKonfigurasi;
+var init_konfigurasi_hmi = __esm({
+  "src/pages/konfigurasi_hmi.ts"() {
+    "use strict";
+    init_lit();
+    init_decorators();
     init_model_definitions();
+    init_sidebar_model_menu();
+    init_dynamic_main_content();
     init_model_page();
     PageKonfigurasi = class extends i4 {
       constructor() {
@@ -16370,12 +16484,15 @@ var init_konfigurasi = __esm({
         super.connectedCallback();
         this.syncModelFromPath();
         window.addEventListener("popstate", this.syncModelFromPath);
+        window.addEventListener("click", this.handleOutsideClick);
       }
       disconnectedCallback() {
         window.removeEventListener("popstate", this.syncModelFromPath);
+        window.removeEventListener("click", this.handleOutsideClick);
         super.disconnectedCallback();
       }
-      handleNavClick(model) {
+      handleModelSelect(e8) {
+        const model = e8.detail.model;
         history.pushState({}, "", `/konfigurasi/${model}`);
         this.currentModel = model;
         this.isMenuOpen = false;
@@ -16385,29 +16502,18 @@ var init_konfigurasi = __esm({
         e8.stopPropagation();
         this.isMenuOpen = !this.isMenuOpen;
       }
-      renderMenuItems() {
-        return Object.keys(serviceMap).map(
-          (key) => x`
-        <button
-          class="block w-full text-left p-2 rounded hover:bg-green-100 capitalize ${this.currentModel === key ? "bg-green-200 font-semibold" : ""}"
-          @click=${() => this.handleNavClick(key)}
-        >
-          🧩 ${key.replace(/_/g, " ")}
-        </button>
-      `
-        );
-      }
       render() {
         return x`
-      <section class="md:flex min-h-screen">
-        <!-- Sidebar -->
-        <div class="hidden md:block border-r-2 px-4 py-6 max-w-[180px]">
-          <nav class="space-y-2">${this.renderMenuItems()}</nav>
-        </div>
+      <section
+        class="md:flex min-h-screen"
+        @model-select=${this.handleModelSelect}
+      >
+        <sidebar-model-menu
+          .currentModel=${this.currentModel}
+        ></sidebar-model-menu>
 
-        <!-- Konten -->
         <div class="flex-1 p-4 bg-gray-50 min-h-screen relative">
-          <!-- Hamburger -->
+          <!-- Hamburger for mobile -->
           <div class="md:hidden relative inline-block mb-4">
             <button
               id="menuToggle"
@@ -16422,23 +16528,16 @@ var init_konfigurasi = __esm({
                     id="dropdownMenu"
                     class="absolute top-full left-0 bg-white border shadow-lg rounded mt-2 w-48 z-50"
                   >
-                    <nav class="p-2 space-y-1">${this.renderMenuItems()}</nav>
+                    <sidebar-model-menu
+                      .currentModel=${this.currentModel}
+                    ></sidebar-model-menu>
                   </div>
                 ` : null}
           </div>
 
-          <main class="bg-white rounded-xl shadow p-4">
-            ${this.currentModel ? x`
-                  <page-konfigurasi-model
-                    .model=${this.currentModel}
-                  ></page-konfigurasi-model>
-                ` : x`
-                  <h2 class="text-xl font-semibold mb-2">📁 Konfigurasi</h2>
-                  <p class="text-gray-600">
-                    Pilih entitas konfigurasi dari menu.
-                  </p>
-                `}
-          </main>
+          <dynamic-main-content
+            .model=${this.currentModel}
+          ></dynamic-main-content>
         </div>
       </section>
     `;
@@ -16717,9 +16816,9 @@ var AppNav = class extends i4 {
         >📊 Dashboard</a
       >
       <a
-        href="/konfigurasi"
+        href="/konfigurasi_hmi"
         @click=${this._navigate}
-        class=${this.isActive("konfigurasi")}
+        class=${this.isActive("konfigurasi_hmi")}
         >⚙️ Konfigurasi</a
       >
     `;
@@ -19099,10 +19198,10 @@ var AppMain = class extends i4 {
         }
       },
       {
-        path: "/konfigurasi",
+        path: "/konfigurasi_hmi",
         component: "page-konfigurasi",
         action: async () => {
-          await Promise.resolve().then(() => (init_konfigurasi(), konfigurasi_exports));
+          await Promise.resolve().then(() => (init_konfigurasi_hmi(), konfigurasi_hmi_exports));
         }
       },
       {
