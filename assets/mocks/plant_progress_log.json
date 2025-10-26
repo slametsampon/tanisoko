@@ -38,5 +38,21 @@
     "height_cm": 30,
     "health_score": "baik",
     "observation_notes": "Pemulihan baik setelah penyiraman tambahan"
+  },
+  {
+    "id": 6,
+    "batch_id": 1,
+    "timestamp": "2025-10-28",
+    "height_cm": 35,
+    "health_score": "baik",
+    "observation_notes": "Daun lebat, warna hijau pekat"
+  },
+  {
+    "id": 7,
+    "batch_id": 2,
+    "timestamp": "2025-10-20",
+    "height_cm": 8,
+    "health_score": "cukup",
+    "observation_notes": "Tumbuh lambat, perlu evaluasi media tanam"
   }
 ]

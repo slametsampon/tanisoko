@@ -2,19 +2,51 @@
   {
     "id": 1,
     "cycle_id": 2,
-    "timestamp": "2025-10-24T17:00:00Z",
-    "unit_type": "pond",
     "unit_id": 2,
-    "count": 3,
-    "reason": "Oksigen rendah"
+    "unit_type": "pond",
+    "timestamp": "2025-10-24T17:00:00Z",
+    "death_count": 3,
+    "cause": "Oksigen rendah",
+    "note": "Terjadi setelah hujan deras"
   },
   {
     "id": 2,
     "cycle_id": 3,
-    "timestamp": "2025-10-24T18:00:00Z",
-    "unit_type": "coop",
     "unit_id": 3,
-    "count": 5,
-    "reason": "Heat stress"
+    "unit_type": "coop",
+    "timestamp": "2025-10-24T18:00:00Z",
+    "death_count": 5,
+    "cause": "Heat stress",
+    "note": "Kipas mati selama 3 jam"
+  },
+  {
+    "id": 3,
+    "cycle_id": 2,
+    "unit_id": 2,
+    "unit_type": "pond",
+    "timestamp": "2025-10-25T06:30:00Z",
+    "death_count": 2,
+    "cause": "Serangan jamur",
+    "note": ""
+  },
+  {
+    "id": 4,
+    "cycle_id": 3,
+    "unit_id": 3,
+    "unit_type": "coop",
+    "timestamp": "2025-10-25T07:15:00Z",
+    "death_count": 1,
+    "cause": "Cedera saat pemindahan",
+    "note": "Terjadi saat pindah kandang"
+  },
+  {
+    "id": 5,
+    "cycle_id": 4,
+    "unit_id": 4,
+    "unit_type": "bed",
+    "timestamp": "2025-10-25T09:00:00Z",
+    "death_count": 0,
+    "cause": "Tidak ada kematian",
+    "note": "Pencatatan harian rutin"
   }
 ]

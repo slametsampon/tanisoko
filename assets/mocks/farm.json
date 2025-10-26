@@ -9,15 +9,29 @@
   {
     "id": 2,
     "user_id": 2,
-    "name": "Kolam Lele B",
+    "name": "Kebun Sayur B",
     "location": "Bogor",
-    "type": "fishery"
+    "type": "horticulture"
   },
   {
     "id": 3,
     "user_id": 2,
-    "name": "Kandang Ayam C",
+    "name": "Kebun Hortikultura C",
     "location": "Garut",
-    "type": "poultry"
+    "type": "horticulture"
+  },
+  {
+    "id": 4,
+    "user_id": 3,
+    "name": "Greenhouse D",
+    "location": "Yogyakarta",
+    "type": "hydroponic"
+  },
+  {
+    "id": 5,
+    "user_id": 3,
+    "name": "Kebun Buah E",
+    "location": "Malang",
+    "type": "horticulture"
   }
 ]

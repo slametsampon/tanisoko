@@ -15452,7 +15452,7 @@ var init_model_definitions = __esm({
           { key: "recorded_by", label: "Dicatat Oleh" },
           { key: "note", label: "Catatan" }
         ],
-        displayFields: ["timestamp", "type", "value"]
+        displayFields: ["timestamp", "device_id", "value"]
       },
       device: {
         schema: DeviceSchema,
@@ -15485,7 +15485,7 @@ var init_model_definitions = __esm({
           { key: "location", label: "Lokasi" },
           { key: "type", label: "Tipe" }
         ],
-        displayFields: ["id", "name", "location"]
+        displayFields: ["type", "name", "location"]
       },
       feeding_record: {
         schema: FeedingRecordSchema,
@@ -15517,7 +15517,12 @@ var init_model_definitions = __esm({
           { key: "ideal_do_min", label: "DO Ideal Min" },
           { key: "ideal_tds_max", label: "TDS Ideal Max" }
         ],
-        displayFields: ["id", "name"]
+        displayFields: [
+          "name",
+          "feed_type",
+          "growth_cycle_days",
+          "average_weight_gram"
+        ]
       },
       mortality_record: {
         schema: MortalityRecordSchema,
@@ -15560,7 +15565,12 @@ var init_model_definitions = __esm({
           { key: "ec_min", label: "EC Min" },
           { key: "ec_max", label: "EC Max" }
         ],
-        displayFields: ["id", "name", "variety"]
+        displayFields: [
+          "name",
+          "variety",
+          "ideal_duration_days",
+          "average_yield_gram"
+        ]
       },
       production_cycle: {
         schema: ProductionCycleSchema,
@@ -15577,7 +15587,7 @@ var init_model_definitions = __esm({
           { key: "coop_id", label: "Kandang" },
           { key: "notes", label: "Catatan" }
         ],
-        displayFields: ["id", "start_date", "status"]
+        displayFields: ["domain", "start_date", "status"]
       },
       production_unit: {
         schema: ProductionUnitSchema,
@@ -15590,7 +15600,7 @@ var init_model_definitions = __esm({
           { key: "dimensions_cm.width", label: "Lebar (cm)" },
           { key: "dimensions_cm.height", label: "Tinggi (cm)" }
         ],
-        displayFields: ["id", "name", "type"]
+        displayFields: ["type", "name", "capacity"]
       },
       rule: {
         schema: RuleSchema,
@@ -15602,7 +15612,7 @@ var init_model_definitions = __esm({
           { key: "action", label: "Aksi" },
           { key: "active", label: "Aktif" }
         ],
-        displayFields: ["id", "threshold_type", "threshold_value"]
+        displayFields: ["threshold_type", "threshold_value"]
       },
       schedule: {
         schema: ScheduleSchema,
@@ -15614,7 +15624,7 @@ var init_model_definitions = __esm({
           { key: "condition_json", label: "Kondisi" },
           { key: "is_active", label: "Aktif" }
         ],
-        displayFields: ["id", "cron_expression"]
+        displayFields: ["cron_expression", "rule_type"]
       }
     };
   }
@@ -15623,50 +15633,50 @@ var init_model_definitions = __esm({
 // src/repositories/mock/createMockRepository.ts
 function createMockRepository(model) {
   const prefix = `[MockRepo:${model}]`;
+  const dataFile = `${model}.json`;
   let items = [];
-  let idCounter = 100;
-  const load = async () => {
-    if (items.length > 0) return;
-    const url2 = `./assets/mocks/${model}.json`;
-    console.log(`${prefix} Loading data from: ${url2}`);
+  let idCounter = 1;
+  let initialized = false;
+  const init = async () => {
+    if (initialized) return;
     try {
-      const res = await fetch(url2);
-      console.log(`${prefix} Response status: ${res.status}`);
-      if (!res.ok) throw new Error(`HTTP ${res.status} while fetching ${url2}`);
-      items = await res.json();
-      console.log(`${prefix} Loaded items:`, items);
-      idCounter = items.length ? Math.max(...items.map((x3) => x3.id || 0)) + 1 : 1;
-      console.log(`${prefix} Initialized idCounter = ${idCounter}`);
+      items = await fetchMockData(dataFile);
+      idCounter = items.length ? Math.max(...items.map((item) => item.id ?? 0)) + 1 : 1;
+      console.log(
+        `${prefix} Initialized with ${items.length} items, idCounter=${idCounter}`
+      );
     } catch (err) {
-      console.error(`${prefix} \u274C Failed to load mock data:`, err);
+      console.warn(`${prefix} \u26A0\uFE0F Inisialisasi gagal, menggunakan data kosong.`);
       items = [];
+      idCounter = 1;
     }
+    initialized = true;
   };
   return {
     async getAll() {
-      console.log(`${prefix} getAll() called`);
-      await load();
+      console.log(`${prefix} getAll()`);
+      await init();
       return [...items];
     },
     async getById(id) {
-      console.log(`${prefix} getById(${id}) called`);
-      await load();
-      const found = items.find((item) => item.id === id) || null;
-      console.log(`${prefix} Found:`, found);
-      return found;
+      console.log(`${prefix} getById(${id})`);
+      await init();
+      const item = items.find((i6) => i6.id === id) || null;
+      console.log(`${prefix} getById \u2192`, item);
+      return item;
     },
     async create(data) {
-      await load();
+      await init();
       const newItem = { ...data, id: idCounter++ };
       items.push(newItem);
-      console.log(`${prefix} create() \u2192`, newItem);
+      console.log(`${prefix} create \u2192`, newItem);
       return newItem;
     },
     async update(id, data) {
-      await load();
-      const index = items.findIndex((item) => item.id === id);
+      await init();
+      const index = items.findIndex((i6) => i6.id === id);
       if (index === -1) {
-        console.warn(`${prefix} update(${id}) \u2192 item not found`);
+        console.warn(`${prefix} update(${id}) \u2192 not found`);
         throw new Error("Item not found");
       }
       items[index] = { ...items[index], ...data };
@@ -15674,14 +15684,14 @@ function createMockRepository(model) {
       return items[index];
     },
     async delete(id) {
-      await load();
-      const index = items.findIndex((item) => item.id === id);
+      await init();
+      const index = items.findIndex((i6) => i6.id === id);
       if (index === -1) {
-        console.warn(`${prefix} delete(${id}) \u2192 item not found`);
+        console.warn(`${prefix} delete(${id}) \u2192 not found`);
         return false;
       }
-      const deleted = items.splice(index, 1);
-      console.log(`${prefix} delete(${id}) \u2192 success`, deleted[0]);
+      const [deleted] = items.splice(index, 1);
+      console.log(`${prefix} delete(${id}) \u2192`, deleted);
       return true;
     }
   };
@@ -15689,6 +15699,7 @@ function createMockRepository(model) {
 var init_createMockRepository = __esm({
   "src/repositories/mock/createMockRepository.ts"() {
     "use strict";
+    init_mock_data_service();
   }
 });
 
@@ -15875,21 +15886,10 @@ var init_farm_service = __esm({
   }
 });
 
-// src/services/getService.ts
-function getService(model) {
-  console.log(`[getService] Requested model: "${model}"`);
-  const service = serviceMap[model];
-  if (!service) {
-    console.error(`[getService] \u274C Service not found for model: "${model}"`);
-    console.error("[getService] Available models:", Object.keys(serviceMap));
-    throw new Error(`Service not found for model "${model}"`);
-  }
-  console.log(`[getService] \u2705 Service found for model: "${model}"`);
-  return service;
-}
+// src/services/service-map.ts
 var serviceMap;
-var init_getService = __esm({
-  "src/services/getService.ts"() {
+var init_service_map = __esm({
+  "src/services/service-map.ts"() {
     "use strict";
     init_plant_service();
     init_fish_species_service();
@@ -15919,6 +15919,25 @@ var init_getService = __esm({
       schedule: scheduleService,
       farm: farmService
     };
+  }
+});
+
+// src/services/getService.ts
+function getService(model) {
+  console.log(`[getService] Requested model: "${model}"`);
+  const service = serviceMap[model];
+  if (!service) {
+    console.error(`[getService] \u274C Service not found for model: "${model}"`);
+    console.error("[getService] Available models:", Object.keys(serviceMap));
+    throw new Error(`Service not found for model "${model}"`);
+  }
+  console.log(`[getService] \u2705 Service found for model: "${model}"`);
+  return service;
+}
+var init_getService = __esm({
+  "src/services/getService.ts"() {
+    "use strict";
+    init_service_map();
   }
 });
 
@@ -15962,9 +15981,17 @@ var init_DynamicForm = __esm({
       }
       // ⚠️ Tangkap perubahan initialData untuk handle edit ulang
       updated(changedProps) {
+        if (changedProps.has("model")) {
+          this.formData = {};
+        }
         if (changedProps.has("initialData")) {
-          this.formData = { ...this.initialData };
-          console.log("[DynamicForm] updated from initialData:", this.formData);
+          const allowedKeys = modelDefinitions[this.model]?.fields.map((f3) => f3.key) || [];
+          const cleanData = {};
+          for (const key of allowedKeys) {
+            cleanData[key] = this.initialData?.[key] ?? "";
+          }
+          this.formData = cleanData;
+          console.log("[DynamicForm] filtered formData:", this.formData);
         }
       }
       handleChange(field, value) {
@@ -16120,7 +16147,9 @@ var init_DynamicTable = __esm({
           (item) => x`
                 <tr>
                   <td class="p-3">${item.id}</td>
-                  ${this.columns.filter((col) => col !== "id").map((col) => x`<td class="p-3">${item[col]}</td>`)}
+                  ${this.columns.filter((col) => col !== "id").map(
+            (col) => x`<td class="p-3">${item[col] ?? "-"}</td> `
+          )}
                   <td class="p-3 text-center space-x-2">
                     <button
                       class="text-yellow-600 hover:text-yellow-800"
@@ -16214,11 +16243,25 @@ var init_model_page = __esm({
           this.model = attr || modelFromPath;
         }
         console.log("[PageKonfigurasiModel] Final resolved model =", this.model);
-        if (!this.model) {
-          console.warn("[PageKonfigurasiModel] No model could be resolved");
-          return;
+        if (!this.model || !modelDefinitions[this.model]) {
+          return x`<p>Model tidak valid atau belum didukung.</p>`;
         }
         this.loadData();
+      }
+      /**
+       * 🔄 Lifecycle: dipanggil setiap kali properti berubah
+       */
+      updated(changed) {
+        if (changed.has("model")) {
+          console.log(
+            "[PageKonfigurasiModel] model changed \u2192 reset state & reload"
+          );
+          this.selectedItem = null;
+          this.items = [];
+          if (this.model) {
+            this.loadData();
+          }
+        }
       }
       async loadData() {
         console.log(`[PageKonfigurasiModel] loadData() for model = ${this.model}`);
@@ -16247,13 +16290,14 @@ var init_model_page = __esm({
         }
         return x`
       <h2 class="text-xl font-bold mb-4 capitalize">
-        Konfigurasi: ${this.model.replace("_", " ")}
+        Konfigurasi: ${this.model.replace(/_/g, " ")}
       </h2>
 
       <div class="bg-white rounded-xl p-4 shadow mb-6">
         <dynamic-form
           .model=${this.model}
           .initialData=${this.selectedItem}
+          .key=${JSON.stringify(this.selectedItem ?? {})}
           @saved=${this.handleSave}
         ></dynamic-form>
       </div>
@@ -16282,6 +16326,133 @@ var init_model_page = __esm({
     PageKonfigurasiModel = __decorateClass([
       t3("page-konfigurasi-model")
     ], PageKonfigurasiModel);
+  }
+});
+
+// src/pages/konfigurasi.ts
+var konfigurasi_exports = {};
+__export(konfigurasi_exports, {
+  PageKonfigurasi: () => PageKonfigurasi
+});
+var PageKonfigurasi;
+var init_konfigurasi = __esm({
+  "src/pages/konfigurasi.ts"() {
+    "use strict";
+    init_lit();
+    init_decorators();
+    init_service_map();
+    init_model_definitions();
+    init_model_page();
+    PageKonfigurasi = class extends i4 {
+      constructor() {
+        super(...arguments);
+        this.isMenuOpen = false;
+        this.currentModel = null;
+        this.syncModelFromPath = () => {
+          const match = window.location.pathname.match(/\/konfigurasi\/([^\/]+)/);
+          const key = match?.[1];
+          if (key && key in modelDefinitions) {
+            this.currentModel = key;
+          } else {
+            this.currentModel = null;
+          }
+        };
+        this.handleOutsideClick = (e8) => {
+          if (this.isMenuOpen && !e8.target.closest("#dropdownMenu") && !e8.target.closest("#menuToggle")) {
+            this.isMenuOpen = false;
+          }
+        };
+      }
+      createRenderRoot() {
+        return this;
+      }
+      connectedCallback() {
+        super.connectedCallback();
+        this.syncModelFromPath();
+        window.addEventListener("popstate", this.syncModelFromPath);
+      }
+      disconnectedCallback() {
+        window.removeEventListener("popstate", this.syncModelFromPath);
+        super.disconnectedCallback();
+      }
+      handleNavClick(model) {
+        history.pushState({}, "", `/konfigurasi/${model}`);
+        this.currentModel = model;
+        this.isMenuOpen = false;
+        this.requestUpdate();
+      }
+      toggleMenu(e8) {
+        e8.stopPropagation();
+        this.isMenuOpen = !this.isMenuOpen;
+      }
+      renderMenuItems() {
+        return Object.keys(serviceMap).map(
+          (key) => x`
+        <button
+          class="block w-full text-left p-2 rounded hover:bg-green-100 capitalize ${this.currentModel === key ? "bg-green-200 font-semibold" : ""}"
+          @click=${() => this.handleNavClick(key)}
+        >
+          🧩 ${key.replace(/_/g, " ")}
+        </button>
+      `
+        );
+      }
+      render() {
+        return x`
+      <section class="md:flex min-h-screen">
+        <!-- Sidebar -->
+        <div class="hidden md:block border-r-2 px-4 py-6 max-w-[180px]">
+          <nav class="space-y-2">${this.renderMenuItems()}</nav>
+        </div>
+
+        <!-- Konten -->
+        <div class="flex-1 p-4 bg-gray-50 min-h-screen relative">
+          <!-- Hamburger -->
+          <div class="md:hidden relative inline-block mb-4">
+            <button
+              id="menuToggle"
+              class="inline-flex items-center px-3 py-2 border rounded text-green-700 border-green-700 hover:bg-green-100"
+              @click=${this.toggleMenu}
+            >
+              ☰ Menu
+            </button>
+
+            ${this.isMenuOpen ? x`
+                  <div
+                    id="dropdownMenu"
+                    class="absolute top-full left-0 bg-white border shadow-lg rounded mt-2 w-48 z-50"
+                  >
+                    <nav class="p-2 space-y-1">${this.renderMenuItems()}</nav>
+                  </div>
+                ` : null}
+          </div>
+
+          <main class="bg-white rounded-xl shadow p-4">
+            ${this.currentModel ? x`
+                  <page-konfigurasi-model
+                    .model=${this.currentModel}
+                  ></page-konfigurasi-model>
+                ` : x`
+                  <h2 class="text-xl font-semibold mb-2">📁 Konfigurasi</h2>
+                  <p class="text-gray-600">
+                    Pilih entitas konfigurasi dari menu.
+                  </p>
+                `}
+          </main>
+        </div>
+      </section>
+    `;
+      }
+    };
+    __decorateClass([
+      r5()
+    ], PageKonfigurasi.prototype, "isMenuOpen", 2);
+    __decorateClass([
+      r5()
+    ], PageKonfigurasi.prototype, "currentModel", 2);
+    PageKonfigurasi = __decorateClass([
+      t3("page-konfigurasi")
+    ], PageKonfigurasi);
   }
 });
 
@@ -16546,9 +16717,9 @@ var AppNav = class extends i4 {
         >📊 Dashboard</a
       >
       <a
-        href="/config"
+        href="/konfigurasi"
         @click=${this._navigate}
-        class=${this.isActive("config")}
+        class=${this.isActive("konfigurasi")}
         >⚙️ Konfigurasi</a
       >
     `;
@@ -18929,9 +19100,9 @@ var AppMain = class extends i4 {
       },
       {
         path: "/konfigurasi",
-        component: "page-not-found",
+        component: "page-konfigurasi",
         action: async () => {
-          await Promise.resolve().then(() => (init_not_found(), not_found_exports));
+          await Promise.resolve().then(() => (init_konfigurasi(), konfigurasi_exports));
         }
       },
       {
@@ -18955,7 +19126,7 @@ var AppMain = class extends i4 {
   render() {
     return x`
       <main
-        class="max-w-7xl mx-auto px-4 py-6 pb-16 p-layout min-h-screen bg-background dark:bg-darkbg"
+        class="max-w-7xl mx-auto py-3 pb-16 p-layout min-h-screen bg-background dark:bg-darkbg"
       >
         <div id="outlet" class="p-4"></div>
       </main>

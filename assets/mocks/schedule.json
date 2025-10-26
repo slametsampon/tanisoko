@@ -1,0 +1,47 @@
+[
+  {
+    "id": 1,
+    "device_id": 101,
+    "actuator_id": 201,
+    "cron_expression": "0 6 * * *",
+    "rule_type": "daily_start",
+    "condition_json": "{\"temp_min\":25,\"humidity_max\":80}",
+    "is_active": true
+  },
+  {
+    "id": 2,
+    "device_id": 102,
+    "actuator_id": 202,
+    "cron_expression": "30 18 * * *",
+    "rule_type": "daily_stop",
+    "condition_json": "{\"ph_min\":6.5,\"ph_max\":7.5}",
+    "is_active": false
+  },
+  {
+    "id": 3,
+    "device_id": 103,
+    "actuator_id": 203,
+    "cron_expression": "0 */4 * * *",
+    "rule_type": "periodic_check",
+    "condition_json": "{\"check\":\"tds\",\"interval\":4}",
+    "is_active": true
+  },
+  {
+    "id": 4,
+    "device_id": 104,
+    "actuator_id": 204,
+    "cron_expression": "15 10 * * 1-5",
+    "rule_type": "weekday_schedule",
+    "condition_json": "{\"mode\":\"auto\"}",
+    "is_active": true
+  },
+  {
+    "id": 5,
+    "device_id": 105,
+    "actuator_id": 205,
+    "cron_expression": "0 0 1 * *",
+    "rule_type": "monthly_reset",
+    "condition_json": "{\"reset_target\":\"counters\"}",
+    "is_active": false
+  }
+]
