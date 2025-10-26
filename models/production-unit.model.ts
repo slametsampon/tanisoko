@@ -1,21 +1,17 @@
 // models/production-unit.model.ts
 
 import { z } from 'zod';
-
-export const UnitTypeEnum = z.enum(['zone', 'pond', 'coop']);
-export type UnitType = z.infer<typeof UnitTypeEnum>;
+import { UnitTypeEnum } from '../frontend/src/constants/enums';
 
 export const ProductionUnitSchema = z.object({
   id: z.number(),
   farm_id: z.number(),
   type: UnitTypeEnum,
-  name: z.string(),
-  capacity: z.number(),
-  dimensions_cm: z.object({
-    length: z.number(),
-    width: z.number(),
-    height: z.number().optional(),
-  }),
+  name: z.string().min(1),
+  capacity: z.number().positive(),
+  dimensions_length: z.number().positive(),
+  dimensions_width: z.number().positive(),
+  dimensions_height: z.number().positive().optional(),
 });
 
 export type ProductionUnit = z.infer<typeof ProductionUnitSchema>;

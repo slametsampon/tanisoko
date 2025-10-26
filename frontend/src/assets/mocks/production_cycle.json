@@ -6,8 +6,12 @@
     "end_date": "2025-10-30",
     "status": "aktif",
     "domain": "hydroponic",
+    "notes": "Batch percobaan musim hujan",
     "plant_id": 1,
-    "notes": "Batch percobaan musim hujan"
+    "fish_species_id": null,
+    "pond_id": null,
+    "chicken_breed_id": null,
+    "coop_id": null
   },
   {
     "id": 2,
@@ -16,9 +20,12 @@
     "end_date": "2025-11-30",
     "status": "aktif",
     "domain": "aquaculture",
+    "notes": "Budidaya lele fase awal",
+    "plant_id": null,
     "fish_species_id": 1,
     "pond_id": 2,
-    "notes": "Budidaya lele fase awal"
+    "chicken_breed_id": null,
+    "coop_id": null
   },
   {
     "id": 3,
@@ -27,9 +34,12 @@
     "end_date": "2025-11-15",
     "status": "aktif",
     "domain": "poultry",
+    "notes": "Broiler fase 1",
+    "plant_id": null,
+    "fish_species_id": null,
+    "pond_id": null,
     "chicken_breed_id": 1,
-    "coop_id": 3,
-    "notes": "Broiler fase 1"
+    "coop_id": 3
   },
   {
     "id": 4,
@@ -38,8 +48,12 @@
     "end_date": "2025-11-28",
     "status": "aktif",
     "domain": "hydroponic",
+    "notes": "Lettuce batch kedua",
     "plant_id": 2,
-    "notes": "Lettuce batch kedua"
+    "fish_species_id": null,
+    "pond_id": null,
+    "chicken_breed_id": null,
+    "coop_id": null
   },
   {
     "id": 5,
@@ -48,8 +62,11 @@
     "end_date": "2025-12-10",
     "status": "aktif",
     "domain": "poultry",
+    "notes": "Ayam Arab petelur",
+    "plant_id": null,
+    "fish_species_id": null,
+    "pond_id": null,
     "chicken_breed_id": 2,
-    "coop_id": 4,
-    "notes": "Ayam Arab petelur"
+    "coop_id": 4
   }
 ]

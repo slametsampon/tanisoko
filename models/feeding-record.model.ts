@@ -1,7 +1,7 @@
 // models/feeding-record.model.ts
 
 import { z } from 'zod';
-import { UnitTypeEnum } from './production-unit.model';
+import { UnitTypeEnum } from '../frontend/src/constants/enums';
 
 export const FeedingRecordSchema = z.object({
   id: z.number(),

@@ -5,11 +5,9 @@
     "type": "zone",
     "name": "Zona A1",
     "capacity": 100,
-    "dimensions_cm": {
-      "length": 300,
-      "width": 80,
-      "height": 150
-    }
+    "dimensions_length": 300,
+    "dimensions_width": 80,
+    "dimensions_height": 150
   },
   {
     "id": 2,
@@ -17,11 +15,9 @@
     "type": "pond",
     "name": "Kolam B1",
     "capacity": 500,
-    "dimensions_cm": {
-      "length": 200,
-      "width": 150,
-      "height": 100
-    }
+    "dimensions_length": 200,
+    "dimensions_width": 150,
+    "dimensions_height": 100
   },
   {
     "id": 3,
@@ -29,11 +25,9 @@
     "type": "coop",
     "name": "Kandang C1",
     "capacity": 1000,
-    "dimensions_cm": {
-      "length": 800,
-      "width": 400,
-      "height": 250
-    }
+    "dimensions_length": 800,
+    "dimensions_width": 400,
+    "dimensions_height": 250
   },
   {
     "id": 4,
@@ -41,11 +35,9 @@
     "type": "zone",
     "name": "Zona A2",
     "capacity": 120,
-    "dimensions_cm": {
-      "length": 320,
-      "width": 90,
-      "height": 160
-    }
+    "dimensions_length": 320,
+    "dimensions_width": 90,
+    "dimensions_height": 160
   },
   {
     "id": 5,
@@ -53,10 +45,8 @@
     "type": "pond",
     "name": "Kolam B2",
     "capacity": 600,
-    "dimensions_cm": {
-      "length": 220,
-      "width": 160,
-      "height": 110
-    }
+    "dimensions_length": 220,
+    "dimensions_width": 160,
+    "dimensions_height": 110
   }
 ]
