@@ -77,10 +77,10 @@ export class AppMain extends LitElement {
         },
       },
       {
-        path: '/konfigurasi',
+        path: '/konfigurasi_hmi',
         component: 'page-konfigurasi',
         action: async () => {
-          await import('../../pages/konfigurasi');
+          await import('../../pages/konfigurasi_hmi');
         },
       },
       {
