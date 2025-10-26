@@ -4,8 +4,16 @@ import { html, LitElement } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { modelDefinitions } from 'src/config/model-definitions';
 import { getService } from 'src/services/getService';
-import { ZodSchema, ZodNumber, ZodObject, ZodTypeAny } from 'zod';
+import {
+  ZodSchema,
+  ZodNumber,
+  ZodObject,
+  ZodTypeAny,
+  ZodEnum,
+  ZodUnion,
+} from 'zod';
 import { ifDefined } from 'lit/directives/if-defined.js';
+import { ZodOptional, ZodNullable } from 'zod';
 
 @customElement('dynamic-form')
 export class DynamicForm extends LitElement {
@@ -68,6 +76,40 @@ export class DynamicForm extends LitElement {
     this.formData = {};
   }
 
+  // 🔧 Helper untuk ambil opsi dari enum atau union(enum|string)
+
+  private getEnumOptions(zodType: ZodTypeAny): string[] | undefined {
+    console.log('[Debug] getEnumOptions() for:', zodType);
+
+    // 🔍 unwrap jika optional atau nullable
+    let innerType: ZodTypeAny = zodType;
+    if (innerType instanceof ZodOptional || innerType instanceof ZodNullable) {
+      innerType = (innerType._def as any).innerType as ZodTypeAny;
+    }
+
+    if (innerType instanceof ZodEnum) {
+      console.log('[Debug] Detected ZodEnum:', innerType.options);
+      return innerType.options.map(String);
+    }
+
+    if (innerType instanceof ZodUnion) {
+      const unionTypes = innerType.options as ZodTypeAny[];
+      console.log('[Debug] Detected ZodUnion with options:', unionTypes);
+      const enumType = unionTypes.find((t) => t instanceof ZodEnum) as
+        | ZodEnum<any>
+        | undefined;
+      if (enumType) {
+        console.log('[Debug] Found ZodEnum inside union:', enumType.options);
+        return enumType.options.map(String);
+      } else {
+        console.warn('[Debug] No ZodEnum found inside union');
+      }
+    }
+
+    console.warn('[Debug] No enum options returned');
+    return undefined;
+  }
+
   render() {
     const def = modelDefinitions[this.model];
     if (!def) return html`<p>Model tidak ditemukan</p>`;
@@ -85,6 +127,7 @@ export class DynamicForm extends LitElement {
       >
         ${def.fields.map((f, i) => {
           const zodType = schemaShape[f.key];
+          console.log(`[Debug] Field: ${f.key}`, zodType);
           if (!zodType) {
             console.warn(
               `[DynamicForm] Field "${f.key}" tidak ditemukan di schema`
@@ -94,6 +137,13 @@ export class DynamicForm extends LitElement {
 
           const isNumber = zodType instanceof ZodNumber;
           const isMultiline = f.key.toLowerCase().includes('description');
+          const selectOptions = this.getEnumOptions(zodType);
+          if (selectOptions) {
+            console.log(
+              `[Debug] Field "${f.key}" has selectOptions:`,
+              selectOptions
+            );
+          }
 
           return html`
             <div class="flex flex-col">
@@ -114,6 +164,27 @@ export class DynamicForm extends LitElement {
                       @input=${(e: any) =>
                         this.handleChange(f.key, e.target.value)}
                     ></textarea>
+                  `
+                : selectOptions
+                ? html`
+                    <select
+                      class="border rounded px-3 py-2 text-sm bg-white dark:bg-gray-800 dark:text-white"
+                      .value=${this.formData[f.key] ?? ''}
+                      @change=${(e: any) =>
+                        this.handleChange(f.key, e.target.value)}
+                    >
+                      <option value="">-- Pilih ${f.label} --</option>
+                      ${selectOptions.map(
+                        (opt) => html`
+                          <option
+                            value=${opt}
+                            ?selected=${opt === this.formData[f.key]}
+                          >
+                            ${opt}
+                          </option>
+                        `
+                      )}
+                    </select>
                   `
                 : html`
                     <input
