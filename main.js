@@ -15234,25 +15234,15 @@ var init_farm_model = __esm({
   }
 });
 
-// ../models/production-unit.model.ts
-var UnitTypeEnum, ProductionUnitSchema;
-var init_production_unit_model = __esm({
-  "../models/production-unit.model.ts"() {
+// src/constants/enums.ts
+var UnitTypeEnum, DomainEnum, CycleStatusEnum;
+var init_enums = __esm({
+  "src/constants/enums.ts"() {
     "use strict";
     init_zod();
     UnitTypeEnum = external_exports.enum(["zone", "pond", "coop"]);
-    ProductionUnitSchema = external_exports.object({
-      id: external_exports.number(),
-      farm_id: external_exports.number(),
-      type: UnitTypeEnum,
-      name: external_exports.string(),
-      capacity: external_exports.number(),
-      dimensions_cm: external_exports.object({
-        length: external_exports.number(),
-        width: external_exports.number(),
-        height: external_exports.number().optional()
-      })
-    });
+    DomainEnum = external_exports.enum(["hydroponic", "aquaculture", "poultry"]);
+    CycleStatusEnum = external_exports.enum(["aktif", "selesai", "panen", "gagal"]);
   }
 });
 
@@ -15262,7 +15252,7 @@ var init_feeding_record_model = __esm({
   "../models/feeding-record.model.ts"() {
     "use strict";
     init_zod();
-    init_production_unit_model();
+    init_enums();
     FeedingRecordSchema = external_exports.object({
       id: external_exports.number(),
       cycle_id: external_exports.number(),
@@ -15307,7 +15297,7 @@ var init_mortality_record_model = __esm({
   "../models/mortality-record.model.ts"() {
     "use strict";
     init_zod();
-    init_production_unit_model();
+    init_enums();
     MortalityRecordSchema = external_exports.object({
       id: external_exports.number(),
       cycle_id: external_exports.number(),
@@ -15370,21 +15360,40 @@ var init_production_cycle_model = __esm({
   "../models/production-cycle.model.ts"() {
     "use strict";
     init_zod();
+    init_enums();
     ProductionCycleSchema = external_exports.object({
       id: external_exports.number(),
       farm_id: external_exports.number(),
       start_date: external_exports.string(),
       end_date: external_exports.string(),
-      status: external_exports.enum(["aktif", "selesai", "panen", "gagal"]),
+      status: CycleStatusEnum,
+      domain: DomainEnum,
       notes: external_exports.string().optional(),
-      // Domain discriminator
-      domain: external_exports.enum(["hydroponic", "aquaculture", "poultry"]),
-      // Discriminated fields
-      plant_id: external_exports.number().optional(),
-      fish_species_id: external_exports.number().optional(),
-      pond_id: external_exports.number().optional(),
-      chicken_breed_id: external_exports.number().optional(),
-      coop_id: external_exports.number().optional()
+      plant_id: external_exports.number().nullable(),
+      fish_species_id: external_exports.number().nullable(),
+      pond_id: external_exports.number().nullable(),
+      chicken_breed_id: external_exports.number().nullable(),
+      coop_id: external_exports.number().nullable()
+    });
+  }
+});
+
+// ../models/production-unit.model.ts
+var ProductionUnitSchema;
+var init_production_unit_model = __esm({
+  "../models/production-unit.model.ts"() {
+    "use strict";
+    init_zod();
+    init_enums();
+    ProductionUnitSchema = external_exports.object({
+      id: external_exports.number(),
+      farm_id: external_exports.number(),
+      type: UnitTypeEnum,
+      name: external_exports.string().min(1),
+      capacity: external_exports.number().positive(),
+      dimensions_length: external_exports.number().positive(),
+      dimensions_width: external_exports.number().positive(),
+      dimensions_height: external_exports.number().positive().optional()
     });
   }
 });
@@ -15616,9 +15625,9 @@ var init_model_definitions = __esm({
           { key: "name", label: "Nama Unit" },
           { key: "type", label: "Jenis" },
           { key: "capacity", label: "Kapasitas" },
-          { key: "dimensions_cm.length", label: "Panjang (cm)" },
-          { key: "dimensions_cm.width", label: "Lebar (cm)" },
-          { key: "dimensions_cm.height", label: "Tinggi (cm)" }
+          { key: "dimensions_length", label: "Panjang (cm)" },
+          { key: "dimensions_width", label: "Lebar (cm)" },
+          { key: "dimensions_height", label: "Tinggi (cm)" }
         ],
         displayFields: ["type", "name", "capacity"]
       },
@@ -17114,7 +17123,7 @@ var AppFooter = class extends i4 {
           <div class="flex items-center gap-2">
             <span class="text-base">©</span>
             <span>
-              ${(/* @__PURE__ */ new Date()).getFullYear()} TaniSoko v${"1.2.0"} — All
+              ${(/* @__PURE__ */ new Date()).getFullYear()} TaniSoko v${"1.2.1"} — All
               rights reserved.
             </span>
           </div>
