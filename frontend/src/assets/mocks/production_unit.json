@@ -2,43 +2,61 @@
   {
     "id": 1,
     "farm_id": 1,
-    "unit_type": "zone",
+    "type": "zone",
     "name": "Zona A1",
-    "description": "Rak NFT selada",
     "capacity": 100,
-    "length_cm": 300,
-    "width_cm": 80,
-    "height_cm": 150,
-    "shape": "rectangular",
-    "media_type": "NFT",
-    "environment": "indoor"
+    "dimensions_cm": {
+      "length": 300,
+      "width": 80,
+      "height": 150
+    }
   },
   {
     "id": 2,
     "farm_id": 2,
-    "unit_type": "pond",
+    "type": "pond",
     "name": "Kolam B1",
-    "description": "Kolam terpal 2m",
     "capacity": 500,
-    "length_cm": 200,
-    "width_cm": 150,
-    "height_cm": 100,
-    "shape": "round",
-    "media_type": "air",
-    "environment": "outdoor"
+    "dimensions_cm": {
+      "length": 200,
+      "width": 150,
+      "height": 100
+    }
   },
   {
     "id": 3,
     "farm_id": 3,
-    "unit_type": "coop",
+    "type": "coop",
     "name": "Kandang C1",
-    "description": "Kandang ayam broiler",
     "capacity": 1000,
-    "length_cm": 800,
-    "width_cm": 400,
-    "height_cm": 250,
-    "shape": "rectangular",
-    "media_type": "litter",
-    "environment": "indoor"
+    "dimensions_cm": {
+      "length": 800,
+      "width": 400,
+      "height": 250
+    }
+  },
+  {
+    "id": 4,
+    "farm_id": 1,
+    "type": "zone",
+    "name": "Zona A2",
+    "capacity": 120,
+    "dimensions_cm": {
+      "length": 320,
+      "width": 90,
+      "height": 160
+    }
+  },
+  {
+    "id": 5,
+    "farm_id": 2,
+    "type": "pond",
+    "name": "Kolam B2",
+    "capacity": 600,
+    "dimensions_cm": {
+      "length": 220,
+      "width": 160,
+      "height": 110
+    }
   }
 ]

@@ -78,9 +78,9 @@ export class AppMain extends LitElement {
       },
       {
         path: '/konfigurasi',
-        component: 'page-not-found',
+        component: 'page-konfigurasi',
         action: async () => {
-          await import('../../pages/not-found');
+          await import('../../pages/konfigurasi');
         },
       },
       {
@@ -126,7 +126,7 @@ export class AppMain extends LitElement {
   render() {
     return html`
       <main
-        class="max-w-7xl mx-auto px-4 py-6 pb-16 p-layout min-h-screen bg-background dark:bg-darkbg"
+        class="max-w-7xl mx-auto py-3 pb-16 p-layout min-h-screen bg-background dark:bg-darkbg"
       >
         <div id="outlet" class="p-4"></div>
       </main>

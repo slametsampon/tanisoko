@@ -48,7 +48,7 @@ export const modelDefinitions = {
       { key: 'recorded_by', label: 'Dicatat Oleh' },
       { key: 'note', label: 'Catatan' },
     ],
-    displayFields: ['timestamp', 'type', 'value'],
+    displayFields: ['timestamp', 'device_id', 'value'],
   },
   device: {
     schema: DeviceSchema,
@@ -81,7 +81,7 @@ export const modelDefinitions = {
       { key: 'location', label: 'Lokasi' },
       { key: 'type', label: 'Tipe' },
     ],
-    displayFields: ['id', 'name', 'location'],
+    displayFields: ['type', 'name', 'location'],
   },
   feeding_record: {
     schema: FeedingRecordSchema,
@@ -113,7 +113,12 @@ export const modelDefinitions = {
       { key: 'ideal_do_min', label: 'DO Ideal Min' },
       { key: 'ideal_tds_max', label: 'TDS Ideal Max' },
     ],
-    displayFields: ['id', 'name'],
+    displayFields: [
+      'name',
+      'feed_type',
+      'growth_cycle_days',
+      'average_weight_gram',
+    ],
   },
   mortality_record: {
     schema: MortalityRecordSchema,
@@ -156,7 +161,12 @@ export const modelDefinitions = {
       { key: 'ec_min', label: 'EC Min' },
       { key: 'ec_max', label: 'EC Max' },
     ],
-    displayFields: ['id', 'name', 'variety'],
+    displayFields: [
+      'name',
+      'variety',
+      'ideal_duration_days',
+      'average_yield_gram',
+    ],
   },
   production_cycle: {
     schema: ProductionCycleSchema,
@@ -173,7 +183,7 @@ export const modelDefinitions = {
       { key: 'coop_id', label: 'Kandang' },
       { key: 'notes', label: 'Catatan' },
     ],
-    displayFields: ['id', 'start_date', 'status'],
+    displayFields: ['domain', 'start_date', 'status'],
   },
   production_unit: {
     schema: ProductionUnitSchema,
@@ -186,7 +196,7 @@ export const modelDefinitions = {
       { key: 'dimensions_cm.width', label: 'Lebar (cm)' },
       { key: 'dimensions_cm.height', label: 'Tinggi (cm)' },
     ],
-    displayFields: ['id', 'name', 'type'],
+    displayFields: ['type', 'name', 'capacity'],
   },
   rule: {
     schema: RuleSchema,
@@ -198,7 +208,7 @@ export const modelDefinitions = {
       { key: 'action', label: 'Aksi' },
       { key: 'active', label: 'Aktif' },
     ],
-    displayFields: ['id', 'threshold_type', 'threshold_value'],
+    displayFields: ['threshold_type', 'threshold_value'],
   },
   schedule: {
     schema: ScheduleSchema,
@@ -210,6 +220,6 @@ export const modelDefinitions = {
       { key: 'condition_json', label: 'Kondisi' },
       { key: 'is_active', label: 'Aktif' },
     ],
-    displayFields: ['id', 'cron_expression'],
+    displayFields: ['cron_expression', 'rule_type'],
   },
 };

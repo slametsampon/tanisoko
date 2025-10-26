@@ -20,9 +20,19 @@ export class DynamicForm extends LitElement {
 
   // ⚠️ Tangkap perubahan initialData untuk handle edit ulang
   updated(changedProps: Map<string, any>) {
+    if (changedProps.has('model')) {
+      this.formData = {}; // Reset total saat ganti model
+    }
+
     if (changedProps.has('initialData')) {
-      this.formData = { ...this.initialData };
-      console.log('[DynamicForm] updated from initialData:', this.formData);
+      const allowedKeys =
+        modelDefinitions[this.model]?.fields.map((f) => f.key) || [];
+      const cleanData: Record<string, any> = {};
+      for (const key of allowedKeys) {
+        cleanData[key] = this.initialData?.[key] ?? '';
+      }
+      this.formData = cleanData;
+      console.log('[DynamicForm] filtered formData:', this.formData);
     }
   }
 

@@ -98,9 +98,9 @@ export class AppNav extends LitElement {
         >📊 Dashboard</a
       >
       <a
-        href="/config"
+        href="/konfigurasi"
         @click=${this._navigate}
-        class=${this.isActive('config')}
+        class=${this.isActive('konfigurasi')}
         >⚙️ Konfigurasi</a
       >
     `;

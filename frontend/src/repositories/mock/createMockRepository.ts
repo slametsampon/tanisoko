@@ -1,87 +1,83 @@
 // frontend/src/repositories/mock/createMockRepository.ts
 
 import { BaseRepository } from '../interfaces/BaseRepository';
+import { fetchMockData } from '../../services/mock-data.service';
 
-export function createMockRepository<T>(model: string): BaseRepository<T> {
+export function createMockRepository<T extends { id: number }>(
+  model: string
+): BaseRepository<T> {
   const prefix = `[MockRepo:${model}]`;
+  const dataFile = `${model}.json`;
 
   let items: T[] = [];
-  let idCounter = 100;
+  let idCounter = 1;
+  let initialized = false;
 
-  const load = async () => {
-    if (items.length > 0) return;
-
-    const url = `./assets/mocks/${model}.json`;
-    console.log(`${prefix} Loading data from: ${url}`);
+  const init = async () => {
+    if (initialized) return;
 
     try {
-      const res = await fetch(url);
-      console.log(`${prefix} Response status: ${res.status}`);
-
-      if (!res.ok) throw new Error(`HTTP ${res.status} while fetching ${url}`);
-
-      items = await res.json();
-      console.log(`${prefix} Loaded items:`, items);
-
+      items = await fetchMockData<T[]>(dataFile);
       idCounter = items.length
-        ? Math.max(...items.map((x: any) => x.id || 0)) + 1
+        ? Math.max(...items.map((item) => item.id ?? 0)) + 1
         : 1;
 
-      console.log(`${prefix} Initialized idCounter = ${idCounter}`);
+      console.log(
+        `${prefix} Initialized with ${items.length} items, idCounter=${idCounter}`
+      );
     } catch (err) {
-      console.error(`${prefix} ❌ Failed to load mock data:`, err);
+      console.warn(`${prefix} ⚠️ Inisialisasi gagal, menggunakan data kosong.`);
       items = [];
+      idCounter = 1;
     }
+
+    initialized = true;
   };
 
   return {
     async getAll() {
-      console.log(`${prefix} getAll() called`);
-      await load();
-      return [...items]; // ✅ Return new array to trigger UI reactivity
+      console.log(`${prefix} getAll()`);
+      await init();
+      return [...items]; // Trigger reactivity
     },
 
     async getById(id: number) {
-      console.log(`${prefix} getById(${id}) called`);
-      await load();
-      const found = items.find((item) => (item as any).id === id) || null;
-      console.log(`${prefix} Found:`, found);
-      return found;
+      console.log(`${prefix} getById(${id})`);
+      await init();
+      const item = items.find((i) => i.id === id) || null;
+      console.log(`${prefix} getById →`, item);
+      return item;
     },
 
     async create(data: T) {
-      await load();
-      const newItem = { ...data, id: idCounter++ } as T;
+      await init();
+      const newItem = { ...data, id: idCounter++ };
       items.push(newItem);
-      console.log(`${prefix} create() →`, newItem);
+      console.log(`${prefix} create →`, newItem);
       return newItem;
     },
 
     async update(id: number, data: Partial<T>) {
-      await load();
-      const index = items.findIndex((item) => (item as any).id === id);
-
+      await init();
+      const index = items.findIndex((i) => i.id === id);
       if (index === -1) {
-        console.warn(`${prefix} update(${id}) → item not found`);
+        console.warn(`${prefix} update(${id}) → not found`);
         throw new Error('Item not found');
       }
-
       items[index] = { ...items[index], ...data };
       console.log(`${prefix} update(${id}) →`, items[index]);
       return items[index];
     },
 
     async delete(id: number) {
-      await load();
-      const index = items.findIndex((item) => (item as any).id === id);
-
+      await init();
+      const index = items.findIndex((i) => i.id === id);
       if (index === -1) {
-        console.warn(`${prefix} delete(${id}) → item not found`);
+        console.warn(`${prefix} delete(${id}) → not found`);
         return false;
       }
-
-      const deleted = items.splice(index, 1);
-      console.log(`${prefix} delete(${id}) → success`, deleted[0]);
+      const [deleted] = items.splice(index, 1);
+      console.log(`${prefix} delete(${id}) →`, deleted);
       return true;
     },
   };

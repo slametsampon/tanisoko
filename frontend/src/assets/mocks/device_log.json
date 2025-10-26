@@ -5,7 +5,9 @@
     "timestamp": "2025-10-25T10:00:00Z",
     "type": "read",
     "value": 26.5,
-    "recorded_by": "system"
+    "recorded_by": "system",
+    "note": "",
+    "meta": {}
   },
   {
     "id": 2,
@@ -14,6 +16,52 @@
     "type": "write",
     "value": "on",
     "previous_value": "off",
-    "recorded_by": "user:admin"
+    "recorded_by": "user:admin",
+    "note": "Manual override by admin",
+    "meta": {
+      "via": "web-dashboard"
+    }
+  },
+  {
+    "id": 3,
+    "device_id": 3,
+    "timestamp": "2025-10-25T10:10:00Z",
+    "type": "alarm",
+    "value": true,
+    "previous_value": false,
+    "recorded_by": "rule_engine",
+    "note": "Kelembaban di bawah ambang minimum",
+    "meta": {
+      "threshold_min": 40,
+      "actual_value": 35.2,
+      "severity": "high"
+    }
+  },
+  {
+    "id": 4,
+    "device_id": 4,
+    "timestamp": "2025-10-25T10:15:00Z",
+    "type": "info",
+    "value": "heater started",
+    "recorded_by": "system",
+    "note": "Heater aktif otomatis berdasarkan suhu",
+    "meta": {
+      "trigger_source": "temp_sensor:1",
+      "target_temp": 28
+    }
+  },
+  {
+    "id": 5,
+    "device_id": 5,
+    "timestamp": "2025-10-25T10:20:00Z",
+    "type": "warning",
+    "value": "pH mendekati batas bawah",
+    "recorded_by": "system",
+    "note": "Perlu perhatian dalam 1 jam ke depan",
+    "meta": {
+      "actual_value": 5.7,
+      "threshold_min": 5.5,
+      "margin": 0.2
+    }
   }
 ]

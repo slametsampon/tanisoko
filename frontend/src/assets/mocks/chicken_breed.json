@@ -2,46 +2,66 @@
   {
     "id": 1,
     "name": "Broiler FastGrow",
+    "type": "broiler",
     "description": "Ayam pedaging cepat panen",
-    "growth_duration_days": 35,
-    "feed_type": "starter-finisher",
-    "ideal_temperature_min": 28,
-    "ideal_temperature_max": 32
+    "growth_cycle_days": 35,
+    "average_weight_gram": 2000,
+    "ideal_temp_min": 28,
+    "ideal_temp_max": 32,
+    "ideal_humidity_min": 55,
+    "ideal_humidity_max": 70,
+    "notes": "Cocok untuk panen cepat di kandang tertutup"
   },
   {
     "id": 2,
     "name": "Layer GoldenEgg",
+    "type": "layer",
     "description": "Ayam petelur dengan produksi tinggi",
-    "growth_duration_days": 120,
-    "feed_type": "layer",
-    "ideal_temperature_min": 24,
-    "ideal_temperature_max": 28
+    "growth_cycle_days": 120,
+    "average_weight_gram": 1600,
+    "ideal_temp_min": 24,
+    "ideal_temp_max": 28,
+    "ideal_humidity_min": 50,
+    "ideal_humidity_max": 65,
+    "notes": "Produktivitas tinggi di suhu stabil"
   },
   {
     "id": 3,
     "name": "Kampung Super",
+    "type": "broiler",
     "description": "Ayam kampung unggul hasil persilangan",
-    "growth_duration_days": 70,
-    "feed_type": "campuran",
-    "ideal_temperature_min": 26,
-    "ideal_temperature_max": 30
+    "growth_cycle_days": 70,
+    "average_weight_gram": 1800,
+    "ideal_temp_min": 26,
+    "ideal_temp_max": 30,
+    "ideal_humidity_min": 60,
+    "ideal_humidity_max": 75,
+    "notes": "Performa optimal di kandang semi terbuka"
   },
   {
     "id": 4,
     "name": "Ayam Arab",
+    "type": "layer",
     "description": "Ayam petelur kecil dengan produktivitas tinggi",
-    "growth_duration_days": 110,
-    "feed_type": "layer",
-    "ideal_temperature_min": 23,
-    "ideal_temperature_max": 27
+    "growth_cycle_days": 110,
+    "average_weight_gram": 1200,
+    "ideal_temp_min": 23,
+    "ideal_temp_max": 27,
+    "ideal_humidity_min": 55,
+    "ideal_humidity_max": 70,
+    "notes": "Ukuran kecil, cocok untuk peternakan skala kecil"
   },
   {
     "id": 5,
     "name": "Broiler JumboMax",
+    "type": "broiler",
     "description": "Ayam pedaging dengan bobot besar",
-    "growth_duration_days": 42,
-    "feed_type": "starter-finisher",
-    "ideal_temperature_min": 27,
-    "ideal_temperature_max": 31
+    "growth_cycle_days": 42,
+    "average_weight_gram": 2500,
+    "ideal_temp_min": 27,
+    "ideal_temp_max": 31,
+    "ideal_humidity_min": 60,
+    "ideal_humidity_max": 75,
+    "notes": "Butuh pakan tinggi protein"
   }
 ]

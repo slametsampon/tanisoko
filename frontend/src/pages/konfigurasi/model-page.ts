@@ -42,12 +42,27 @@ export class PageKonfigurasiModel extends LitElement {
 
     console.log('[PageKonfigurasiModel] Final resolved model =', this.model);
 
-    if (!this.model) {
-      console.warn('[PageKonfigurasiModel] No model could be resolved');
-      return;
+    if (!this.model || !modelDefinitions[this.model]) {
+      return html`<p>Model tidak valid atau belum didukung.</p>`;
     }
 
     this.loadData();
+  }
+
+  /**
+   * 🔄 Lifecycle: dipanggil setiap kali properti berubah
+   */
+  updated(changed: Map<string | number | symbol, unknown>) {
+    if (changed.has('model')) {
+      console.log(
+        '[PageKonfigurasiModel] model changed → reset state & reload'
+      );
+      this.selectedItem = null;
+      this.items = [];
+      if (this.model) {
+        this.loadData();
+      }
+    }
   }
 
   async loadData() {
@@ -98,13 +113,14 @@ export class PageKonfigurasiModel extends LitElement {
 
     return html`
       <h2 class="text-xl font-bold mb-4 capitalize">
-        Konfigurasi: ${this.model.replace('_', ' ')}
+        Konfigurasi: ${this.model.replace(/_/g, ' ')}
       </h2>
 
       <div class="bg-white rounded-xl p-4 shadow mb-6">
         <dynamic-form
           .model=${this.model}
           .initialData=${this.selectedItem}
+          .key=${JSON.stringify(this.selectedItem ?? {})}
           @saved=${this.handleSave}
         ></dynamic-form>
       </div>

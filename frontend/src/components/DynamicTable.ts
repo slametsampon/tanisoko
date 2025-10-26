@@ -53,7 +53,9 @@ export class DynamicTable extends LitElement {
                   <td class="p-3">${item.id}</td>
                   ${this.columns
                     .filter((col) => col !== 'id') // 👈 Sama di body
-                    .map((col) => html`<td class="p-3">${item[col]}</td>`)}
+                    .map(
+                      (col) => html`<td class="p-3">${item[col] ?? '-'}</td> `
+                    )}
                   <td class="p-3 text-center space-x-2">
                     <button
                       class="text-yellow-600 hover:text-yellow-800"

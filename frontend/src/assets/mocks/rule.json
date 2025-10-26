@@ -1,0 +1,52 @@
+[
+  {
+    "id": 1,
+    "device_id": 101,
+    "sensor_id": 201,
+    "actuator_id": 301,
+    "threshold_type": "above",
+    "threshold_value": 30.5,
+    "action": "turn_on",
+    "active": true
+  },
+  {
+    "id": 2,
+    "device_id": 102,
+    "sensor_id": 202,
+    "actuator_id": 302,
+    "threshold_type": "below",
+    "threshold_value": 20.0,
+    "action": "turn_off",
+    "active": false
+  },
+  {
+    "id": 3,
+    "device_id": 103,
+    "sensor_id": 203,
+    "actuator_id": 303,
+    "threshold_type": "equal",
+    "threshold_value": 25.0,
+    "action": "notify",
+    "active": true
+  },
+  {
+    "id": 4,
+    "device_id": 104,
+    "sensor_id": 204,
+    "actuator_id": 304,
+    "threshold_type": "range",
+    "threshold_value": 22.5,
+    "action": "adjust",
+    "active": true
+  },
+  {
+    "id": 5,
+    "device_id": 105,
+    "sensor_id": 205,
+    "actuator_id": 305,
+    "threshold_type": "spike",
+    "threshold_value": 35.0,
+    "action": "shutdown",
+    "active": false
+  }
+]
