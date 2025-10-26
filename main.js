@@ -15132,7 +15132,8 @@ var init_device_log_model = __esm({
     ]);
     DeviceLogSchema = external_exports.object({
       id: external_exports.number(),
-      device_id: external_exports.number(),
+      device_tag: external_exports.string(),
+      // ✅ foreign key ke `Device.tag_number`
       timestamp: external_exports.string(),
       // ISO 8601
       type: DeviceLogTypeEnum,
@@ -15148,52 +15149,71 @@ var init_device_log_model = __esm({
 });
 
 // ../models/device.model.ts
-var DeviceTypeEnum, PlatformEnum, ControlModeEnum, OperationModeEnum, ActuatorStateTypeEnum, DeviceSchema;
+var UnitEnum, DeviceSchema;
 var init_device_model = __esm({
   "../models/device.model.ts"() {
     "use strict";
     init_zod();
-    DeviceTypeEnum = external_exports.enum(["sensor", "actuator"]);
-    PlatformEnum = external_exports.enum(["esp32", "esp8266"]);
-    ControlModeEnum = external_exports.enum(["manual", "auto"]);
-    OperationModeEnum = external_exports.enum(["simulation", "real"]);
-    ActuatorStateTypeEnum = external_exports.enum([
-      "on_off",
-      "open_close",
-      "range",
-      "custom"
+    UnitEnum = external_exports.enum([
+      "\xB0C",
+      "%",
+      "cm",
+      "RH%",
+      "m/s",
+      "lux",
+      "ppm",
+      "kPa",
+      "mV",
+      "\u03BCS/cm",
+      "pH",
+      "NTU"
     ]);
     DeviceSchema = external_exports.object({
-      id: external_exports.number(),
+      // Identitas dan zona
+      tag_number: external_exports.string(),
+      // PRIMARY KEY
       zone_id: external_exports.number(),
       name: external_exports.string(),
       node_id: external_exports.string(),
-      status: external_exports.enum(["online", "offline", "error"]),
-      platform: PlatformEnum,
+      // Status (flattened)
+      status_connectivity: external_exports.enum(["online", "offline", "error"]),
+      status_value: external_exports.enum(["normal", "low-alarm", "high-alarm", "sensor-fail"]).optional(),
+      last_seen: external_exports.string().datetime().optional(),
+      // Platform dan firmware
+      platform: external_exports.enum(["esp32", "esp8266"]),
       ip_address: external_exports.string().optional(),
       firmware_version: external_exports.string().optional(),
-      // Core classification
-      type: DeviceTypeEnum,
-      // sensor or actuator
+      // Klasifikasi dan fungsi
+      type: external_exports.enum(["sensor", "actuator"]),
       function: external_exports.string(),
-      // ex: temperature, pump, ph, tds, heater
-      pin: external_exports.string(),
-      // Sensor-specific
-      unit: external_exports.string().optional(),
+      // Unit pengukuran (standar + fleksibel)
+      unit: external_exports.union([UnitEnum, external_exports.string()]).optional(),
+      // Sampling dan Display
+      sample_period_ms: external_exports.number().optional(),
+      sample_deadband: external_exports.number().optional(),
+      display_precision: external_exports.number().optional(),
+      // Rentang dan alarm
+      range_min: external_exports.number().optional(),
+      range_max: external_exports.number().optional(),
+      alarm_min: external_exports.number().optional(),
+      alarm_max: external_exports.number().optional(),
+      // Data sensor
       value: external_exports.number().optional(),
       calibration: external_exports.string().optional(),
-      // Actuator-specific
-      state_type: ActuatorStateTypeEnum.optional(),
-      // Defines how state is represented
+      // Actuator (flattened)
+      state_type: external_exports.enum(["on_off", "open_close", "range", "custom"]).optional(),
+      allowed_states_json: external_exports.string().optional(),
+      // JSON serialized array
+      default_state: external_exports.union([external_exports.string(), external_exports.number(), external_exports.boolean()]).optional(),
       current_state: external_exports.union([external_exports.string(), external_exports.number(), external_exports.boolean()]).optional(),
-      // Shared settings
-      control_mode: ControlModeEnum,
-      // auto/manual
-      operation_mode: OperationModeEnum,
-      // simulation/real
-      alarm_threshold_min: external_exports.number().optional(),
-      alarm_threshold_max: external_exports.number().optional(),
-      metadata: external_exports.record(external_exports.string(), external_exports.unknown()).optional()
+      // Mode kontrol
+      control_mode: external_exports.enum(["manual", "auto"]),
+      operation_mode: external_exports.enum(["simulation", "real"]),
+      // Informasi tambahan
+      description: external_exports.string().optional(),
+      location: external_exports.string().optional(),
+      metadata_json: external_exports.string().optional()
+      // JSON serialized
     });
   }
 });
@@ -15457,15 +15477,15 @@ var init_model_definitions = __esm({
       device: {
         schema: DeviceSchema,
         fields: [
+          { key: "tag_number", label: "Tag Number" },
           { key: "node_id", label: "Node ID" },
-          { key: "name", label: "Nama" },
+          { key: "description", label: "Deskripsi" },
           { key: "type", label: "Tipe" },
-          { key: "status", label: "Status" },
+          { key: "status_connectivity", label: "Status Koneksi" },
           { key: "platform", label: "Platform" },
           { key: "ip_address", label: "IP Address" },
           { key: "firmware_version", label: "Versi Firmware" },
           { key: "function", label: "Fungsi" },
-          { key: "pin", label: "Pin" },
           { key: "unit", label: "Unit" },
           { key: "value", label: "Nilai" },
           { key: "calibration", label: "Kalibrasi" },
@@ -15473,10 +15493,10 @@ var init_model_definitions = __esm({
           { key: "current_state", label: "Status Saat Ini" },
           { key: "control_mode", label: "Mode Kontrol" },
           { key: "operation_mode", label: "Mode Operasi" },
-          { key: "alarm_threshold_min", label: "Ambang Bawah" },
-          { key: "alarm_threshold_max", label: "Ambang Atas" }
+          { key: "alarm_min", label: "Ambang Bawah" },
+          { key: "alarm_max", label: "Ambang Atas" }
         ],
-        displayFields: ["id", "node_id", "name", "type"]
+        displayFields: ["tag_number", "node_id", "description", "type"]
       },
       farm: {
         schema: FarmSchema,
@@ -15990,6 +16010,9 @@ var init_DynamicForm = __esm({
           for (const key of allowedKeys) {
             cleanData[key] = this.initialData?.[key] ?? "";
           }
+          if (this.initialData?.id) {
+            cleanData.id = this.initialData.id;
+          }
           this.formData = cleanData;
           console.log("[DynamicForm] filtered formData:", this.formData);
         }
@@ -16297,7 +16320,6 @@ var init_model_page = __esm({
         <dynamic-form
           .model=${this.model}
           .initialData=${this.selectedItem}
-          .key=${JSON.stringify(this.selectedItem ?? {})}
           @saved=${this.handleSave}
         ></dynamic-form>
       </div>
@@ -17092,7 +17114,7 @@ var AppFooter = class extends i4 {
           <div class="flex items-center gap-2">
             <span class="text-base">©</span>
             <span>
-              ${(/* @__PURE__ */ new Date()).getFullYear()} TaniSoko v${"1.1.4"} — All
+              ${(/* @__PURE__ */ new Date()).getFullYear()} TaniSoko v${"1.2.0"} — All
               rights reserved.
             </span>
           </div>
