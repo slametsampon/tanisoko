@@ -15999,6 +15999,7 @@ var init_DynamicForm = __esm({
     init_getService();
     init_zod();
     init_if_defined2();
+    init_zod();
     DynamicForm = class extends i4 {
       constructor() {
         super(...arguments);
@@ -16046,6 +16047,31 @@ var init_DynamicForm = __esm({
         this.dispatchEvent(new CustomEvent("saved"));
         this.formData = {};
       }
+      // 🔧 Helper untuk ambil opsi dari enum atau union(enum|string)
+      getEnumOptions(zodType) {
+        console.log("[Debug] getEnumOptions() for:", zodType);
+        let innerType = zodType;
+        if (innerType instanceof ZodOptional || innerType instanceof ZodNullable) {
+          innerType = innerType._def.innerType;
+        }
+        if (innerType instanceof ZodEnum) {
+          console.log("[Debug] Detected ZodEnum:", innerType.options);
+          return innerType.options.map(String);
+        }
+        if (innerType instanceof ZodUnion) {
+          const unionTypes = innerType.options;
+          console.log("[Debug] Detected ZodUnion with options:", unionTypes);
+          const enumType = unionTypes.find((t5) => t5 instanceof ZodEnum);
+          if (enumType) {
+            console.log("[Debug] Found ZodEnum inside union:", enumType.options);
+            return enumType.options.map(String);
+          } else {
+            console.warn("[Debug] No ZodEnum found inside union");
+          }
+        }
+        console.warn("[Debug] No enum options returned");
+        return void 0;
+      }
       render() {
         const def = modelDefinitions[this.model];
         if (!def) return x`<p>Model tidak ditemukan</p>`;
@@ -16061,6 +16087,7 @@ var init_DynamicForm = __esm({
       >
         ${def.fields.map((f3, i6) => {
           const zodType = schemaShape[f3.key];
+          console.log(`[Debug] Field: ${f3.key}`, zodType);
           if (!zodType) {
             console.warn(
               `[DynamicForm] Field "${f3.key}" tidak ditemukan di schema`
@@ -16069,6 +16096,13 @@ var init_DynamicForm = __esm({
           }
           const isNumber = zodType instanceof ZodNumber;
           const isMultiline = f3.key.toLowerCase().includes("description");
+          const selectOptions = this.getEnumOptions(zodType);
+          if (selectOptions) {
+            console.log(
+              `[Debug] Field "${f3.key}" has selectOptions:`,
+              selectOptions
+            );
+          }
           return x`
             <div class="flex flex-col">
               <label
@@ -16086,6 +16120,24 @@ var init_DynamicForm = __esm({
                       ?autofocus=${i6 === 0}
                       @input=${(e8) => this.handleChange(f3.key, e8.target.value)}
                     ></textarea>
+                  ` : selectOptions ? x`
+                    <select
+                      class="border rounded px-3 py-2 text-sm bg-white dark:bg-gray-800 dark:text-white"
+                      .value=${this.formData[f3.key] ?? ""}
+                      @change=${(e8) => this.handleChange(f3.key, e8.target.value)}
+                    >
+                      <option value="">-- Pilih ${f3.label} --</option>
+                      ${selectOptions.map(
+            (opt) => x`
+                          <option
+                            value=${opt}
+                            ?selected=${opt === this.formData[f3.key]}
+                          >
+                            ${opt}
+                          </option>
+                        `
+          )}
+                    </select>
                   ` : x`
                     <input
                       class="border rounded px-3 py-2"
@@ -17123,7 +17175,7 @@ var AppFooter = class extends i4 {
           <div class="flex items-center gap-2">
             <span class="text-base">©</span>
             <span>
-              ${(/* @__PURE__ */ new Date()).getFullYear()} TaniSoko v${"1.2.1"} — All
+              ${(/* @__PURE__ */ new Date()).getFullYear()} TaniSoko v${"1.3.0"} — All
               rights reserved.
             </span>
           </div>
