@@ -6,7 +6,6 @@ import { modelDefinitions } from 'src/config/model-definitions';
 
 import 'src/components/konfigurasi/sidebar-model-menu';
 import 'src/components/konfigurasi/dynamic-main-content';
-//import 'src/components/konfigurasi/model-page';
 import './konfigurasi/model-page';
 
 type ModelKey = keyof typeof modelDefinitions;

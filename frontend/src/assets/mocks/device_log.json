@@ -1,7 +1,7 @@
 [
   {
     "id": 1,
-    "device_id": 1,
+    "device_tag": "TMP001",
     "timestamp": "2025-10-25T10:00:00Z",
     "type": "read",
     "value": 26.5,
@@ -11,7 +11,7 @@
   },
   {
     "id": 2,
-    "device_id": 2,
+    "device_tag": "PMP001",
     "timestamp": "2025-10-25T10:05:00Z",
     "type": "write",
     "value": "on",
@@ -24,7 +24,7 @@
   },
   {
     "id": 3,
-    "device_id": 3,
+    "device_tag": "HUM001",
     "timestamp": "2025-10-25T10:10:00Z",
     "type": "alarm",
     "value": true,
@@ -39,7 +39,7 @@
   },
   {
     "id": 4,
-    "device_id": 4,
+    "device_tag": "HTR001",
     "timestamp": "2025-10-25T10:15:00Z",
     "type": "info",
     "value": "heater started",
@@ -52,7 +52,7 @@
   },
   {
     "id": 5,
-    "device_id": 5,
+    "device_tag": "PH001",
     "timestamp": "2025-10-25T10:20:00Z",
     "type": "warning",
     "value": "pH mendekati batas bawah",

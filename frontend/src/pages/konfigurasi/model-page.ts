@@ -120,7 +120,6 @@ export class PageKonfigurasiModel extends LitElement {
         <dynamic-form
           .model=${this.model}
           .initialData=${this.selectedItem}
-          .key=${JSON.stringify(this.selectedItem ?? {})}
           @saved=${this.handleSave}
         ></dynamic-form>
       </div>

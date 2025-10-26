@@ -31,6 +31,12 @@ export class DynamicForm extends LitElement {
       for (const key of allowedKeys) {
         cleanData[key] = this.initialData?.[key] ?? '';
       }
+
+      // ✅ Tambahkan id jika tersedia
+      if (this.initialData?.id) {
+        cleanData.id = this.initialData.id;
+      }
+
       this.formData = cleanData;
       console.log('[DynamicForm] filtered formData:', this.formData);
     }

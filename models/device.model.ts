@@ -2,47 +2,76 @@
 
 import { z } from 'zod';
 
-export const DeviceTypeEnum = z.enum(['sensor', 'actuator']);
-export const PlatformEnum = z.enum(['esp32', 'esp8266']);
-export const ControlModeEnum = z.enum(['manual', 'auto']);
-export const OperationModeEnum = z.enum(['simulation', 'real']);
-export const ActuatorStateTypeEnum = z.enum([
-  'on_off',
-  'open_close',
-  'range',
-  'custom',
+export const UnitEnum = z.enum([
+  '°C',
+  '%',
+  'cm',
+  'RH%',
+  'm/s',
+  'lux',
+  'ppm',
+  'kPa',
+  'mV',
+  'μS/cm',
+  'pH',
+  'NTU',
 ]);
 
 export const DeviceSchema = z.object({
-  id: z.number(),
+  // Identitas dan zona
+  tag_number: z.string(), // PRIMARY KEY
   zone_id: z.number(),
   name: z.string(),
   node_id: z.string(),
-  status: z.enum(['online', 'offline', 'error']),
-  platform: PlatformEnum,
+
+  // Status (flattened)
+  status_connectivity: z.enum(['online', 'offline', 'error']),
+  status_value: z
+    .enum(['normal', 'low-alarm', 'high-alarm', 'sensor-fail'])
+    .optional(),
+  last_seen: z.string().datetime().optional(),
+
+  // Platform dan firmware
+  platform: z.enum(['esp32', 'esp8266']),
   ip_address: z.string().optional(),
   firmware_version: z.string().optional(),
 
-  // Core classification
-  type: DeviceTypeEnum, // sensor or actuator
-  function: z.string(), // ex: temperature, pump, ph, tds, heater
-  pin: z.string(),
+  // Klasifikasi dan fungsi
+  type: z.enum(['sensor', 'actuator']),
+  function: z.string(),
 
-  // Sensor-specific
-  unit: z.string().optional(),
+  // Unit pengukuran (standar + fleksibel)
+  unit: z.union([UnitEnum, z.string()]).optional(),
+
+  // Sampling dan Display
+  sample_period_ms: z.number().optional(),
+  sample_deadband: z.number().optional(),
+  display_precision: z.number().optional(),
+
+  // Rentang dan alarm
+  range_min: z.number().optional(),
+  range_max: z.number().optional(),
+  alarm_min: z.number().optional(),
+  alarm_max: z.number().optional(),
+
+  // Data sensor
   value: z.number().optional(),
   calibration: z.string().optional(),
 
-  // Actuator-specific
-  state_type: ActuatorStateTypeEnum.optional(), // Defines how state is represented
+  // Actuator (flattened)
+  state_type: z.enum(['on_off', 'open_close', 'range', 'custom']).optional(),
+  allowed_states_json: z.string().optional(), // JSON serialized array
+  default_state: z.union([z.string(), z.number(), z.boolean()]).optional(),
   current_state: z.union([z.string(), z.number(), z.boolean()]).optional(),
 
-  // Shared settings
-  control_mode: ControlModeEnum, // auto/manual
-  operation_mode: OperationModeEnum, // simulation/real
-  alarm_threshold_min: z.number().optional(),
-  alarm_threshold_max: z.number().optional(),
-  metadata: z.record(z.string(), z.unknown()).optional(),
+  // Mode kontrol
+  control_mode: z.enum(['manual', 'auto']),
+  operation_mode: z.enum(['simulation', 'real']),
+
+  // Informasi tambahan
+  description: z.string().optional(),
+  location: z.string().optional(),
+  metadata_json: z.string().optional(), // JSON serialized
 });
 
 export type Device = z.infer<typeof DeviceSchema>;

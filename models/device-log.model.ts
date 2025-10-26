@@ -13,7 +13,7 @@ export const DeviceLogTypeEnum = z.enum([
 
 export const DeviceLogSchema = z.object({
   id: z.number(),
-  device_id: z.number(),
+  device_tag: z.string(), // ✅ foreign key ke `Device.tag_number`
   timestamp: z.string(), // ISO 8601
 
   type: DeviceLogTypeEnum,
