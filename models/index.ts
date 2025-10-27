@@ -5,8 +5,7 @@ export * from './user.model';
 export * from './farm.model';
 export * from './device.model';
 export * from './device-log.model';
-export * from './schedule.model';
-export * from './rule.model';
+export * from './controller.model';
 
 // Hidroponik / Hortikultura
 export * from './plant.model';

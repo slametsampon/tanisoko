@@ -15,8 +15,7 @@ const availableModels = [
   'plant_progress_log',
   'device',
   'device_log',
-  'rule',
-  'schedule',
+  'controller',
   'farm',
 ];
 

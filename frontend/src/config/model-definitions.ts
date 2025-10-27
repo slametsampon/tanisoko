@@ -11,8 +11,7 @@ import { PlantProgressLogSchema } from '../../../models/plant-progress-log.model
 import { PlantSchema } from '../../../models/plant.model';
 import { ProductionCycleSchema } from '../../../models/production-cycle.model';
 import { ProductionUnitSchema } from '../../../models/production-unit.model';
-import { RuleSchema } from '../../../models/rule.model';
-import { ScheduleSchema } from '../../../models/schedule.model';
+import { ControllerSchema } from '../../../models/controller.model';
 
 type FieldDef = {
   key: string;
@@ -67,7 +66,6 @@ export const modelDefinitions = {
       { key: 'calibration', label: 'Kalibrasi' },
       { key: 'state_type', label: 'Tipe Status' },
       { key: 'current_state', label: 'Status Saat Ini' },
-      { key: 'control_mode', label: 'Mode Kontrol' },
       { key: 'operation_mode', label: 'Mode Operasi' },
       { key: 'alarm_min', label: 'Ambang Bawah' },
       { key: 'alarm_max', label: 'Ambang Atas' },
@@ -198,28 +196,21 @@ export const modelDefinitions = {
     ],
     displayFields: ['type', 'name', 'capacity'],
   },
-  rule: {
-    schema: RuleSchema,
+  controller: {
+    schema: ControllerSchema,
     fields: [
-      { key: 'sensor_id', label: 'Sensor' },
-      { key: 'actuator_id', label: 'Aktuator' },
+      { key: 'name', label: 'Nama Controller' },
+      { key: 'sensor_device_id', label: 'Sensor' },
+      { key: 'actuator_device_id', label: 'Aktuator' },
+      { key: 'controller_type', label: 'Tipe Controller' },
+      { key: 'control_mode', label: 'Mode Kontrol' },
+      { key: 'setpoint', label: 'Setpoint' },
       { key: 'threshold_type', label: 'Tipe Threshold' },
       { key: 'threshold_value', label: 'Nilai Ambang' },
-      { key: 'action', label: 'Aksi' },
-      { key: 'active', label: 'Aktif' },
-    ],
-    displayFields: ['threshold_type', 'threshold_value'],
-  },
-  schedule: {
-    schema: ScheduleSchema,
-    fields: [
-      { key: 'device_id', label: 'Perangkat' },
-      { key: 'actuator_id', label: 'Aktuator' },
-      { key: 'cron_expression', label: 'Cron' },
-      { key: 'rule_type', label: 'Tipe Aturan' },
-      { key: 'condition_json', label: 'Kondisi' },
+      { key: 'output_command', label: 'Aksi/Perintah' },
+      { key: 'params_json', label: 'Parameter Tambahan' },
       { key: 'is_active', label: 'Aktif' },
     ],
-    displayFields: ['cron_expression', 'rule_type'],
+    displayFields: ['name', 'controller_type', 'setpoint'],
   },
 };

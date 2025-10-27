@@ -12,8 +12,7 @@ import { mortality_recordService } from './mortality_record.service';
 import { plant_progress_logService } from './plant_progress_log.service';
 import { deviceService } from './device.service';
 import { device_logService } from './device_log.service';
-import { ruleService } from './rule.service';
-import { scheduleService } from './schedule.service';
+import { controllerService } from './controller.service';
 import { farmService } from './farm.service';
 
 export const serviceMap: Record<string, BaseRepository<any>> = {
@@ -27,7 +26,6 @@ export const serviceMap: Record<string, BaseRepository<any>> = {
   plant_progress_log: plant_progress_logService,
   device: deviceService,
   device_log: device_logService,
-  rule: ruleService,
-  schedule: scheduleService,
+  controller: controllerService,
   farm: farmService,
 };
