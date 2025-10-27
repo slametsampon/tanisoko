@@ -1,0 +1,72 @@
+[
+  {
+    "id": 1,
+    "name": "Controller 1",
+    "sensor_device_id": 201,
+    "actuator_device_id": 301,
+    "controller_type": "threshold",
+    "control_mode": "auto",
+    "setpoint": 30.5,
+    "threshold_type": "greater_than",
+    "threshold_value": 0.5,
+    "output_command": "turn_on",
+    "params_json": "{}",
+    "is_active": true
+  },
+  {
+    "id": 2,
+    "name": "Controller 2",
+    "sensor_device_id": 202,
+    "actuator_device_id": 302,
+    "controller_type": "threshold",
+    "control_mode": "auto",
+    "setpoint": 20.0,
+    "threshold_type": "less_than",
+    "threshold_value": 0.5,
+    "output_command": "turn_off",
+    "params_json": "{}",
+    "is_active": false
+  },
+  {
+    "id": 3,
+    "name": "Controller 3",
+    "sensor_device_id": 203,
+    "actuator_device_id": 303,
+    "controller_type": "threshold",
+    "control_mode": "auto",
+    "setpoint": 25.0,
+    "threshold_type": "equal",
+    "threshold_value": 0.0,
+    "output_command": "notify",
+    "params_json": "{}",
+    "is_active": true
+  },
+  {
+    "id": 4,
+    "name": "Controller 4",
+    "sensor_device_id": 204,
+    "actuator_device_id": 304,
+    "controller_type": "custom",
+    "control_mode": "manual",
+    "setpoint": 22.5,
+    "threshold_type": "greater_than",
+    "threshold_value": 0.0,
+    "output_command": "adjust",
+    "params_json": "{\"custom_logic\":\"range_check\"}",
+    "is_active": true
+  },
+  {
+    "id": 5,
+    "name": "Controller 5",
+    "sensor_device_id": 205,
+    "actuator_device_id": 305,
+    "controller_type": "custom",
+    "control_mode": "auto",
+    "setpoint": 35.0,
+    "threshold_type": "greater_than",
+    "threshold_value": 0.0,
+    "output_command": "shutdown",
+    "params_json": "{\"custom_logic\":\"spike_detector\"}",
+    "is_active": false
+  }
+]

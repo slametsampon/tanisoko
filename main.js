@@ -15149,7 +15149,7 @@ var init_device_log_model = __esm({
 });
 
 // ../models/device.model.ts
-var UnitEnum, DeviceSchema;
+var UnitEnum, ConnectivityStatusEnum, ValueStatusEnum, PlatformEnum, DeviceTypeEnum, StateTypeEnum, OperationModeEnum, DeviceSchema;
 var init_device_model = __esm({
   "../models/device.model.ts"() {
     "use strict";
@@ -15168,52 +15168,70 @@ var init_device_model = __esm({
       "pH",
       "NTU"
     ]);
+    ConnectivityStatusEnum = external_exports.enum(["online", "offline", "error"]);
+    ValueStatusEnum = external_exports.enum([
+      "normal",
+      "low-alarm",
+      "high-alarm",
+      "sensor-fail"
+    ]);
+    PlatformEnum = external_exports.enum(["esp32", "esp8266"]);
+    DeviceTypeEnum = external_exports.enum(["sensor", "actuator"]);
+    StateTypeEnum = external_exports.enum([
+      "on_off",
+      "open_close",
+      "range",
+      "custom"
+    ]);
+    OperationModeEnum = external_exports.enum(["simulation", "real"]);
     DeviceSchema = external_exports.object({
-      // Identitas dan zona
+      id: external_exports.number(),
+      // Primary key
       tag_number: external_exports.string(),
-      // PRIMARY KEY
-      zone_id: external_exports.number(),
+      // Unique tag per device
       name: external_exports.string(),
+      zone_id: external_exports.number(),
       node_id: external_exports.string(),
-      // Status (flattened)
-      status_connectivity: external_exports.enum(["online", "offline", "error"]),
-      status_value: external_exports.enum(["normal", "low-alarm", "high-alarm", "sensor-fail"]).optional(),
+      // ID ESP atau alamat MQTT node
+      // Status
+      status_connectivity: ConnectivityStatusEnum,
+      status_value: ValueStatusEnum.optional(),
       last_seen: external_exports.string().datetime().optional(),
-      // Platform dan firmware
-      platform: external_exports.enum(["esp32", "esp8266"]),
+      // Platform Info
+      platform: PlatformEnum,
       ip_address: external_exports.string().optional(),
       firmware_version: external_exports.string().optional(),
-      // Klasifikasi dan fungsi
-      type: external_exports.enum(["sensor", "actuator"]),
+      // Tipe & Fungsi
+      type: DeviceTypeEnum,
+      // 'sensor' | 'actuator'
       function: external_exports.string(),
-      // Unit pengukuran (standar + fleksibel)
+      operation_mode: OperationModeEnum,
+      // Sensor-specific
       unit: external_exports.union([UnitEnum, external_exports.string()]).optional(),
-      // Sampling dan Display
       sample_period_ms: external_exports.number().optional(),
       sample_deadband: external_exports.number().optional(),
       display_precision: external_exports.number().optional(),
-      // Rentang dan alarm
       range_min: external_exports.number().optional(),
       range_max: external_exports.number().optional(),
       alarm_min: external_exports.number().optional(),
       alarm_max: external_exports.number().optional(),
-      // Data sensor
       value: external_exports.number().optional(),
       calibration: external_exports.string().optional(),
-      // Actuator (flattened)
-      state_type: external_exports.enum(["on_off", "open_close", "range", "custom"]).optional(),
+      // Actuator-specific
+      state_type: StateTypeEnum.optional(),
       allowed_states_json: external_exports.string().optional(),
-      // JSON serialized array
+      // JSON array of allowed states
       default_state: external_exports.union([external_exports.string(), external_exports.number(), external_exports.boolean()]).optional(),
       current_state: external_exports.union([external_exports.string(), external_exports.number(), external_exports.boolean()]).optional(),
-      // Mode kontrol
-      control_mode: external_exports.enum(["manual", "auto"]),
-      operation_mode: external_exports.enum(["simulation", "real"]),
-      // Informasi tambahan
+      // Scheduled action
+      schedule_times_json: external_exports.string().optional(),
+      // JSON array of times (e.g., ["06:00", "18:00"])
+      schedule_action: external_exports.union([external_exports.string(), external_exports.number(), external_exports.boolean()]).optional(),
+      // Metadata
       description: external_exports.string().optional(),
       location: external_exports.string().optional(),
       metadata_json: external_exports.string().optional()
-      // JSON serialized
+      // Flexible JSON-encoded metadata
     });
   }
 });
@@ -15398,39 +15416,42 @@ var init_production_unit_model = __esm({
   }
 });
 
-// ../models/rule.model.ts
-var RuleSchema;
-var init_rule_model = __esm({
-  "../models/rule.model.ts"() {
+// ../models/controller.model.ts
+var ControllerTypeEnum, ThresholdTypeEnum, ControlModeEnum, ControllerSchema;
+var init_controller_model = __esm({
+  "../models/controller.model.ts"() {
     "use strict";
     init_zod();
-    RuleSchema = external_exports.object({
+    ControllerTypeEnum = external_exports.enum([
+      "threshold",
+      "pid",
+      "hysteresis",
+      "custom"
+    ]);
+    ThresholdTypeEnum = external_exports.enum(["greater_than", "less_than", "equal"]);
+    ControlModeEnum = external_exports.enum(["manual", "auto"]);
+    ControllerSchema = external_exports.object({
       id: external_exports.number(),
-      device_id: external_exports.number(),
-      sensor_id: external_exports.number(),
-      actuator_id: external_exports.number(),
-      threshold_type: external_exports.string(),
-      threshold_value: external_exports.number(),
-      action: external_exports.string(),
-      active: external_exports.boolean()
-    });
-  }
-});
-
-// ../models/schedule.model.ts
-var ScheduleSchema;
-var init_schedule_model = __esm({
-  "../models/schedule.model.ts"() {
-    "use strict";
-    init_zod();
-    ScheduleSchema = external_exports.object({
-      id: external_exports.number(),
-      device_id: external_exports.number(),
-      actuator_id: external_exports.number(),
-      cron_expression: external_exports.string(),
-      rule_type: external_exports.string(),
-      condition_json: external_exports.string(),
-      is_active: external_exports.boolean()
+      // PK
+      name: external_exports.string(),
+      actuator_device_id: external_exports.number(),
+      // FK → device.type === 'actuator'
+      sensor_device_id: external_exports.number(),
+      // FK → device.type === 'sensor'
+      controller_type: ControllerTypeEnum,
+      // Logic used: threshold, pid, etc.
+      control_mode: ControlModeEnum,
+      // manual | auto
+      setpoint: external_exports.number(),
+      // Target nilai (acuan)
+      threshold_type: ThresholdTypeEnum.optional(),
+      // Untuk threshold controller
+      threshold_value: external_exports.number().optional(),
+      // Jarak toleransi, bisa jadi deadband
+      output_command: external_exports.union([external_exports.string(), external_exports.number(), external_exports.boolean()]).optional(),
+      params_json: external_exports.string().optional(),
+      // JSON serialized, e.g. PID params
+      is_active: external_exports.boolean().default(true)
     });
   }
 });
@@ -15451,8 +15472,7 @@ var init_model_definitions = __esm({
     init_plant_model();
     init_production_cycle_model();
     init_production_unit_model();
-    init_rule_model();
-    init_schedule_model();
+    init_controller_model();
     modelDefinitions = {
       chicken_breed: {
         schema: ChickenBreedSchema,
@@ -15500,7 +15520,6 @@ var init_model_definitions = __esm({
           { key: "calibration", label: "Kalibrasi" },
           { key: "state_type", label: "Tipe Status" },
           { key: "current_state", label: "Status Saat Ini" },
-          { key: "control_mode", label: "Mode Kontrol" },
           { key: "operation_mode", label: "Mode Operasi" },
           { key: "alarm_min", label: "Ambang Bawah" },
           { key: "alarm_max", label: "Ambang Atas" }
@@ -15631,29 +15650,22 @@ var init_model_definitions = __esm({
         ],
         displayFields: ["type", "name", "capacity"]
       },
-      rule: {
-        schema: RuleSchema,
+      controller: {
+        schema: ControllerSchema,
         fields: [
-          { key: "sensor_id", label: "Sensor" },
-          { key: "actuator_id", label: "Aktuator" },
+          { key: "name", label: "Nama Controller" },
+          { key: "sensor_device_id", label: "Sensor" },
+          { key: "actuator_device_id", label: "Aktuator" },
+          { key: "controller_type", label: "Tipe Controller" },
+          { key: "control_mode", label: "Mode Kontrol" },
+          { key: "setpoint", label: "Setpoint" },
           { key: "threshold_type", label: "Tipe Threshold" },
           { key: "threshold_value", label: "Nilai Ambang" },
-          { key: "action", label: "Aksi" },
-          { key: "active", label: "Aktif" }
-        ],
-        displayFields: ["threshold_type", "threshold_value"]
-      },
-      schedule: {
-        schema: ScheduleSchema,
-        fields: [
-          { key: "device_id", label: "Perangkat" },
-          { key: "actuator_id", label: "Aktuator" },
-          { key: "cron_expression", label: "Cron" },
-          { key: "rule_type", label: "Tipe Aturan" },
-          { key: "condition_json", label: "Kondisi" },
+          { key: "output_command", label: "Aksi/Perintah" },
+          { key: "params_json", label: "Parameter Tambahan" },
           { key: "is_active", label: "Aktif" }
         ],
-        displayFields: ["cron_expression", "rule_type"]
+        displayFields: ["name", "controller_type", "setpoint"]
       }
     };
   }
@@ -15764,8 +15776,7 @@ var init_mockRepositoryFactory = __esm({
       "plant_progress_log",
       "device",
       "device_log",
-      "rule",
-      "schedule",
+      "controller",
       "farm"
     ];
     cache2 = {};
@@ -15882,36 +15893,25 @@ var init_device_log_service = __esm({
   }
 });
 
-// src/services/rule.service.ts
-var repo12, ruleService;
-var init_rule_service = __esm({
-  "src/services/rule.service.ts"() {
+// src/services/controller.service.ts
+var repo12, controllerService;
+var init_controller_service = __esm({
+  "src/services/controller.service.ts"() {
     "use strict";
     init_mockRepositoryFactory();
-    repo12 = getRepository("rule");
-    ruleService = repo12;
-  }
-});
-
-// src/services/schedule.service.ts
-var repo13, scheduleService;
-var init_schedule_service = __esm({
-  "src/services/schedule.service.ts"() {
-    "use strict";
-    init_mockRepositoryFactory();
-    repo13 = getRepository("schedule");
-    scheduleService = repo13;
+    repo12 = getRepository("controller");
+    controllerService = repo12;
   }
 });
 
 // src/services/farm.service.ts
-var repo14, farmService;
+var repo13, farmService;
 var init_farm_service = __esm({
   "src/services/farm.service.ts"() {
     "use strict";
     init_mockRepositoryFactory();
-    repo14 = getRepository("farm");
-    farmService = repo14;
+    repo13 = getRepository("farm");
+    farmService = repo13;
   }
 });
 
@@ -15930,8 +15930,7 @@ var init_service_map = __esm({
     init_plant_progress_log_service();
     init_device_service();
     init_device_log_service();
-    init_rule_service();
-    init_schedule_service();
+    init_controller_service();
     init_farm_service();
     serviceMap = {
       plant: plantService,
@@ -15944,8 +15943,7 @@ var init_service_map = __esm({
       plant_progress_log: plant_progress_logService,
       device: deviceService,
       device_log: device_logService,
-      rule: ruleService,
-      schedule: scheduleService,
+      controller: controllerService,
       farm: farmService
     };
   }
