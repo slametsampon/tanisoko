@@ -15116,38 +15116,6 @@ var init_chicken_breed_model = __esm({
   }
 });
 
-// ../models/device-log.model.ts
-var DeviceLogTypeEnum, DeviceLogSchema;
-var init_device_log_model = __esm({
-  "../models/device-log.model.ts"() {
-    "use strict";
-    init_zod();
-    DeviceLogTypeEnum = external_exports.enum([
-      "read",
-      "write",
-      "alarm",
-      "warning",
-      "info",
-      "error"
-    ]);
-    DeviceLogSchema = external_exports.object({
-      id: external_exports.number(),
-      device_tag: external_exports.string(),
-      // ✅ foreign key ke `Device.tag_number`
-      timestamp: external_exports.string(),
-      // ISO 8601
-      type: DeviceLogTypeEnum,
-      value: external_exports.union([external_exports.string(), external_exports.number(), external_exports.boolean()]),
-      previous_value: external_exports.union([external_exports.string(), external_exports.number(), external_exports.boolean()]).optional(),
-      recorded_by: external_exports.string().optional(),
-      // 'system', 'rule_engine', or user id
-      note: external_exports.string().optional(),
-      // Optional structured meta-data (e.g. alarm severity, thresholds)
-      meta: external_exports.record(external_exports.string(), external_exports.unknown()).optional()
-    });
-  }
-});
-
 // ../models/device.model.ts
 var UnitEnum, ConnectivityStatusEnum, ValueStatusEnum, PlatformEnum, DeviceTypeEnum, StateTypeEnum, OperationModeEnum, DeviceSchema;
 var init_device_model = __esm({
@@ -15309,43 +15277,6 @@ var init_fish_species_model = __esm({
   }
 });
 
-// ../models/mortality-record.model.ts
-var MortalityRecordSchema;
-var init_mortality_record_model = __esm({
-  "../models/mortality-record.model.ts"() {
-    "use strict";
-    init_zod();
-    init_enums();
-    MortalityRecordSchema = external_exports.object({
-      id: external_exports.number(),
-      cycle_id: external_exports.number(),
-      unit_id: external_exports.number(),
-      unit_type: UnitTypeEnum,
-      timestamp: external_exports.string(),
-      death_count: external_exports.number(),
-      cause: external_exports.string(),
-      note: external_exports.string().optional()
-    });
-  }
-});
-
-// ../models/plant-progress-log.model.ts
-var PlantProgressLogSchema;
-var init_plant_progress_log_model = __esm({
-  "../models/plant-progress-log.model.ts"() {
-    "use strict";
-    init_zod();
-    PlantProgressLogSchema = external_exports.object({
-      id: external_exports.number(),
-      batch_id: external_exports.number(),
-      timestamp: external_exports.string(),
-      height_cm: external_exports.number(),
-      health_score: external_exports.string(),
-      observation_notes: external_exports.string()
-    });
-  }
-});
-
 // ../models/plant.model.ts
 var PlantSchema;
 var init_plant_model = __esm({
@@ -15462,13 +15393,10 @@ var init_model_definitions = __esm({
   "src/config/model-definitions.ts"() {
     "use strict";
     init_chicken_breed_model();
-    init_device_log_model();
     init_device_model();
     init_farm_model();
     init_feeding_record_model();
     init_fish_species_model();
-    init_mortality_record_model();
-    init_plant_progress_log_model();
     init_plant_model();
     init_production_cycle_model();
     init_production_unit_model();
@@ -15489,19 +15417,6 @@ var init_model_definitions = __esm({
           { key: "notes", label: "Catatan" }
         ],
         displayFields: ["id", "name", "type"]
-      },
-      device_log: {
-        schema: DeviceLogSchema,
-        fields: [
-          { key: "device_id", label: "Perangkat" },
-          { key: "timestamp", label: "Waktu" },
-          { key: "type", label: "Tipe Log" },
-          { key: "value", label: "Nilai" },
-          { key: "previous_value", label: "Nilai Sebelumnya" },
-          { key: "recorded_by", label: "Dicatat Oleh" },
-          { key: "note", label: "Catatan" }
-        ],
-        displayFields: ["timestamp", "device_id", "value"]
       },
       device: {
         schema: DeviceSchema,
@@ -15571,29 +15486,6 @@ var init_model_definitions = __esm({
           "growth_cycle_days",
           "average_weight_gram"
         ]
-      },
-      mortality_record: {
-        schema: MortalityRecordSchema,
-        fields: [
-          { key: "timestamp", label: "Waktu" },
-          { key: "unit_id", label: "Unit" },
-          { key: "unit_type", label: "Tipe Unit" },
-          { key: "cycle_id", label: "Siklus" },
-          { key: "death_count", label: "Jumlah Mati" },
-          { key: "cause", label: "Penyebab" },
-          { key: "note", label: "Catatan" }
-        ],
-        displayFields: ["timestamp", "death_count", "cause"]
-      },
-      plant_progress_log: {
-        schema: PlantProgressLogSchema,
-        fields: [
-          { key: "timestamp", label: "Waktu" },
-          { key: "height_cm", label: "Tinggi (cm)" },
-          { key: "health_score", label: "Kesehatan" },
-          { key: "observation_notes", label: "Catatan" }
-        ],
-        displayFields: ["timestamp", "height_cm", "health_score"]
       },
       plant: {
         schema: PlantSchema,
@@ -16375,7 +16267,7 @@ var init_model_page = __esm({
         Konfigurasi: ${this.model.replace(/_/g, " ")}
       </h2>
 
-      <div class="bg-white rounded-xl p-4 shadow mb-6">
+      <div class="rounded-xl p-4 shadow mb-6">
         <dynamic-form
           .model=${this.model}
           .initialData=${this.selectedItem}
@@ -16383,7 +16275,7 @@ var init_model_page = __esm({
         ></dynamic-form>
       </div>
 
-      <div class="bg-white rounded-xl p-4 shadow">
+      <div class="rounded-xl p-4 shadow">
         <dynamic-table
           .model=${this.model}
           .items=${this.items}
@@ -16472,6 +16364,7 @@ var init_dynamic_main_content = __esm({
     "use strict";
     init_lit();
     init_decorators();
+    init_model_page();
     DynamicMainContent = class extends i4 {
       constructor() {
         super(...arguments);
@@ -16482,10 +16375,15 @@ var init_dynamic_main_content = __esm({
       }
       getBgColorForModel(model) {
         const colorMap = {
-          sensor_suhu: "bg-green-50",
-          relay_aktuator: "bg-blue-50",
-          komunikasi_wifi: "bg-yellow-50",
-          konfigurasi_umum: "bg-gray-50"
+          chicken_breed: "bg-green-50",
+          device: "bg-yellow-50",
+          farm: "bg-gray-50",
+          feeding_record: "bg-green-50",
+          fish_species: "bg-blue-50",
+          plant: "bg-yellow-50",
+          production_unit: "bg-gray-50",
+          production_cycle: "bg-gray-50",
+          controller: "bg-gray-50"
         };
         return colorMap[model] || "bg-slate-50";
       }
@@ -16537,7 +16435,6 @@ var init_konfigurasi_hmi = __esm({
     init_model_definitions();
     init_sidebar_model_menu();
     init_dynamic_main_content();
-    init_model_page();
     PageKonfigurasi = class extends i4 {
       constructor() {
         super(...arguments);
@@ -17077,6 +16974,9 @@ var AppHeader = class extends i4 {
   createRenderRoot() {
     return this;
   }
+  updated() {
+    console.log("[app-header] \u{1F4A1} current theme:", this.theme);
+  }
   _onNavChanged(e8) {
     this.dispatchEvent(
       new CustomEvent("nav-changed", {
@@ -17092,6 +16992,7 @@ var AppHeader = class extends i4 {
     );
   }
   _onToggleTheme() {
+    console.info("[app-shell] \u{1F5B1}\uFE0F toggle-theme triggered");
     this.dispatchEvent(
       new CustomEvent("toggle-theme", { bubbles: true, composed: true })
     );
@@ -17173,7 +17074,7 @@ var AppFooter = class extends i4 {
           <div class="flex items-center gap-2">
             <span class="text-base">©</span>
             <span>
-              ${(/* @__PURE__ */ new Date()).getFullYear()} TaniSoko v${"1.3.0"} — All
+              ${(/* @__PURE__ */ new Date()).getFullYear()} TaniSoko v${"1.3.1"} — All
               rights reserved.
             </span>
           </div>
@@ -31010,6 +30911,7 @@ var AppShell = class extends i4 {
       this.mqttContextValue = detail;
     };
     this._toggleTheme = () => {
+      console.info("[app-shell] \u{1F5B1}\uFE0F toggle-theme triggered");
       this.theme = this.theme === "dark" ? "light" : "dark";
       this.providedTheme = this.theme;
       this._applyTheme();
@@ -31047,8 +30949,17 @@ var AppShell = class extends i4 {
   connectedCallback() {
     super.connectedCallback();
     const saved = localStorage.getItem("theme");
+    console.info("[app-shell] \u{1F3A8} theme loaded from localStorage:", saved);
+    const prefersDark = window.matchMedia(
+      "(prefers-color-scheme: dark)"
+    ).matches;
+    console.info(
+      "[app-shell] \u{1F313} prefers-color-scheme:",
+      prefersDark ? "dark" : "light"
+    );
     this.theme = saved ?? (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
     this.providedTheme = this.theme;
+    console.info("[app-shell] \u{1F4E6} themeContext provided:", this.providedTheme);
     this._applyTheme();
     window.addEventListener("popstate", this._onPopState);
     window.addEventListener("auth:changed", this._onAuthChanged);
@@ -31065,6 +30976,7 @@ var AppShell = class extends i4 {
   }
   _applyTheme() {
     const isDark = this.theme === "dark";
+    console.info("[app-shell] \u{1F39B} Applying theme:", this.theme);
     document.documentElement.classList.toggle("dark", isDark);
     document.documentElement.classList.toggle("light", !isDark);
     document.body.classList.remove(
@@ -31079,6 +30991,14 @@ var AppShell = class extends i4 {
       isDark ? "text-white" : "text-black"
     );
     localStorage.setItem("theme", this.theme);
+    console.log(
+      "[app-shell] <html> classList:",
+      document.documentElement.classList.toString()
+    );
+    console.log(
+      "[app-shell] <body> classList:",
+      document.body.classList.toString()
+    );
   }
   render() {
     return x`
