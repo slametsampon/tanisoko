@@ -1,13 +1,10 @@
 // frontend/src/config/model-definitions.ts
 
 import { ChickenBreedSchema } from '../../../models/chicken-breed.model';
-import { DeviceLogSchema } from '../../../models/device-log.model';
 import { DeviceSchema } from '../../../models/device.model';
 import { FarmSchema } from '../../../models/farm.model';
 import { FeedingRecordSchema } from '../../../models/feeding-record.model';
 import { FishSpeciesSchema } from '../../../models/fish-species.model';
-import { MortalityRecordSchema } from '../../../models/mortality-record.model';
-import { PlantProgressLogSchema } from '../../../models/plant-progress-log.model';
 import { PlantSchema } from '../../../models/plant.model';
 import { ProductionCycleSchema } from '../../../models/production-cycle.model';
 import { ProductionUnitSchema } from '../../../models/production-unit.model';
@@ -35,19 +32,6 @@ export const modelDefinitions = {
       { key: 'notes', label: 'Catatan' },
     ],
     displayFields: ['id', 'name', 'type'],
-  },
-  device_log: {
-    schema: DeviceLogSchema,
-    fields: [
-      { key: 'device_id', label: 'Perangkat' },
-      { key: 'timestamp', label: 'Waktu' },
-      { key: 'type', label: 'Tipe Log' },
-      { key: 'value', label: 'Nilai' },
-      { key: 'previous_value', label: 'Nilai Sebelumnya' },
-      { key: 'recorded_by', label: 'Dicatat Oleh' },
-      { key: 'note', label: 'Catatan' },
-    ],
-    displayFields: ['timestamp', 'device_id', 'value'],
   },
   device: {
     schema: DeviceSchema,
@@ -117,29 +101,6 @@ export const modelDefinitions = {
       'growth_cycle_days',
       'average_weight_gram',
     ],
-  },
-  mortality_record: {
-    schema: MortalityRecordSchema,
-    fields: [
-      { key: 'timestamp', label: 'Waktu' },
-      { key: 'unit_id', label: 'Unit' },
-      { key: 'unit_type', label: 'Tipe Unit' },
-      { key: 'cycle_id', label: 'Siklus' },
-      { key: 'death_count', label: 'Jumlah Mati' },
-      { key: 'cause', label: 'Penyebab' },
-      { key: 'note', label: 'Catatan' },
-    ],
-    displayFields: ['timestamp', 'death_count', 'cause'],
-  },
-  plant_progress_log: {
-    schema: PlantProgressLogSchema,
-    fields: [
-      { key: 'timestamp', label: 'Waktu' },
-      { key: 'height_cm', label: 'Tinggi (cm)' },
-      { key: 'health_score', label: 'Kesehatan' },
-      { key: 'observation_notes', label: 'Catatan' },
-    ],
-    displayFields: ['timestamp', 'height_cm', 'health_score'],
   },
   plant: {
     schema: PlantSchema,

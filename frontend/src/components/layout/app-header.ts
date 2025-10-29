@@ -1,4 +1,5 @@
-// components/layout/app-header.ts
+// frontend/src/components/layout/app-header.ts
+
 import { LitElement, html } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { consume } from '@lit/context';
@@ -21,6 +22,10 @@ export class AppHeader extends LitElement {
     return this;
   }
 
+  updated() {
+    console.log('[app-header] 💡 current theme:', this.theme);
+  }
+
   private _onNavChanged(e: CustomEvent) {
     this.dispatchEvent(
       new CustomEvent('nav-changed', {
@@ -38,6 +43,7 @@ export class AppHeader extends LitElement {
   }
 
   private _onToggleTheme() {
+    console.info('[app-shell] 🖱️ toggle-theme triggered');
     this.dispatchEvent(
       new CustomEvent('toggle-theme', { bubbles: true, composed: true })
     );

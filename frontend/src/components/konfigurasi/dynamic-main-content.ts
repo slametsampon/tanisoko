@@ -3,6 +3,7 @@
 import { LitElement, html } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { modelDefinitions } from 'src/config/model-definitions';
+import 'src/pages/konfigurasi/model-page';
 
 type ModelKey = keyof typeof modelDefinitions;
 
@@ -16,10 +17,15 @@ export class DynamicMainContent extends LitElement {
 
   private getBgColorForModel(model: ModelKey): string {
     const colorMap: Record<ModelKey, string> = {
-      sensor_suhu: 'bg-green-50',
-      relay_aktuator: 'bg-blue-50',
-      komunikasi_wifi: 'bg-yellow-50',
-      konfigurasi_umum: 'bg-gray-50',
+      chicken_breed: 'bg-green-50',
+      device: 'bg-yellow-50',
+      farm: 'bg-gray-50',
+      feeding_record: 'bg-green-50',
+      fish_species: 'bg-blue-50',
+      plant: 'bg-yellow-50',
+      production_unit: 'bg-gray-50',
+      production_cycle: 'bg-gray-50',
+      controller: 'bg-gray-50',
     };
     return colorMap[model] || 'bg-slate-50';
   }

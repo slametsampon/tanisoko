@@ -116,7 +116,7 @@ export class PageKonfigurasiModel extends LitElement {
         Konfigurasi: ${this.model.replace(/_/g, ' ')}
       </h2>
 
-      <div class="bg-white rounded-xl p-4 shadow mb-6">
+      <div class="rounded-xl p-4 shadow mb-6">
         <dynamic-form
           .model=${this.model}
           .initialData=${this.selectedItem}
@@ -124,7 +124,7 @@ export class PageKonfigurasiModel extends LitElement {
         ></dynamic-form>
       </div>
 
-      <div class="bg-white rounded-xl p-4 shadow">
+      <div class="rounded-xl p-4 shadow">
         <dynamic-table
           .model=${this.model}
           .items=${this.items}

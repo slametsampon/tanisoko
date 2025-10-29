@@ -1,12 +1,24 @@
 // frontend/taiilwind.config.js
 
+// frontend/tailwind.config.js
+
 module.exports = {
   content: [
     './src/**/*.{ts,html}',
-    './src/components/**/*.{ts}', // ⬅️ app-header.ts masuk sini
+    './src/components/**/*.{ts}',
     './index.html',
   ],
-  safelist: ['grid-cols-1', 'grid-cols-2', 'grid-cols-3', 'grid-cols-4'],
+  safelist: [
+    'grid-cols-1',
+    'grid-cols-2',
+    'grid-cols-3',
+    'grid-cols-4',
+    'bg-white',
+    'dark:bg-gray-900',
+    'dark:bg-gray-950',
+    'text-white',
+    'text-black',
+  ],
   darkMode: 'class',
   theme: {
     extend: {

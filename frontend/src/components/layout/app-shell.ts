@@ -49,12 +49,22 @@ export class AppShell extends LitElement {
 
     // Theme
     const saved = localStorage.getItem('theme') as Theme | null;
+    console.info('[app-shell] 🎨 theme loaded from localStorage:', saved);
+    const prefersDark = window.matchMedia(
+      '(prefers-color-scheme: dark)'
+    ).matches;
+    console.info(
+      '[app-shell] 🌓 prefers-color-scheme:',
+      prefersDark ? 'dark' : 'light'
+    );
+
     this.theme =
       saved ??
       (window.matchMedia('(prefers-color-scheme: dark)').matches
         ? 'dark'
         : 'light');
     this.providedTheme = this.theme;
+    console.info('[app-shell] 📦 themeContext provided:', this.providedTheme);
     this._applyTheme();
 
     // Event listeners
@@ -80,6 +90,7 @@ export class AppShell extends LitElement {
   };
 
   private _toggleTheme = () => {
+    console.info('[app-shell] 🖱️ toggle-theme triggered');
     this.theme = this.theme === 'dark' ? 'light' : 'dark';
     this.providedTheme = this.theme;
     this._applyTheme();
@@ -87,6 +98,7 @@ export class AppShell extends LitElement {
 
   private _applyTheme() {
     const isDark = this.theme === 'dark';
+    console.info('[app-shell] 🎛 Applying theme:', this.theme);
     document.documentElement.classList.toggle('dark', isDark);
     document.documentElement.classList.toggle('light', !isDark);
     document.body.classList.remove(
@@ -101,6 +113,15 @@ export class AppShell extends LitElement {
       isDark ? 'text-white' : 'text-black'
     );
     localStorage.setItem('theme', this.theme);
+    // ✅ Log status akhir class di <html> dan <body>
+    console.log(
+      '[app-shell] <html> classList:',
+      document.documentElement.classList.toString()
+    );
+    console.log(
+      '[app-shell] <body> classList:',
+      document.body.classList.toString()
+    );
   }
 
   private _onPopState = () => {
