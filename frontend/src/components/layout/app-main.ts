@@ -84,6 +84,13 @@ export class AppMain extends LitElement {
         },
       },
       {
+        path: '/dashboard',
+        component: 'page-dashboard',
+        action: async () => {
+          await import('../../pages/dashboard');
+        },
+      },
+      {
         path: '/',
         component: 'page-home',
       },

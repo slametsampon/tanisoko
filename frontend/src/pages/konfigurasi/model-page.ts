@@ -6,6 +6,9 @@ import { customElement, property, state } from 'lit/decorators.js';
 import { modelDefinitions } from 'src/config/model-definitions';
 import { getService } from 'src/services/getService';
 
+import { addEventLog } from 'src/event-log/event-log-store';
+import { EventLog } from '@models/event-log.model';
+
 import 'src/components/DynamicForm';
 import 'src/components/DynamicTable';
 
@@ -23,40 +26,18 @@ export class PageKonfigurasiModel extends LitElement {
   connectedCallback() {
     super.connectedCallback();
 
-    console.log('[PageKonfigurasiModel] connected() triggered');
-
     if (!this.model) {
-      // Coba dari attribute (jaga-jaga kalau router pernah kasih)
       const attr = this.getAttribute('model');
-      console.log('[PageKonfigurasiModel] model from attribute:', attr);
-
-      const path = window.location.pathname;
-      console.log('[PageKonfigurasiModel] current path:', path);
-
-      const match = path.match(/\/konfigurasi\/([^\/]+)/);
-      const modelFromPath = match?.[1];
-      console.log('[PageKonfigurasiModel] model from path:', modelFromPath);
-
-      this.model = (attr || modelFromPath) as keyof typeof modelDefinitions;
+      const match = window.location.pathname.match(/\/konfigurasi\/([^\/]+)/);
+      this.model = (attr || match?.[1]) as keyof typeof modelDefinitions;
     }
 
-    console.log('[PageKonfigurasiModel] Final resolved model =', this.model);
-
-    if (!this.model || !modelDefinitions[this.model]) {
-      return html`<p>Model tidak valid atau belum didukung.</p>`;
-    }
-
+    if (!this.model || !modelDefinitions[this.model]) return;
     this.loadData();
   }
 
-  /**
-   * 🔄 Lifecycle: dipanggil setiap kali properti berubah
-   */
   updated(changed: Map<string | number | symbol, unknown>) {
     if (changed.has('model')) {
-      console.log(
-        '[PageKonfigurasiModel] model changed → reset state & reload'
-      );
       this.selectedItem = null;
       this.items = [];
       if (this.model) {
@@ -66,46 +47,84 @@ export class PageKonfigurasiModel extends LitElement {
   }
 
   async loadData() {
-    console.log(`[PageKonfigurasiModel] loadData() for model = ${this.model}`);
     const service = getService<any>(this.model);
     const newItems = await service.getAll();
-    console.log(
-      `[PageKonfigurasiModel] Loaded ${newItems.length} items`,
-      newItems
-    );
-    this.items = [...newItems]; // force trigger update
+    this.items = [...newItems];
   }
 
-  async handleSave() {
-    console.log('[PageKonfigurasiModel] handleSave() - data saved');
+  /**
+   * Fungsi logging perubahan metadata
+   */
+  private logEntityChange(
+    source: string,
+    source_id: number,
+    field: string,
+    oldValue: any,
+    newValue: any,
+    userId: string = 'user_demo'
+  ) {
+    const event: Omit<EventLog, 'id' | 'timestamp'> = {
+      source: source as any,
+      source_id,
+      category: 'manual',
+      summary: `Field "${field}" changed: ${oldValue} → ${newValue}`,
+      recorded_by: userId,
+      value: newValue,
+      previous_value: oldValue,
+    };
+    addEventLog(event);
+  }
+
+  async handleSave(e: CustomEvent) {
+    const newItem = e.detail as Record<string, any>;
+    const oldItem = this.selectedItem;
+
+    // Logging perubahan
+    if (oldItem && newItem.id === oldItem.id) {
+      const keysToCompare = Object.keys(newItem);
+      for (const key of keysToCompare) {
+        if (newItem[key] !== oldItem[key]) {
+          this.logEntityChange(
+            this.model,
+            newItem.id,
+            key,
+            oldItem[key],
+            newItem[key]
+          );
+        }
+      }
+    }
+
     this.selectedItem = null;
     await this.loadData();
   }
 
   handleEdit = (item: any) => {
-    console.log('[PageKonfigurasiModel] handleEdit() - item:', item);
     this.selectedItem = item;
   };
 
   handleDelete = async (item: any) => {
     const confirmed = confirm(`Yakin ingin menghapus item ID: ${item.id}?`);
-    if (!confirmed) {
-      console.log('[PageKonfigurasiModel] handleDelete() - cancelled');
-      return;
-    }
+    if (!confirmed) return;
 
     const service = getService<any>(this.model);
-    console.log(`[PageKonfigurasiModel] Deleting item ID: ${item.id}`);
     await service.delete(item.id);
+
+    // Catat penghapusan
+    this.logEntityChange(
+      this.model,
+      item.id,
+      '[entity]',
+      'EXISTING',
+      'DELETED'
+    );
+
     await this.loadData();
   };
 
   render() {
     const def = modelDefinitions[this.model];
     if (!def) {
-      console.warn(
-        `[PageKonfigurasiModel] Model "${this.model}" tidak ditemukan dalam definisi`
-      );
       return html`<p>
         Model <strong>${this.model}</strong> tidak ditemukan dalam metadata.
       </p>`;
@@ -116,7 +135,7 @@ export class PageKonfigurasiModel extends LitElement {
         Konfigurasi: ${this.model.replace(/_/g, ' ')}
       </h2>
 
-      <div class="rounded-xl p-4 shadow mb-6">
+      <div class="bg-white rounded-xl p-4 shadow mb-6">
         <dynamic-form
           .model=${this.model}
           .initialData=${this.selectedItem}
@@ -124,7 +143,7 @@ export class PageKonfigurasiModel extends LitElement {
         ></dynamic-form>
       </div>
 
-      <div class="rounded-xl p-4 shadow">
+      <div class="bg-white rounded-xl p-4 shadow">
         <dynamic-table
           .model=${this.model}
           .items=${this.items}
