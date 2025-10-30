@@ -15860,6 +15860,65 @@ var init_getService = __esm({
   }
 });
 
+// src/services/event-log.service.ts
+var EventLogService, eventLogService;
+var init_event_log_service = __esm({
+  "src/services/event-log.service.ts"() {
+    "use strict";
+    init_mock_data_service();
+    EventLogService = class {
+      constructor() {
+        this.cache = [];
+      }
+      async loadAll() {
+        if (this.cache.length === 0) {
+          this.cache = await fetchMockData("event_log.json");
+        }
+        return this.cache;
+      }
+      getAll() {
+        return [...this.cache];
+      }
+      add(entry) {
+        const newLog = {
+          id: this.getNextId(),
+          timestamp: (/* @__PURE__ */ new Date()).toISOString(),
+          ...entry
+        };
+        this.cache.unshift(newLog);
+        return newLog;
+      }
+      getNextId() {
+        const ids = this.cache.map((e8) => e8.id ?? 0);
+        return Math.max(0, ...ids) + 1;
+      }
+      clearCache() {
+        this.cache = [];
+      }
+    };
+    eventLogService = new EventLogService();
+  }
+});
+
+// src/event-log/event-log-store.ts
+async function loadEventLogData() {
+  eventLogStore.items = await eventLogService.loadAll();
+}
+function addEventLog(entry) {
+  const log2 = eventLogService.add(entry);
+  eventLogStore.items.unshift(log2);
+}
+var eventLogStore;
+var init_event_log_store = __esm({
+  "src/event-log/event-log-store.ts"() {
+    "use strict";
+    init_event_log_service();
+    eventLogStore = {
+      items: []
+    };
+  }
+});
+
 // ../node_modules/lit-html/directives/if-defined.js
 var o6;
 var init_if_defined = __esm({
@@ -16177,6 +16236,7 @@ var init_model_page = __esm({
     init_decorators();
     init_model_definitions();
     init_getService();
+    init_event_log_store();
     init_DynamicForm();
     init_DynamicTable();
     PageKonfigurasiModel = class extends i4 {
@@ -16185,18 +16245,20 @@ var init_model_page = __esm({
         this.items = [];
         this.selectedItem = null;
         this.handleEdit = (item) => {
-          console.log("[PageKonfigurasiModel] handleEdit() - item:", item);
           this.selectedItem = item;
         };
         this.handleDelete = async (item) => {
           const confirmed = confirm(`Yakin ingin menghapus item ID: ${item.id}?`);
-          if (!confirmed) {
-            console.log("[PageKonfigurasiModel] handleDelete() - cancelled");
-            return;
-          }
+          if (!confirmed) return;
           const service = getService(this.model);
-          console.log(`[PageKonfigurasiModel] Deleting item ID: ${item.id}`);
           await service.delete(item.id);
+          this.logEntityChange(
+            this.model,
+            item.id,
+            "[entity]",
+            "EXISTING",
+            "DELETED"
+          );
           await this.loadData();
         };
       }
@@ -16205,31 +16267,16 @@ var init_model_page = __esm({
       }
       connectedCallback() {
         super.connectedCallback();
-        console.log("[PageKonfigurasiModel] connected() triggered");
         if (!this.model) {
           const attr = this.getAttribute("model");
-          console.log("[PageKonfigurasiModel] model from attribute:", attr);
-          const path = window.location.pathname;
-          console.log("[PageKonfigurasiModel] current path:", path);
-          const match = path.match(/\/konfigurasi\/([^\/]+)/);
-          const modelFromPath = match?.[1];
-          console.log("[PageKonfigurasiModel] model from path:", modelFromPath);
-          this.model = attr || modelFromPath;
+          const match = window.location.pathname.match(/\/konfigurasi\/([^\/]+)/);
+          this.model = attr || match?.[1];
         }
-        console.log("[PageKonfigurasiModel] Final resolved model =", this.model);
-        if (!this.model || !modelDefinitions[this.model]) {
-          return x`<p>Model tidak valid atau belum didukung.</p>`;
-        }
+        if (!this.model || !modelDefinitions[this.model]) return;
         this.loadData();
       }
-      /**
-       * 🔄 Lifecycle: dipanggil setiap kali properti berubah
-       */
       updated(changed) {
         if (changed.has("model")) {
-          console.log(
-            "[PageKonfigurasiModel] model changed \u2192 reset state & reload"
-          );
           this.selectedItem = null;
           this.items = [];
           if (this.model) {
@@ -16238,26 +16285,48 @@ var init_model_page = __esm({
         }
       }
       async loadData() {
-        console.log(`[PageKonfigurasiModel] loadData() for model = ${this.model}`);
         const service = getService(this.model);
         const newItems = await service.getAll();
-        console.log(
-          `[PageKonfigurasiModel] Loaded ${newItems.length} items`,
-          newItems
-        );
         this.items = [...newItems];
       }
-      async handleSave() {
-        console.log("[PageKonfigurasiModel] handleSave() - data saved");
+      /**
+       * Fungsi logging perubahan metadata
+       */
+      logEntityChange(source, source_id, field, oldValue, newValue, userId = "user_demo") {
+        const event = {
+          source,
+          source_id,
+          category: "manual",
+          summary: `Field "${field}" changed: ${oldValue} \u2192 ${newValue}`,
+          recorded_by: userId,
+          value: newValue,
+          previous_value: oldValue
+        };
+        addEventLog(event);
+      }
+      async handleSave(e8) {
+        const newItem = e8.detail;
+        const oldItem = this.selectedItem;
+        if (oldItem && newItem.id === oldItem.id) {
+          const keysToCompare = Object.keys(newItem);
+          for (const key of keysToCompare) {
+            if (newItem[key] !== oldItem[key]) {
+              this.logEntityChange(
+                this.model,
+                newItem.id,
+                key,
+                oldItem[key],
+                newItem[key]
+              );
+            }
+          }
+        }
         this.selectedItem = null;
         await this.loadData();
       }
       render() {
         const def = modelDefinitions[this.model];
         if (!def) {
-          console.warn(
-            `[PageKonfigurasiModel] Model "${this.model}" tidak ditemukan dalam definisi`
-          );
           return x`<p>
         Model <strong>${this.model}</strong> tidak ditemukan dalam metadata.
       </p>`;
@@ -16267,7 +16336,7 @@ var init_model_page = __esm({
         Konfigurasi: ${this.model.replace(/_/g, " ")}
       </h2>
 
-      <div class="rounded-xl p-4 shadow mb-6">
+      <div class="bg-white rounded-xl p-4 shadow mb-6">
         <dynamic-form
           .model=${this.model}
           .initialData=${this.selectedItem}
@@ -16275,7 +16344,7 @@ var init_model_page = __esm({
         ></dynamic-form>
       </div>
 
-      <div class="rounded-xl p-4 shadow">
+      <div class="bg-white rounded-xl p-4 shadow">
         <dynamic-table
           .model=${this.model}
           .items=${this.items}
@@ -16530,6 +16599,345 @@ var init_konfigurasi_hmi = __esm({
     PageKonfigurasi = __decorateClass([
       t3("page-konfigurasi")
     ], PageKonfigurasi);
+  }
+});
+
+// src/components/event/event-history-filter.ts
+var EventHistoryFilter;
+var init_event_history_filter = __esm({
+  "src/components/event/event-history-filter.ts"() {
+    "use strict";
+    init_lit();
+    init_decorators();
+    EventHistoryFilter = class extends i4 {
+      constructor() {
+        super(...arguments);
+        this.logs = [];
+        this.category = "all";
+        this.source = "all";
+        this.from = "";
+        this.to = "";
+        this.keyword = "";
+      }
+      createRenderRoot() {
+        return this;
+      }
+      emitFilter() {
+        const detail = {
+          filter: {
+            category: this.category,
+            source: this.source,
+            from: this.from,
+            to: this.to,
+            keyword: this.keyword
+          }
+        };
+        this.dispatchEvent(
+          new CustomEvent("filter-changed", {
+            detail,
+            bubbles: true,
+            composed: true
+          })
+        );
+      }
+      render() {
+        const categories = Array.from(new Set(this.logs.map((l3) => l3.category)));
+        const sources = Array.from(new Set(this.logs.map((l3) => l3.source)));
+        return x`
+      <div class="flex flex-wrap gap-4 mb-4 items-end">
+        <div>
+          <label class="text-sm block mb-1">Category</label>
+          <select
+            class="border rounded px-2 py-1 text-sm"
+            @change=${(e8) => (this.category = e8.target.value, this.emitFilter())}
+          >
+            <option value="all">All</option>
+            ${categories.map((c5) => x`<option value=${c5}>${c5}</option>`)}
+          </select>
+        </div>
+
+        <div>
+          <label class="text-sm block mb-1">Source</label>
+          <select
+            class="border rounded px-2 py-1 text-sm"
+            @change=${(e8) => (this.source = e8.target.value, this.emitFilter())}
+          >
+            <option value="all">All</option>
+            ${sources.map((s7) => x`<option value=${s7}>${s7}</option>`)}
+          </select>
+        </div>
+
+        <div>
+          <label class="text-sm block mb-1">From</label>
+          <input
+            type="datetime-local"
+            class="border rounded px-2 py-1 text-sm"
+            @change=${(e8) => (this.from = e8.target.value, this.emitFilter())}
+          />
+        </div>
+
+        <div>
+          <label class="text-sm block mb-1">To</label>
+          <input
+            type="datetime-local"
+            class="border rounded px-2 py-1 text-sm"
+            @change=${(e8) => (this.to = e8.target.value, this.emitFilter())}
+          />
+        </div>
+
+        <div class="flex-1">
+          <label class="text-sm block mb-1">Keyword</label>
+          <input
+            type="text"
+            class="w-full border rounded px-2 py-1 text-sm"
+            placeholder="Search..."
+            @input=${(e8) => (this.keyword = e8.target.value, this.emitFilter())}
+          />
+        </div>
+      </div>
+    `;
+      }
+    };
+    __decorateClass([
+      n4({ type: Array })
+    ], EventHistoryFilter.prototype, "logs", 2);
+    __decorateClass([
+      r5()
+    ], EventHistoryFilter.prototype, "category", 2);
+    __decorateClass([
+      r5()
+    ], EventHistoryFilter.prototype, "source", 2);
+    __decorateClass([
+      r5()
+    ], EventHistoryFilter.prototype, "from", 2);
+    __decorateClass([
+      r5()
+    ], EventHistoryFilter.prototype, "to", 2);
+    __decorateClass([
+      r5()
+    ], EventHistoryFilter.prototype, "keyword", 2);
+    EventHistoryFilter = __decorateClass([
+      t3("event-history-filter")
+    ], EventHistoryFilter);
+  }
+});
+
+// src/components/event/event-history-table.ts
+var EventHistoryTable;
+var init_event_history_table = __esm({
+  "src/components/event/event-history-table.ts"() {
+    "use strict";
+    init_lit();
+    init_decorators();
+    EventHistoryTable = class extends i4 {
+      constructor() {
+        super(...arguments);
+        this.logs = [];
+        this.categoryColors = {
+          alarm: "bg-red-100 text-red-800",
+          warning: "bg-yellow-100 text-yellow-800",
+          system: "bg-blue-100 text-blue-800",
+          info: "bg-green-100 text-green-800",
+          sensor: "bg-orange-100 text-orange-800",
+          manual: "bg-gray-100 text-gray-800",
+          feeding: "bg-teal-100 text-teal-800",
+          mortality: "bg-purple-100 text-purple-800",
+          observation: "bg-indigo-100 text-indigo-800"
+        };
+      }
+      createRenderRoot() {
+        return this;
+      }
+      render() {
+        return x`
+      <div class="overflow-x-auto">
+        <table class="min-w-full text-sm border border-gray-200 rounded">
+          <thead class="bg-gray-100 text-left">
+            <tr>
+              <th class="p-2 border-b">Time</th>
+              <th class="p-2 border-b">Source</th>
+              <th class="p-2 border-b">Category</th>
+              <th class="p-2 border-b">Summary</th>
+              <th class="p-2 border-b">By</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${this.logs.map(
+          (log2) => x`
+                <tr class="hover:bg-gray-50">
+                  <td class="p-2 border-b">
+                    ${new Date(log2.timestamp).toLocaleString()}
+                  </td>
+                  <td class="p-2 border-b">${log2.source}#${log2.source_id}</td>
+                  <td class="p-2 border-b">
+                    <span
+                      class="text-xs font-semibold px-2 py-1 rounded-full inline-block ${this.categoryColors[log2.category] ?? "bg-gray-100"}"
+                    >
+                      ${log2.category}
+                    </span>
+                  </td>
+                  <td class="p-2 border-b">${log2.summary ?? "-"}</td>
+                  <td class="p-2 border-b">${log2.recorded_by ?? "-"}</td>
+                </tr>
+              `
+        )}
+          </tbody>
+        </table>
+      </div>
+    `;
+      }
+    };
+    __decorateClass([
+      n4({ type: Array })
+    ], EventHistoryTable.prototype, "logs", 2);
+    EventHistoryTable = __decorateClass([
+      t3("event-history-table")
+    ], EventHistoryTable);
+  }
+});
+
+// src/components/event/event-history.ts
+var EventHistory;
+var init_event_history = __esm({
+  "src/components/event/event-history.ts"() {
+    "use strict";
+    init_lit();
+    init_decorators();
+    init_event_log_store();
+    init_event_history_filter();
+    init_event_history_table();
+    EventHistory = class extends i4 {
+      constructor() {
+        super(...arguments);
+        this.logs = [];
+        this.filteredLogs = [];
+        this.handleFilterChanged = (e8) => {
+          const { filter } = e8.detail;
+          const { category, source, from, to, keyword } = filter;
+          this.filteredLogs = this.logs.filter((log2) => {
+            const matchCategory = category === "all" || log2.category === category;
+            const matchSource = source === "all" || log2.source === source;
+            const time3 = new Date(log2.timestamp).getTime();
+            const fromTime = from ? new Date(from).getTime() : null;
+            const toTime = to ? new Date(to).getTime() : null;
+            const matchFrom = !fromTime || time3 >= fromTime;
+            const matchTo = !toTime || time3 <= toTime;
+            const kw = keyword?.toLowerCase() ?? "";
+            const matchKeyword = !kw || log2.summary?.toLowerCase().includes(kw) || log2.source?.toLowerCase().includes(kw) || log2.recorded_by?.toLowerCase().includes(kw);
+            return matchCategory && matchSource && matchFrom && matchTo && matchKeyword;
+          });
+        };
+      }
+      createRenderRoot() {
+        return this;
+      }
+      async connectedCallback() {
+        super.connectedCallback();
+        await loadEventLogData();
+        this.logs = [...eventLogStore.items];
+        this.filteredLogs = [...this.logs];
+      }
+      render() {
+        return x`
+      <h3 class="text-lg font-semibold text-gray-700 mb-4">📜 Event History</h3>
+      <event-history-filter
+        .logs=${this.logs}
+        @filter-changed=${this.handleFilterChanged}
+      ></event-history-filter>
+      <event-history-table .logs=${this.filteredLogs}></event-history-table>
+    `;
+      }
+    };
+    __decorateClass([
+      r5()
+    ], EventHistory.prototype, "logs", 2);
+    __decorateClass([
+      r5()
+    ], EventHistory.prototype, "filteredLogs", 2);
+    EventHistory = __decorateClass([
+      t3("event-history")
+    ], EventHistory);
+  }
+});
+
+// src/pages/dashboard.ts
+var dashboard_exports = {};
+__export(dashboard_exports, {
+  PageDashboard: () => PageDashboard
+});
+var PageDashboard;
+var init_dashboard = __esm({
+  "src/pages/dashboard.ts"() {
+    "use strict";
+    init_lit();
+    init_decorators();
+    init_event_history();
+    PageDashboard = class extends i4 {
+      constructor() {
+        super(...arguments);
+        this.activeTab = "produksi";
+      }
+      createRenderRoot() {
+        return this;
+      }
+      handleTabChange(e8) {
+        const target = e8.currentTarget;
+        const id = target.dataset.id;
+        if (id) this.activeTab = id;
+      }
+      render() {
+        return x`
+      <div class="p-6 space-y-6">
+        <!-- Tabs -->
+        <div class="flex space-x-4 border-b pb-2">
+          <button
+            data-id="produksi"
+            @click=${this.handleTabChange}
+            class=${this.activeTab === "produksi" ? "text-green-700 font-semibold border-b-2 border-green-600 pb-1" : "text-gray-500 hover:text-green-600"}
+          >
+            🏭 Produksi
+          </button>
+          <button
+            data-id="devices"
+            @click=${this.handleTabChange}
+            class=${this.activeTab === "devices" ? "text-green-700 font-semibold border-b-2 border-green-600 pb-1" : "text-gray-500 hover:text-green-600"}
+          >
+            🔌 Devices
+          </button>
+          <button
+            data-id="history"
+            @click=${this.handleTabChange}
+            class=${this.activeTab === "history" ? "text-green-700 font-semibold border-b-2 border-green-600 pb-1" : "text-gray-500 hover:text-green-600"}
+          >
+            📜 Event History
+          </button>
+        </div>
+
+        <!-- Tab content -->
+        ${this.activeTab === "produksi" ? x`
+              <div
+                class="bg-yellow-50 border border-yellow-300 p-4 rounded text-sm text-yellow-800"
+              >
+                Halaman dummy tab <strong>Produksi</strong> — belum ada konten.
+              </div>
+            ` : this.activeTab === "devices" ? x`
+              <div
+                class="bg-yellow-50 border border-yellow-300 p-4 rounded text-sm text-yellow-800"
+              >
+                Halaman dummy tab <strong>Devices</strong> — placeholder tanpa
+                integrasi MQTT.
+              </div>
+            ` : x`<event-history></event-history>`}
+      </div>
+    `;
+      }
+    };
+    __decorateClass([
+      r5()
+    ], PageDashboard.prototype, "activeTab", 2);
+    PageDashboard = __decorateClass([
+      t3("page-dashboard")
+    ], PageDashboard);
   }
 });
 
@@ -19184,6 +19592,13 @@ var AppMain = class extends i4 {
         component: "page-konfigurasi",
         action: async () => {
           await Promise.resolve().then(() => (init_konfigurasi_hmi(), konfigurasi_hmi_exports));
+        }
+      },
+      {
+        path: "/dashboard",
+        component: "page-dashboard",
+        action: async () => {
+          await Promise.resolve().then(() => (init_dashboard(), dashboard_exports));
         }
       },
       {
