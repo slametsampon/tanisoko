@@ -16602,6 +16602,280 @@ var init_konfigurasi_hmi = __esm({
   }
 });
 
+// src/components/production/production-card.ts
+var ProductionCard;
+var init_production_card = __esm({
+  "src/components/production/production-card.ts"() {
+    "use strict";
+    init_lit();
+    init_decorators();
+    ProductionCard = class extends i4 {
+      createRenderRoot() {
+        return this;
+      }
+      isEndingSoon(endDate) {
+        const now = /* @__PURE__ */ new Date();
+        const end = new Date(endDate);
+        const diff = (end.getTime() - now.getTime()) / (1e3 * 60 * 60 * 24);
+        return diff <= 5;
+      }
+      getDomainIcon(domain2) {
+        switch (domain2) {
+          case "hydroponic":
+            return "\u{1F331}";
+          case "aquaculture":
+            return "\u{1F41F}";
+          case "poultry":
+            return "\u{1F414}";
+          default:
+            return "\u2753";
+        }
+      }
+      render() {
+        const domainIcon = this.getDomainIcon(this.cycle.domain);
+        const highlight = this.isEndingSoon(this.cycle.end_date);
+        return x`
+      <div
+        class="p-4 rounded-lg border ${highlight ? "border-yellow-400 bg-yellow-50" : "border-gray-200 bg-white"} shadow space-y-1 cursor-pointer"
+      >
+        <div
+          class="flex items-center gap-2 text-lg font-semibold text-gray-800"
+        >
+          ${domainIcon} ${this.unit?.name || "Unit tidak ditemukan"}
+        </div>
+        <div class="text-sm text-gray-500">
+          ${this.unit?.type?.toUpperCase()} – Kapasitas
+          ${this.unit?.capacity ?? "-"}
+        </div>
+        <div class="text-sm text-gray-500">
+          🗓 ${this.cycle.start_date} → ${this.cycle.end_date}
+        </div>
+        <div>
+          <span
+            class="inline-block bg-green-100 text-green-800 text-xs font-medium px-2 py-0.5 rounded"
+          >
+            ${this.cycle.domain}
+          </span>
+        </div>
+        <div class="text-sm text-gray-700">📋 ${this.cycle.notes}</div>
+      </div>
+    `;
+      }
+    };
+    __decorateClass([
+      n4({ type: Object })
+    ], ProductionCard.prototype, "cycle", 2);
+    __decorateClass([
+      n4({ type: Object })
+    ], ProductionCard.prototype, "unit", 2);
+    ProductionCard = __decorateClass([
+      t3("production-card")
+    ], ProductionCard);
+  }
+});
+
+// src/components/production/production-detail-modal.ts
+var ProductionDetailModal;
+var init_production_detail_modal = __esm({
+  "src/components/production/production-detail-modal.ts"() {
+    "use strict";
+    init_lit();
+    init_decorators();
+    ProductionDetailModal = class extends i4 {
+      createRenderRoot() {
+        return this;
+      }
+      open() {
+        this.dialogEl?.showModal();
+      }
+      close() {
+        this.dialogEl?.close();
+      }
+      getDomainIcon(domain2) {
+        switch (domain2) {
+          case "hydroponic":
+            return "\u{1F331}";
+          case "aquaculture":
+            return "\u{1F41F}";
+          case "poultry":
+            return "\u{1F414}";
+          default:
+            return "\u2753";
+        }
+      }
+      render() {
+        return x`
+      <dialog
+        class="rounded-lg p-6 w-full max-w-md border border-gray-300 shadow-lg space-y-4"
+      >
+        <h2 class="text-xl font-semibold text-gray-800">
+          ${this.getDomainIcon(this.cycle.domain)} ${this.unit.name}
+        </h2>
+
+        <div class="text-sm text-gray-600">
+          <div><strong>Domain:</strong> ${this.cycle.domain}</div>
+          <div>
+            <strong>Tanggal:</strong> ${this.cycle.start_date} →
+            ${this.cycle.end_date}
+          </div>
+          <div><strong>Catatan:</strong> ${this.cycle.notes}</div>
+        </div>
+
+        <div class="text-sm text-gray-600">
+          <div><strong>Tipe Unit:</strong> ${this.unit.type}</div>
+          <div><strong>Kapasitas:</strong> ${this.unit.capacity}</div>
+          <div>
+            <strong>Dimensi:</strong> ${this.unit.dimensions_length} ×
+            ${this.unit.dimensions_width} × ${this.unit.dimensions_height}
+          </div>
+        </div>
+
+        <div class="text-right">
+          <button
+            @click=${this.close}
+            class="mt-4 text-sm px-4 py-1 border rounded hover:bg-gray-100"
+          >
+            Tutup
+          </button>
+        </div>
+      </dialog>
+    `;
+      }
+    };
+    __decorateClass([
+      n4({ type: Object })
+    ], ProductionDetailModal.prototype, "unit", 2);
+    __decorateClass([
+      n4({ type: Object })
+    ], ProductionDetailModal.prototype, "cycle", 2);
+    __decorateClass([
+      e5("dialog")
+    ], ProductionDetailModal.prototype, "dialogEl", 2);
+    ProductionDetailModal = __decorateClass([
+      t3("production-detail-modal")
+    ], ProductionDetailModal);
+  }
+});
+
+// src/components/production/production-view.ts
+var ProductionView;
+var init_production_view = __esm({
+  "src/components/production/production-view.ts"() {
+    "use strict";
+    init_lit();
+    init_decorators();
+    init_production_unit_service();
+    init_production_cycle_service();
+    init_production_card();
+    init_production_detail_modal();
+    ProductionView = class extends i4 {
+      constructor() {
+        super(...arguments);
+        this.units = [];
+        this.cycles = [];
+        this.selectedDomain = "all";
+        this.selectedCycle = null;
+        this.selectedUnit = null;
+      }
+      createRenderRoot() {
+        return this;
+      }
+      async connectedCallback() {
+        super.connectedCallback();
+        const [units, cycles] = await Promise.all([
+          production_unitService.getAll(),
+          production_cycleService.getAll()
+        ]);
+        this.units = units;
+        this.cycles = cycles.sort(
+          (a3, b3) => new Date(b3.start_date).getTime() - new Date(a3.start_date).getTime()
+        );
+      }
+      get filteredCycles() {
+        if (this.selectedDomain === "all") return this.cycles;
+        return this.cycles.filter((c5) => c5.domain === this.selectedDomain);
+      }
+      findUnitByCycle(cycle) {
+        if (cycle.pond_id) return this.units.find((u3) => u3.id === cycle.pond_id);
+        if (cycle.coop_id) return this.units.find((u3) => u3.id === cycle.coop_id);
+        if (cycle.domain === "hydroponic") {
+          return this.units.find(
+            (u3) => u3.farm_id === cycle.farm_id && u3.type === "zone"
+          );
+        }
+        return void 0;
+      }
+      handleFilterChange(e8) {
+        const select = e8.target;
+        this.selectedDomain = select.value;
+      }
+      handleCardClick(cycle) {
+        this.selectedCycle = cycle;
+        this.selectedUnit = this.findUnitByCycle(cycle);
+        this.modalEl?.open();
+      }
+      render() {
+        return x`
+      <div class="mb-4">
+        <label class="text-sm text-gray-600 mr-2">Filter domain:</label>
+        <select
+          @change=${this.handleFilterChange}
+          class="border text-sm px-2 py-1 rounded"
+        >
+          <option value="all">All</option>
+          <option value="hydroponic">Hydroponic 🌱</option>
+          <option value="aquaculture">Aquaculture 🐟</option>
+          <option value="poultry">Poultry 🐔</option>
+        </select>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        ${this.filteredCycles.map((cycle) => {
+          const unit = this.findUnitByCycle(cycle);
+          return x`
+            <production-card
+              .cycle=${cycle}
+              .unit=${unit}
+              @click=${() => this.handleCardClick(cycle)}
+            >
+            </production-card>
+          `;
+        })}
+      </div>
+      ${this.selectedCycle && this.selectedUnit ? x`
+            <production-detail-modal
+              .cycle=${this.selectedCycle}
+              .unit=${this.selectedUnit}
+            >
+            </production-detail-modal>
+          ` : null}
+    `;
+      }
+    };
+    __decorateClass([
+      r5()
+    ], ProductionView.prototype, "units", 2);
+    __decorateClass([
+      r5()
+    ], ProductionView.prototype, "cycles", 2);
+    __decorateClass([
+      r5()
+    ], ProductionView.prototype, "selectedDomain", 2);
+    __decorateClass([
+      r5()
+    ], ProductionView.prototype, "selectedCycle", 2);
+    __decorateClass([
+      r5()
+    ], ProductionView.prototype, "selectedUnit", 2);
+    __decorateClass([
+      e5("production-detail-modal")
+    ], ProductionView.prototype, "modalEl", 2);
+    ProductionView = __decorateClass([
+      t3("production-view")
+    ], ProductionView);
+  }
+});
+
 // src/components/event/event-history-filter.ts
 var EventHistoryFilter;
 var init_event_history_filter = __esm({
@@ -16666,25 +16940,6 @@ var init_event_history_filter = __esm({
             ${sources.map((s7) => x`<option value=${s7}>${s7}</option>`)}
           </select>
         </div>
-
-        <div>
-          <label class="text-sm block mb-1">From</label>
-          <input
-            type="datetime-local"
-            class="border rounded px-2 py-1 text-sm"
-            @change=${(e8) => (this.from = e8.target.value, this.emitFilter())}
-          />
-        </div>
-
-        <div>
-          <label class="text-sm block mb-1">To</label>
-          <input
-            type="datetime-local"
-            class="border rounded px-2 py-1 text-sm"
-            @change=${(e8) => (this.to = e8.target.value, this.emitFilter())}
-          />
-        </div>
-
         <div class="flex-1">
           <label class="text-sm block mb-1">Keyword</label>
           <input
@@ -16693,6 +16948,25 @@ var init_event_history_filter = __esm({
             placeholder="Search..."
             @input=${(e8) => (this.keyword = e8.target.value, this.emitFilter())}
           />
+        </div>
+        <div class="flex flex-col gap-y-4">
+          <div>
+            <label class="text-sm block mb-1">From</label>
+            <input
+              type="datetime-local"
+              class="border rounded px-2 py-1 text-sm"
+              @change=${(e8) => (this.from = e8.target.value, this.emitFilter())}
+            />
+          </div>
+
+          <div>
+            <label class="text-sm block mb-1">To</label>
+            <input
+              type="datetime-local"
+              class="border rounded px-2 py-1 text-sm"
+              @change=${(e8) => (this.to = e8.target.value, this.emitFilter())}
+            />
+          </div>
         </div>
       </div>
     `;
@@ -16860,6 +17134,262 @@ var init_event_history = __esm({
   }
 });
 
+// src/components/device/device-card.ts
+var DeviceCard;
+var init_device_card = __esm({
+  "src/components/device/device-card.ts"() {
+    "use strict";
+    init_lit();
+    init_decorators();
+    DeviceCard = class extends i4 {
+      createRenderRoot() {
+        return this;
+      }
+      render() {
+        const d3 = this.device;
+        const isSensor = d3.type === "sensor";
+        const icon = isSensor ? "\u{1F4DF}" : "\u{1F6E0}";
+        const statusColor = d3.status_connectivity === "online" ? "text-green-600" : "text-red-500";
+        let alarm = false;
+        if (isSensor && typeof d3.value === "number") {
+          alarm = d3.value < d3.alarm_min || d3.value > d3.alarm_max;
+        }
+        const stateInfo = isSensor ? x`
+          <div class="text-sm">
+            📈
+            <span
+              class="${alarm ? "text-red-600 font-bold" : "text-green-700"}"
+            >
+              ${d3.value} ${d3.unit}
+            </span>
+          </div>
+        ` : x`<div class="text-sm">⚙️ ${d3.current_state?.toUpperCase()}</div>`;
+        return x`
+      <div
+        class="p-4 rounded-lg border shadow bg-white space-y-1 hover:bg-gray-50 cursor-pointer transition"
+        title="Klik untuk lihat detail"
+        @click=${() => this.dispatchEvent(
+          new CustomEvent("click", { bubbles: true, composed: true })
+        )}
+      >
+        <div class="flex justify-between items-center">
+          <div
+            class="flex items-center gap-2 text-lg font-semibold text-gray-800"
+          >
+            ${icon} ${d3.name}
+          </div>
+          <span class="${statusColor} text-xs">${d3.status_connectivity}</span>
+        </div>
+
+        <div class="text-sm text-gray-600">${d3.description}</div>
+        <div class="text-sm text-gray-500">🧩 ${d3.function} (${d3.type})</div>
+
+        ${stateInfo}
+
+        <!-- ✅ Tambah badge ALARM jika aktif -->
+        ${alarm ? x`
+              <div>
+                <span
+                  class="inline-block bg-red-100 text-red-800 text-xs font-medium px-2 py-0.5 rounded"
+                >
+                  ⚠️ Alarm!
+                </span>
+              </div>
+            ` : null}
+
+        <div class="text-sm text-gray-500">
+          🔌 ${d3.node_id} – ${d3.ip_address}
+        </div>
+        <div class="text-xs text-gray-400">FW v${d3.firmware_version}</div>
+      </div>
+    `;
+      }
+    };
+    __decorateClass([
+      n4({ type: Object })
+    ], DeviceCard.prototype, "device", 2);
+    DeviceCard = __decorateClass([
+      t3("device-card")
+    ], DeviceCard);
+  }
+});
+
+// src/components/device/device-detail-modal.ts
+var DeviceDetailModal;
+var init_device_detail_modal = __esm({
+  "src/components/device/device-detail-modal.ts"() {
+    "use strict";
+    init_lit();
+    init_decorators();
+    DeviceDetailModal = class extends i4 {
+      createRenderRoot() {
+        return this;
+      }
+      open() {
+        this.dialogEl?.showModal();
+      }
+      close() {
+        this.dialogEl?.close();
+      }
+      get metadata() {
+        try {
+          return JSON.parse(this.device.metadata_json || "{}");
+        } catch (e8) {
+          return {};
+        }
+      }
+      render() {
+        const d3 = this.device;
+        const metadata = this.metadata;
+        return x`
+      <dialog
+        class="p-6 rounded-lg w-full max-w-lg border border-gray-300 shadow space-y-4"
+      >
+        <h2 class="text-xl font-bold text-gray-800">
+          🧩 ${d3.name} (${d3.tag_number})
+        </h2>
+
+        <div class="space-y-2 text-sm text-gray-700">
+          <div><strong>Deskripsi:</strong> ${d3.description}</div>
+          <div><strong>Node:</strong> ${d3.node_id}</div>
+          <div><strong>IP:</strong> ${d3.ip_address}</div>
+          <div><strong>Platform:</strong> ${d3.platform}</div>
+          <div><strong>Firmware:</strong> v${d3.firmware_version}</div>
+          <div><strong>Tipe:</strong> ${d3.type} – ${d3.function}</div>
+          ${d3.type === "sensor" ? x`<div><strong>Nilai:</strong> ${d3.value} ${d3.unit}</div>` : x`<div>
+                <strong>Status:</strong> ${d3.current_state?.toUpperCase()}
+              </div>`}
+          <div><strong>Mode:</strong> ${d3.operation_mode}</div>
+          <div>
+            <strong>Alarm Min:</strong> ${d3.alarm_min},
+            <strong>Max:</strong> ${d3.alarm_max}
+          </div>
+        </div>
+
+        <div class="pt-4 border-t">
+          <h3 class="text-sm font-semibold text-gray-600">🔎 Metadata:</h3>
+          <div
+            class="bg-gray-50 border rounded p-2 text-xs font-mono whitespace-pre-wrap"
+          >
+            ${Object.entries(metadata).length > 0 ? x`${Object.entries(metadata).map(
+          ([key, val]) => x`<div>
+                      <span class="text-gray-500">${key}</span>: ${val}
+                    </div>`
+        )}` : x`<div class="text-gray-400 italic">
+                  Tidak ada metadata
+                </div>`}
+          </div>
+        </div>
+
+        <div class="text-right">
+          <button
+            @click=${this.close}
+            class="text-sm px-4 py-1 border rounded hover:bg-gray-100"
+          >
+            Tutup
+          </button>
+        </div>
+      </dialog>
+    `;
+      }
+    };
+    __decorateClass([
+      n4({ type: Object })
+    ], DeviceDetailModal.prototype, "device", 2);
+    __decorateClass([
+      e5("dialog")
+    ], DeviceDetailModal.prototype, "dialogEl", 2);
+    DeviceDetailModal = __decorateClass([
+      t3("device-detail-modal")
+    ], DeviceDetailModal);
+  }
+});
+
+// src/components/device/device-view.ts
+var DeviceView;
+var init_device_view = __esm({
+  "src/components/device/device-view.ts"() {
+    "use strict";
+    init_lit();
+    init_decorators();
+    init_device_service();
+    init_device_card();
+    init_device_detail_modal();
+    DeviceView = class extends i4 {
+      constructor() {
+        super(...arguments);
+        this.sensors = [];
+        this.actuators = [];
+        this.selectedDevice = null;
+      }
+      createRenderRoot() {
+        return this;
+      }
+      async connectedCallback() {
+        super.connectedCallback();
+        const all = await deviceService.getAll();
+        this.sensors = all.filter((d3) => d3.type === "sensor");
+        this.actuators = all.filter((d3) => d3.type === "actuator");
+      }
+      handleDeviceClick(device) {
+        this.selectedDevice = device;
+        this.modalEl?.open();
+      }
+      render() {
+        return x`
+      <div class="space-y-6">
+        <!-- SENSORS -->
+        <div>
+          <h2 class="text-lg font-semibold text-gray-700 mb-2">📟 Sensors</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            ${this.sensors.map(
+          (d3) => x`<device-card
+                .device=${d3}
+                @click=${() => this.handleDeviceClick(d3)}
+              ></device-card> `
+        )}
+          </div>
+        </div>
+
+        <!-- ACTUATORS -->
+        <div>
+          <h2 class="text-lg font-semibold text-gray-700 mb-2">🛠 Actuators</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            ${this.actuators.map(
+          (d3) => x`<device-card
+                .device=${d3}
+                @click=${() => this.handleDeviceClick(d3)}
+              ></device-card> `
+        )}
+          </div>
+        </div>
+      </div>
+      ${this.selectedDevice ? x`
+            <device-detail-modal
+              .device=${this.selectedDevice}
+            ></device-detail-modal>
+          ` : null}
+    `;
+      }
+    };
+    __decorateClass([
+      r5()
+    ], DeviceView.prototype, "sensors", 2);
+    __decorateClass([
+      r5()
+    ], DeviceView.prototype, "actuators", 2);
+    __decorateClass([
+      r5()
+    ], DeviceView.prototype, "selectedDevice", 2);
+    __decorateClass([
+      e5("device-detail-modal")
+    ], DeviceView.prototype, "modalEl", 2);
+    DeviceView = __decorateClass([
+      t3("device-view")
+    ], DeviceView);
+  }
+});
+
 // src/pages/dashboard.ts
 var dashboard_exports = {};
 __export(dashboard_exports, {
@@ -16871,7 +17401,9 @@ var init_dashboard = __esm({
     "use strict";
     init_lit();
     init_decorators();
+    init_production_view();
     init_event_history();
+    init_device_view();
     PageDashboard = class extends i4 {
       constructor() {
         super(...arguments);
@@ -16914,20 +17446,7 @@ var init_dashboard = __esm({
         </div>
 
         <!-- Tab content -->
-        ${this.activeTab === "produksi" ? x`
-              <div
-                class="bg-yellow-50 border border-yellow-300 p-4 rounded text-sm text-yellow-800"
-              >
-                Halaman dummy tab <strong>Produksi</strong> — belum ada konten.
-              </div>
-            ` : this.activeTab === "devices" ? x`
-              <div
-                class="bg-yellow-50 border border-yellow-300 p-4 rounded text-sm text-yellow-800"
-              >
-                Halaman dummy tab <strong>Devices</strong> — placeholder tanpa
-                integrasi MQTT.
-              </div>
-            ` : x`<event-history></event-history>`}
+        ${this.activeTab === "produksi" ? x`<production-view></production-view>` : this.activeTab === "devices" ? x`<device-view></device-view>` : x`<event-history></event-history>`}
       </div>
     `;
       }
@@ -17482,7 +18001,7 @@ var AppFooter = class extends i4 {
           <div class="flex items-center gap-2">
             <span class="text-base">©</span>
             <span>
-              ${(/* @__PURE__ */ new Date()).getFullYear()} TaniSoko v${"1.3.1"} — All
+              ${(/* @__PURE__ */ new Date()).getFullYear()} TaniSoko v${"1.5.0"} — All
               rights reserved.
             </span>
           </div>
