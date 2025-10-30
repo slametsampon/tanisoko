@@ -2,8 +2,9 @@
 
 import { LitElement, html } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
-import { eventLogStore, loadEventLogData } from '../event-log/event-log-store';
+import '../components/production/production-view.ts';
 import '../components/event/event-history.ts';
+import '../components/device/device-view.ts';
 
 /**
  * PageDashboard
@@ -60,22 +61,9 @@ export class PageDashboard extends LitElement {
 
         <!-- Tab content -->
         ${this.activeTab === 'produksi'
-          ? html`
-              <div
-                class="bg-yellow-50 border border-yellow-300 p-4 rounded text-sm text-yellow-800"
-              >
-                Halaman dummy tab <strong>Produksi</strong> — belum ada konten.
-              </div>
-            `
+          ? html`<production-view></production-view>`
           : this.activeTab === 'devices'
-          ? html`
-              <div
-                class="bg-yellow-50 border border-yellow-300 p-4 rounded text-sm text-yellow-800"
-              >
-                Halaman dummy tab <strong>Devices</strong> — placeholder tanpa
-                integrasi MQTT.
-              </div>
-            `
+          ? html`<device-view></device-view>`
           : html`<event-history></event-history>`}
       </div>
     `;

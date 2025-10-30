@@ -68,29 +68,6 @@ export class EventHistoryFilter extends LitElement {
             ${sources.map((s) => html`<option value=${s}>${s}</option>`)}
           </select>
         </div>
-
-        <div>
-          <label class="text-sm block mb-1">From</label>
-          <input
-            type="datetime-local"
-            class="border rounded px-2 py-1 text-sm"
-            @change=${(e: any) => (
-              (this.from = e.target.value), this.emitFilter()
-            )}
-          />
-        </div>
-
-        <div>
-          <label class="text-sm block mb-1">To</label>
-          <input
-            type="datetime-local"
-            class="border rounded px-2 py-1 text-sm"
-            @change=${(e: any) => (
-              (this.to = e.target.value), this.emitFilter()
-            )}
-          />
-        </div>
-
         <div class="flex-1">
           <label class="text-sm block mb-1">Keyword</label>
           <input
@@ -101,6 +78,29 @@ export class EventHistoryFilter extends LitElement {
               (this.keyword = e.target.value), this.emitFilter()
             )}
           />
+        </div>
+        <div class="flex flex-col gap-y-4">
+          <div>
+            <label class="text-sm block mb-1">From</label>
+            <input
+              type="datetime-local"
+              class="border rounded px-2 py-1 text-sm"
+              @change=${(e: any) => (
+                (this.from = e.target.value), this.emitFilter()
+              )}
+            />
+          </div>
+
+          <div>
+            <label class="text-sm block mb-1">To</label>
+            <input
+              type="datetime-local"
+              class="border rounded px-2 py-1 text-sm"
+              @change=${(e: any) => (
+                (this.to = e.target.value), this.emitFilter()
+              )}
+            />
+          </div>
         </div>
       </div>
     `;
