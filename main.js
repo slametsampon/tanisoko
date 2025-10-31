@@ -17152,7 +17152,7 @@ var init_device_card = __esm({
         const statusColor = d3.status_connectivity === "online" ? "text-green-600" : "text-red-500";
         let alarm = false;
         if (isSensor && typeof d3.value === "number") {
-          alarm = d3.value < d3.alarm_min || d3.value > d3.alarm_max;
+          alarm = typeof d3.value === "number" && typeof d3.alarm_min === "number" && typeof d3.alarm_max === "number" && (d3.value < d3.alarm_min || d3.value > d3.alarm_max);
         }
         const stateInfo = isSensor ? x`
           <div class="text-sm">
@@ -17163,7 +17163,9 @@ var init_device_card = __esm({
               ${d3.value} ${d3.unit}
             </span>
           </div>
-        ` : x`<div class="text-sm">⚙️ ${d3.current_state?.toUpperCase()}</div>`;
+        ` : x`<div class="text-sm">
+          ⚙️ ${String(d3.current_state).toUpperCase()}
+        </div>`;
         return x`
       <div
         class="p-4 rounded-lg border shadow bg-white space-y-1 hover:bg-gray-50 cursor-pointer transition"
@@ -17257,7 +17259,9 @@ var init_device_detail_modal = __esm({
           <div><strong>Firmware:</strong> v${d3.firmware_version}</div>
           <div><strong>Tipe:</strong> ${d3.type} – ${d3.function}</div>
           ${d3.type === "sensor" ? x`<div><strong>Nilai:</strong> ${d3.value} ${d3.unit}</div>` : x`<div>
-                <strong>Status:</strong> ${d3.current_state?.toUpperCase()}
+                <strong>Status:</strong> ${String(
+          d3.current_state
+        ).toUpperCase()}
               </div>`}
           <div><strong>Mode:</strong> ${d3.operation_mode}</div>
           <div>
@@ -17315,12 +17319,15 @@ var init_device_view = __esm({
     init_device_service();
     init_device_card();
     init_device_detail_modal();
+    init_event_log_service();
+    init_event_log_store();
     DeviceView = class extends i4 {
       constructor() {
         super(...arguments);
         this.sensors = [];
         this.actuators = [];
         this.selectedDevice = null;
+        this.useSimulation = true;
       }
       createRenderRoot() {
         return this;
@@ -17328,25 +17335,136 @@ var init_device_view = __esm({
       async connectedCallback() {
         super.connectedCallback();
         const all = await deviceService.getAll();
-        this.sensors = all.filter((d3) => d3.type === "sensor");
+        this.sensors = all.filter((d3) => d3.type === "sensor").map((s7) => ({ ...s7 }));
         this.actuators = all.filter((d3) => d3.type === "actuator");
+        if (this.useSimulation) {
+          this.startSimulation();
+        } else {
+          this.initMQTT();
+        }
+      }
+      disconnectedCallback() {
+        clearInterval(this.simulationInterval);
+      }
+      handleToggleMode(e8) {
+        const target = e8.target;
+        this.useSimulation = target.checked;
+        if (this.useSimulation) {
+          this.startSimulation();
+        } else {
+          this.stopSimulation();
+          this.initMQTT();
+        }
+      }
+      startSimulation() {
+        this.simulationInterval = window.setInterval(() => {
+          this.runSensorSimulation();
+        }, 5e3);
+        console.info("[SIMULATION] Started");
+      }
+      stopSimulation() {
+        clearInterval(this.simulationInterval);
+        console.info("[SIMULATION] Stopped");
+      }
+      initMQTT() {
+        console.info("[MQTT] Listening for device data...");
       }
       handleDeviceClick(device) {
         this.selectedDevice = device;
         this.modalEl?.open();
       }
+      runSensorSimulation() {
+        const prevSensors = this.sensors.map((s7) => ({ ...s7 }));
+        const newSensors = prevSensors.map((sensor) => {
+          if (sensor.type !== "sensor" || typeof sensor.value !== "number" || typeof sensor.alarm_min !== "number" || typeof sensor.alarm_max !== "number") {
+            return sensor;
+          }
+          const prevValue = sensor.value;
+          const min = sensor.alarm_min;
+          const max = sensor.alarm_max;
+          const newValue = parseFloat(
+            (Math.random() * (max - min + 10) + (min - 5)).toFixed(2)
+          );
+          const isAlarm = newValue < min || newValue > max;
+          const wasAlarm = prevValue < min || prevValue > max;
+          let status_value = "normal";
+          if (newValue < min) status_value = "low-alarm";
+          else if (newValue > max) status_value = "high-alarm";
+          if (isAlarm && !wasAlarm) {
+            this.recordEvent(
+              sensor,
+              "alarm",
+              `Alarm! ${sensor.function} = ${newValue}`,
+              prevValue,
+              newValue
+            );
+          } else if (!isAlarm && wasAlarm) {
+            this.recordEvent(
+              sensor,
+              "info",
+              `${sensor.function} back to normal`,
+              prevValue,
+              newValue
+            );
+          }
+          return {
+            ...sensor,
+            value: newValue,
+            lastAlarmActive: isAlarm,
+            status_value
+          };
+        });
+        this.sensors = newSensors;
+      }
+      recordEvent(device, category, summary, previous_value, value) {
+        const event = eventLogService.add({
+          source: "device",
+          source_id: device.id,
+          category,
+          summary,
+          recorded_by: "simulator",
+          device_tag: device.tag_number,
+          previous_value,
+          value,
+          note: "Simulated by frontend"
+        });
+        eventLogStore.items.unshift(event);
+      }
       render() {
         return x`
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-lg font-semibold text-gray-700">🔌 Device View</h2>
+        <label class="inline-flex items-center cursor-pointer">
+          <span class="mr-2 text-sm text-gray-700">MQTT</span>
+          <input
+            type="checkbox"
+            class="sr-only peer"
+            .checked=${this.useSimulation}
+            @change=${this.handleToggleMode}
+          />
+          <div
+            class="w-11 h-6 bg-gray-300 rounded-full peer-checked:bg-green-500 relative transition"
+          >
+            <div
+              class="w-5 h-5 bg-white rounded-full shadow absolute left-0 top-0.5 transform peer-checked:translate-x-full transition"
+            ></div>
+          </div>
+          <span class="ml-2 text-sm text-gray-700">Simulasi</span>
+        </label>
+      </div>
+
       <div class="space-y-6">
         <!-- SENSORS -->
         <div>
           <h2 class="text-lg font-semibold text-gray-700 mb-2">📟 Sensors</h2>
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             ${this.sensors.map(
-          (d3) => x`<device-card
-                .device=${d3}
-                @click=${() => this.handleDeviceClick(d3)}
-              ></device-card> `
+          (d3) => x`
+                <device-card
+                  .device=${d3}
+                  @click=${() => this.handleDeviceClick(d3)}
+                ></device-card>
+              `
         )}
           </div>
         </div>
@@ -17356,14 +17474,17 @@ var init_device_view = __esm({
           <h2 class="text-lg font-semibold text-gray-700 mb-2">🛠 Actuators</h2>
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             ${this.actuators.map(
-          (d3) => x`<device-card
-                .device=${d3}
-                @click=${() => this.handleDeviceClick(d3)}
-              ></device-card> `
+          (d3) => x`
+                <device-card
+                  .device=${d3}
+                  @click=${() => this.handleDeviceClick(d3)}
+                ></device-card>
+              `
         )}
           </div>
         </div>
       </div>
+
       ${this.selectedDevice ? x`
             <device-detail-modal
               .device=${this.selectedDevice}
@@ -17384,6 +17505,9 @@ var init_device_view = __esm({
     __decorateClass([
       e5("device-detail-modal")
     ], DeviceView.prototype, "modalEl", 2);
+    __decorateClass([
+      r5()
+    ], DeviceView.prototype, "useSimulation", 2);
     DeviceView = __decorateClass([
       t3("device-view")
     ], DeviceView);
