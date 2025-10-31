@@ -15902,17 +15902,25 @@ var init_event_log_service = __esm({
 
 // src/event-log/event-log-store.ts
 async function loadEventLogData() {
-  eventLogStore.items = await eventLogService.loadAll();
+  const initial = await eventLogService.loadAll();
+  eventLogStore.items = [...initial];
+  if (eventLogStore.items.length > MAX_EVENTS) {
+    eventLogStore.items.length = MAX_EVENTS;
+  }
 }
 function addEventLog(entry) {
   const log2 = eventLogService.add(entry);
   eventLogStore.items.unshift(log2);
+  if (eventLogStore.items.length > MAX_EVENTS) {
+    eventLogStore.items.length = MAX_EVENTS;
+  }
 }
-var eventLogStore;
+var MAX_EVENTS, eventLogStore;
 var init_event_log_store = __esm({
   "src/event-log/event-log-store.ts"() {
     "use strict";
     init_event_log_service();
+    MAX_EVENTS = 30;
     eventLogStore = {
       items: []
     };
@@ -17374,8 +17382,7 @@ var init_device_view = __esm({
         this.modalEl?.open();
       }
       runSensorSimulation() {
-        const prevSensors = this.sensors.map((s7) => ({ ...s7 }));
-        const newSensors = prevSensors.map((sensor) => {
+        const newSensors = this.sensors.map((sensor) => {
           if (sensor.type !== "sensor" || typeof sensor.value !== "number" || typeof sensor.alarm_min !== "number" || typeof sensor.alarm_max !== "number") {
             return sensor;
           }
@@ -17386,10 +17393,13 @@ var init_device_view = __esm({
             (Math.random() * (max - min + 10) + (min - 5)).toFixed(2)
           );
           const isAlarm = newValue < min || newValue > max;
-          const wasAlarm = prevValue < min || prevValue > max;
+          const wasAlarm = !!sensor.lastAlarmActive;
           let status_value = "normal";
           if (newValue < min) status_value = "low-alarm";
           else if (newValue > max) status_value = "high-alarm";
+          console.log(
+            `[SIM] ${sensor.name}: ${prevValue} \u2192 ${newValue} | wasAlarm: ${wasAlarm}, isAlarm: ${isAlarm}`
+          );
           if (isAlarm && !wasAlarm) {
             this.recordEvent(
               sensor,
@@ -17410,8 +17420,9 @@ var init_device_view = __esm({
           return {
             ...sensor,
             value: newValue,
-            lastAlarmActive: isAlarm,
-            status_value
+            status_value,
+            lastAlarmActive: isAlarm
+            // INI YANG WAJIB DISIMPAN
           };
         });
         this.sensors = newSensors;
@@ -17428,7 +17439,17 @@ var init_device_view = __esm({
           value,
           note: "Simulated by frontend"
         });
-        eventLogStore.items.unshift(event);
+        addEventLog({
+          source: "device",
+          source_id: device.id,
+          category,
+          summary,
+          recorded_by: "simulator",
+          device_tag: device.tag_number,
+          previous_value,
+          value,
+          note: "Simulated by frontend"
+        });
       }
       render() {
         return x`
@@ -18125,7 +18146,7 @@ var AppFooter = class extends i4 {
           <div class="flex items-center gap-2">
             <span class="text-base">©</span>
             <span>
-              ${(/* @__PURE__ */ new Date()).getFullYear()} TaniSoko v${"1.5.0"} — All
+              ${(/* @__PURE__ */ new Date()).getFullYear()} TaniSoko v${"1.6.0"} — All
               rights reserved.
             </span>
           </div>
