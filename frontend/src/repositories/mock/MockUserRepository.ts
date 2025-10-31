@@ -1,7 +1,7 @@
 // frontend/src/repositories/mock/MockUserRepository.ts
 
 import { UserRepository } from '../interfaces/UserRepository';
-import { UserBase, UserRecord } from '@models/user.model';
+import { UserBase, UserRecord } from 'src/models/user.model';
 import { fetchMockData } from 'src/services/mock-data.service';
 
 export class MockUserRepository implements UserRepository {

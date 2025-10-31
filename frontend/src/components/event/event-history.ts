@@ -2,7 +2,7 @@
 
 import { LitElement, html } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
-import { EventLog } from '@models/event-log.model';
+import { EventLog } from 'src/models/event-log.model';
 import {
   eventLogStore,
   loadEventLogData,

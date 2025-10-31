@@ -7,7 +7,7 @@ import { Device } from 'src/models';
 import './device-card.ts';
 import './device-detail-modal.ts';
 import { eventLogService } from 'src/services/event-log.service';
-import { eventLogStore } from 'src/event-log/event-log-store';
+import { eventLogStore, addEventLog } from 'src/event-log/event-log-store';
 
 interface SimulatedDevice extends Device {
   lastAlarmActive?: boolean;
@@ -82,10 +82,7 @@ export class DeviceView extends LitElement {
   }
 
   private runSensorSimulation() {
-    // ✅ Ambil snapshot sensor sebelumnya
-    const prevSensors = this.sensors.map((s) => ({ ...s }));
-
-    const newSensors = prevSensors.map((sensor) => {
+    const newSensors = this.sensors.map((sensor) => {
       if (
         sensor.type !== 'sensor' ||
         typeof sensor.value !== 'number' ||
@@ -104,11 +101,16 @@ export class DeviceView extends LitElement {
       );
 
       const isAlarm = newValue < min || newValue > max;
-      const wasAlarm = prevValue < min || prevValue > max;
+      const wasAlarm = !!sensor.lastAlarmActive;
 
       let status_value: SimulatedDevice['status_value'] = 'normal';
       if (newValue < min) status_value = 'low-alarm';
       else if (newValue > max) status_value = 'high-alarm';
+
+      // 🪵 Debug trace
+      console.log(
+        `[SIM] ${sensor.name}: ${prevValue} → ${newValue} | wasAlarm: ${wasAlarm}, isAlarm: ${isAlarm}`
+      );
 
       if (isAlarm && !wasAlarm) {
         this.recordEvent(
@@ -131,11 +133,12 @@ export class DeviceView extends LitElement {
       return {
         ...sensor,
         value: newValue,
-        lastAlarmActive: isAlarm,
         status_value,
+        lastAlarmActive: isAlarm, // INI YANG WAJIB DISIMPAN
       };
     });
 
+    // Simpan sensor yang sudah diperbarui secara utuh
     this.sensors = newSensors;
   }
 
@@ -158,7 +161,17 @@ export class DeviceView extends LitElement {
       note: 'Simulated by frontend',
     });
 
-    eventLogStore.items.unshift(event);
+    addEventLog({
+      source: 'device',
+      source_id: device.id,
+      category,
+      summary,
+      recorded_by: 'simulator',
+      device_tag: device.tag_number,
+      previous_value,
+      value,
+      note: 'Simulated by frontend',
+    });
   }
 
   render() {

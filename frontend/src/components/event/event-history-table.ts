@@ -2,7 +2,7 @@
 
 import { html, LitElement } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import { EventLog } from '@models/event-log.model';
+import { EventLog } from 'src/models/event-log.model';
 
 @customElement('event-history-table')
 export class EventHistoryTable extends LitElement {

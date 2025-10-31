@@ -1,6 +1,6 @@
 // frontend/src/services/event-log.service.ts
 
-import type { EventLog } from '@models/event-log.model.ts';
+import type { EventLog } from 'src/models/event-log.model.ts';
 import { fetchMockData } from './mock-data.service';
 
 export class EventLogService {

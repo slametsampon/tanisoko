@@ -1,7 +1,7 @@
 // frontend/src/repositories/api/ApiUserRepository.ts
 
 import { UserRepository } from '../interfaces/UserRepository';
-import { UserBase, UserRecord } from '@models/user.model';
+import { UserBase, UserRecord } from 'src/models/user.model';
 
 export class ApiUserRepository implements UserRepository {
   private baseUrl = '/api/users';

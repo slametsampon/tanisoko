@@ -1,6 +1,6 @@
 // frontend/src/services/user.service.ts
 
-import type { UserBase, UserRecord } from '@models/user.model';
+import type { UserBase, UserRecord } from 'src/models/user.model';
 import { getUserRepository } from '../repositories/repository-factory';
 
 const repo = getUserRepository();

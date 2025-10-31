@@ -7,7 +7,7 @@ import { modelDefinitions } from 'src/config/model-definitions';
 import { getService } from 'src/services/getService';
 
 import { addEventLog } from 'src/event-log/event-log-store';
-import { EventLog } from '@models/event-log.model';
+import { EventLog } from 'src/models/event-log.model';
 
 import 'src/components/DynamicForm';
 import 'src/components/DynamicTable';

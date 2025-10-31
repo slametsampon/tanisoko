@@ -1,6 +1,6 @@
 // frontend/src/repositories/interfaces/UserRepository.ts
 
-import { UserBase, UserRecord } from '@models/user.model';
+import { UserBase, UserRecord } from 'src/models/user.model';
 
 export interface UserRepository {
   getAll(): Promise<UserRecord[]>;
