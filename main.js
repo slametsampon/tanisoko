@@ -15094,10 +15094,10 @@ var init_zod = __esm({
   }
 });
 
-// ../models/chicken-breed.model.ts
+// src/models/chicken-breed.model.ts
 var ChickenBreedSchema;
 var init_chicken_breed_model = __esm({
-  "../models/chicken-breed.model.ts"() {
+  "src/models/chicken-breed.model.ts"() {
     "use strict";
     init_zod();
     ChickenBreedSchema = external_exports.object({
@@ -15116,10 +15116,10 @@ var init_chicken_breed_model = __esm({
   }
 });
 
-// ../models/device.model.ts
+// src/models/device.model.ts
 var UnitEnum, ConnectivityStatusEnum, ValueStatusEnum, PlatformEnum, DeviceTypeEnum, StateTypeEnum, OperationModeEnum, DeviceSchema;
 var init_device_model = __esm({
-  "../models/device.model.ts"() {
+  "src/models/device.model.ts"() {
     "use strict";
     init_zod();
     UnitEnum = external_exports.enum([
@@ -15204,10 +15204,10 @@ var init_device_model = __esm({
   }
 });
 
-// ../models/farm.model.ts
+// src/models/farm.model.ts
 var FarmSchema;
 var init_farm_model = __esm({
-  "../models/farm.model.ts"() {
+  "src/models/farm.model.ts"() {
     "use strict";
     init_zod();
     FarmSchema = external_exports.object({
@@ -15232,10 +15232,10 @@ var init_enums = __esm({
   }
 });
 
-// ../models/feeding-record.model.ts
+// src/models/feeding-record.model.ts
 var FeedingRecordSchema;
 var init_feeding_record_model = __esm({
-  "../models/feeding-record.model.ts"() {
+  "src/models/feeding-record.model.ts"() {
     "use strict";
     init_zod();
     init_enums();
@@ -15254,10 +15254,10 @@ var init_feeding_record_model = __esm({
   }
 });
 
-// ../models/fish-species.model.ts
+// src/models/fish-species.model.ts
 var FishSpeciesSchema;
 var init_fish_species_model = __esm({
-  "../models/fish-species.model.ts"() {
+  "src/models/fish-species.model.ts"() {
     "use strict";
     init_zod();
     FishSpeciesSchema = external_exports.object({
@@ -15277,10 +15277,10 @@ var init_fish_species_model = __esm({
   }
 });
 
-// ../models/plant.model.ts
+// src/models/plant.model.ts
 var PlantSchema;
 var init_plant_model = __esm({
-  "../models/plant.model.ts"() {
+  "src/models/plant.model.ts"() {
     "use strict";
     init_zod();
     PlantSchema = external_exports.object({
@@ -15303,10 +15303,10 @@ var init_plant_model = __esm({
   }
 });
 
-// ../models/production-cycle.model.ts
+// src/models/production-cycle.model.ts
 var ProductionCycleSchema;
 var init_production_cycle_model = __esm({
-  "../models/production-cycle.model.ts"() {
+  "src/models/production-cycle.model.ts"() {
     "use strict";
     init_zod();
     init_enums();
@@ -15327,10 +15327,10 @@ var init_production_cycle_model = __esm({
   }
 });
 
-// ../models/production-unit.model.ts
+// src/models/production-unit.model.ts
 var ProductionUnitSchema;
 var init_production_unit_model = __esm({
-  "../models/production-unit.model.ts"() {
+  "src/models/production-unit.model.ts"() {
     "use strict";
     init_zod();
     init_enums();
@@ -15347,10 +15347,10 @@ var init_production_unit_model = __esm({
   }
 });
 
-// ../models/controller.model.ts
+// src/models/controller.model.ts
 var ControllerTypeEnum, ThresholdTypeEnum, ControlModeEnum, ControllerSchema;
 var init_controller_model = __esm({
-  "../models/controller.model.ts"() {
+  "src/models/controller.model.ts"() {
     "use strict";
     init_zod();
     ControllerTypeEnum = external_exports.enum([
