@@ -17317,6 +17317,99 @@ var init_device_detail_modal = __esm({
   }
 });
 
+// src/services/simulator.service.ts
+var SimulatorService, simulatorService;
+var init_simulator_service = __esm({
+  "src/services/simulator.service.ts"() {
+    "use strict";
+    init_device_service();
+    init_event_log_service();
+    init_event_log_store();
+    SimulatorService = class {
+      constructor() {
+        this.sensors = [];
+        this.maxLogs = 30;
+      }
+      async init() {
+        const all = await deviceService.getAll();
+        this.sensors = all.filter((d3) => d3.type === "sensor").map((s7) => ({ ...s7 }));
+      }
+      start() {
+        if (this.interval) return;
+        this.interval = window.setInterval(() => this.runSimulation(), 5e3);
+        console.info("[SIMULATOR] Running globally");
+      }
+      stop() {
+        clearInterval(this.interval);
+        this.interval = void 0;
+        console.info("[SIMULATOR] Stopped");
+      }
+      getSensors() {
+        return this.sensors;
+      }
+      runSimulation() {
+        this.sensors = this.sensors.map((sensor) => {
+          if (sensor.type !== "sensor" || typeof sensor.value !== "number" || typeof sensor.alarm_min !== "number" || typeof sensor.alarm_max !== "number") {
+            return sensor;
+          }
+          const prevValue = sensor.value;
+          const min = sensor.alarm_min;
+          const max = sensor.alarm_max;
+          const newValue = parseFloat(
+            (Math.random() * (max - min + 10) + (min - 5)).toFixed(2)
+          );
+          const isAlarm = newValue < min || newValue > max;
+          const wasAlarm = prevValue < min || prevValue > max;
+          let status_value = "normal";
+          if (newValue < min) status_value = "low-alarm";
+          else if (newValue > max) status_value = "high-alarm";
+          if (isAlarm && !wasAlarm) {
+            this.record(
+              sensor,
+              "alarm",
+              `Alarm! ${sensor.function} = ${newValue}`,
+              prevValue,
+              newValue
+            );
+          } else if (!isAlarm && wasAlarm) {
+            this.record(
+              sensor,
+              "info",
+              `${sensor.function} back to normal`,
+              prevValue,
+              newValue
+            );
+          }
+          return {
+            ...sensor,
+            value: newValue,
+            lastAlarmActive: isAlarm,
+            status_value
+          };
+        });
+      }
+      record(sensor, category, summary, prev, value) {
+        const event = eventLogService.add({
+          source: "device",
+          source_id: sensor.id,
+          category,
+          summary,
+          recorded_by: "simulator",
+          device_tag: sensor.tag_number,
+          previous_value: prev,
+          value,
+          note: "Simulated by global service"
+        });
+        eventLogStore.items.unshift(event);
+        if (eventLogStore.items.length > this.maxLogs) {
+          eventLogStore.items.length = this.maxLogs;
+        }
+      }
+    };
+    simulatorService = new SimulatorService();
+  }
+});
+
 // src/components/device/device-view.ts
 var DeviceView;
 var init_device_view = __esm({
@@ -17329,6 +17422,7 @@ var init_device_view = __esm({
     init_device_detail_modal();
     init_event_log_service();
     init_event_log_store();
+    init_simulator_service();
     DeviceView = class extends i4 {
       constructor() {
         super(...arguments);
@@ -17345,34 +17439,24 @@ var init_device_view = __esm({
         const all = await deviceService.getAll();
         this.sensors = all.filter((d3) => d3.type === "sensor").map((s7) => ({ ...s7 }));
         this.actuators = all.filter((d3) => d3.type === "actuator");
-        if (this.useSimulation) {
-          this.startSimulation();
-        } else {
+        if (!this.useSimulation) {
           this.initMQTT();
         }
+        this.syncInterval = window.setInterval(() => {
+          this.sensors = [...simulatorService.getSensors()];
+        }, 5e3);
       }
       disconnectedCallback() {
-        clearInterval(this.simulationInterval);
+        clearInterval(this.syncInterval);
       }
       handleToggleMode(e8) {
         const target = e8.target;
         this.useSimulation = target.checked;
         if (this.useSimulation) {
-          this.startSimulation();
+          console.info("[SIMULATION] Enabled (device-view)");
         } else {
-          this.stopSimulation();
           this.initMQTT();
         }
-      }
-      startSimulation() {
-        this.simulationInterval = window.setInterval(() => {
-          this.runSensorSimulation();
-        }, 5e3);
-        console.info("[SIMULATION] Started");
-      }
-      stopSimulation() {
-        clearInterval(this.simulationInterval);
-        console.info("[SIMULATION] Stopped");
       }
       initMQTT() {
         console.info("[MQTT] Listening for device data...");
@@ -17380,52 +17464,6 @@ var init_device_view = __esm({
       handleDeviceClick(device) {
         this.selectedDevice = device;
         this.modalEl?.open();
-      }
-      runSensorSimulation() {
-        const newSensors = this.sensors.map((sensor) => {
-          if (sensor.type !== "sensor" || typeof sensor.value !== "number" || typeof sensor.alarm_min !== "number" || typeof sensor.alarm_max !== "number") {
-            return sensor;
-          }
-          const prevValue = sensor.value;
-          const min = sensor.alarm_min;
-          const max = sensor.alarm_max;
-          const newValue = parseFloat(
-            (Math.random() * (max - min + 10) + (min - 5)).toFixed(2)
-          );
-          const isAlarm = newValue < min || newValue > max;
-          const wasAlarm = !!sensor.lastAlarmActive;
-          let status_value = "normal";
-          if (newValue < min) status_value = "low-alarm";
-          else if (newValue > max) status_value = "high-alarm";
-          console.log(
-            `[SIM] ${sensor.name}: ${prevValue} \u2192 ${newValue} | wasAlarm: ${wasAlarm}, isAlarm: ${isAlarm}`
-          );
-          if (isAlarm && !wasAlarm) {
-            this.recordEvent(
-              sensor,
-              "alarm",
-              `Alarm! ${sensor.function} = ${newValue}`,
-              prevValue,
-              newValue
-            );
-          } else if (!isAlarm && wasAlarm) {
-            this.recordEvent(
-              sensor,
-              "info",
-              `${sensor.function} back to normal`,
-              prevValue,
-              newValue
-            );
-          }
-          return {
-            ...sensor,
-            value: newValue,
-            status_value,
-            lastAlarmActive: isAlarm
-            // INI YANG WAJIB DISIMPAN
-          };
-        });
-        this.sensors = newSensors;
       }
       recordEvent(device, category, summary, previous_value, value) {
         const event = eventLogService.add({
@@ -32128,6 +32166,13 @@ __decorateClass([
 AppShell = __decorateClass([
   t3("app-shell")
 ], AppShell);
+
+// src/main.ts
+init_simulator_service();
+(async () => {
+  await simulatorService.init();
+  simulatorService.start();
+})();
 /*! Bundled license information:
 
 @lit/reactive-element/css-tag.js:
