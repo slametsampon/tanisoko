@@ -7,7 +7,8 @@ import { Device } from 'src/models';
 import './device-card.ts';
 import './device-detail-modal.ts';
 import { eventLogService } from 'src/services/event-log.service';
-import { eventLogStore, addEventLog } from 'src/event-log/event-log-store';
+import { addEventLog } from 'src/event-log/event-log-store';
+import { simulatorService } from 'src/services/simulator.service';
 
 interface SimulatedDevice extends Device {
   lastAlarmActive?: boolean;
@@ -22,7 +23,7 @@ export class DeviceView extends LitElement {
   @query('device-detail-modal') private modalEl!: any;
 
   @state() private useSimulation = true;
-  private simulationInterval: number | undefined;
+  private syncInterval: number | undefined;
 
   createRenderRoot() {
     return this;
@@ -30,21 +31,26 @@ export class DeviceView extends LitElement {
 
   async connectedCallback() {
     super.connectedCallback();
+
     const all = await deviceService.getAll();
     this.sensors = all
       .filter((d) => d.type === 'sensor')
-      .map((s) => ({ ...s })); // force SimulatedDevice
+      .map((s) => ({ ...s }));
     this.actuators = all.filter((d) => d.type === 'actuator');
 
-    if (this.useSimulation) {
-      this.startSimulation();
-    } else {
+    // ❌ Tidak perlu panggil startSimulation lagi
+    if (!this.useSimulation) {
       this.initMQTT();
     }
+
+    // ✅ Sinkronisasi tampilan dengan sensor global
+    this.syncInterval = window.setInterval(() => {
+      this.sensors = [...simulatorService.getSensors()];
+    }, 5000);
   }
 
   disconnectedCallback() {
-    clearInterval(this.simulationInterval);
+    clearInterval(this.syncInterval);
   }
 
   private handleToggleMode(e: Event) {
@@ -52,94 +58,20 @@ export class DeviceView extends LitElement {
     this.useSimulation = target.checked;
 
     if (this.useSimulation) {
-      this.startSimulation();
+      // ❌ Tidak perlu start ulang simulator
+      console.info('[SIMULATION] Enabled (device-view)');
     } else {
-      this.stopSimulation();
       this.initMQTT();
     }
   }
 
-  private startSimulation() {
-    this.simulationInterval = window.setInterval(() => {
-      this.runSensorSimulation();
-    }, 5000);
-    console.info('[SIMULATION] Started');
-  }
-
-  private stopSimulation() {
-    clearInterval(this.simulationInterval);
-    console.info('[SIMULATION] Stopped');
-  }
-
   private initMQTT() {
-    // MQTT integration
     console.info('[MQTT] Listening for device data...');
   }
 
   private handleDeviceClick(device: Device) {
     this.selectedDevice = device;
     this.modalEl?.open();
-  }
-
-  private runSensorSimulation() {
-    const newSensors = this.sensors.map((sensor) => {
-      if (
-        sensor.type !== 'sensor' ||
-        typeof sensor.value !== 'number' ||
-        typeof sensor.alarm_min !== 'number' ||
-        typeof sensor.alarm_max !== 'number'
-      ) {
-        return sensor;
-      }
-
-      const prevValue = sensor.value;
-      const min = sensor.alarm_min;
-      const max = sensor.alarm_max;
-
-      const newValue = parseFloat(
-        (Math.random() * (max - min + 10) + (min - 5)).toFixed(2)
-      );
-
-      const isAlarm = newValue < min || newValue > max;
-      const wasAlarm = !!sensor.lastAlarmActive;
-
-      let status_value: SimulatedDevice['status_value'] = 'normal';
-      if (newValue < min) status_value = 'low-alarm';
-      else if (newValue > max) status_value = 'high-alarm';
-
-      // 🪵 Debug trace
-      console.log(
-        `[SIM] ${sensor.name}: ${prevValue} → ${newValue} | wasAlarm: ${wasAlarm}, isAlarm: ${isAlarm}`
-      );
-
-      if (isAlarm && !wasAlarm) {
-        this.recordEvent(
-          sensor,
-          'alarm',
-          `Alarm! ${sensor.function} = ${newValue}`,
-          prevValue,
-          newValue
-        );
-      } else if (!isAlarm && wasAlarm) {
-        this.recordEvent(
-          sensor,
-          'info',
-          `${sensor.function} back to normal`,
-          prevValue,
-          newValue
-        );
-      }
-
-      return {
-        ...sensor,
-        value: newValue,
-        status_value,
-        lastAlarmActive: isAlarm, // INI YANG WAJIB DISIMPAN
-      };
-    });
-
-    // Simpan sensor yang sudah diperbarui secara utuh
-    this.sensors = newSensors;
   }
 
   private recordEvent(
