@@ -22,9 +22,26 @@ export class EventHistory extends LitElement {
   async connectedCallback() {
     super.connectedCallback();
     await loadEventLogData();
+    this.syncLogs(); // initial load
+    window.addEventListener('event-log-updated', this.syncLogs);
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    window.removeEventListener('event-log-updated', this.syncLogs);
+  }
+
+  // ✅ Sinkronisasi logs terbaru + logging
+  private syncLogs = () => {
+    const before = this.logs.length;
     this.logs = [...eventLogStore.items];
     this.filteredLogs = [...this.logs];
-  }
+    const after = this.logs.length;
+
+    if (after !== before) {
+      console.info(`[EVENT-HISTORY] Logs updated: ${before} → ${after}`);
+    }
+  };
 
   handleFilterChanged = (e: CustomEvent<{ filter: any }>) => {
     const { filter } = e.detail;

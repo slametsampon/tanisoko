@@ -114,6 +114,7 @@ class SimulatorService {
     if (eventLogStore.items.length > this.maxLogs) {
       eventLogStore.items.length = this.maxLogs;
     }
+    window.dispatchEvent(new CustomEvent('event-log-updated'));
   }
 }
 
