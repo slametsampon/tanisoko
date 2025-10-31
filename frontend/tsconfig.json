@@ -17,6 +17,6 @@
   },
   "include": [
     "src/**/*",
-    "../models/**/*" // pastikan models ikut
+    "src/models/**/*" // pastikan models ikut
   ]
 }

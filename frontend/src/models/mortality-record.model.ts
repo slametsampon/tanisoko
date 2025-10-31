@@ -1,7 +1,7 @@
 // models/mortality-record.model.ts
 
 import { z } from 'zod';
-import { UnitTypeEnum } from '../frontend/src/constants/enums';
+import { UnitTypeEnum } from '../constants/enums';
 
 export const MortalityRecordSchema = z.object({
   id: z.number(),

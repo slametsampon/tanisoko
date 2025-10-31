@@ -1,7 +1,7 @@
-// models/production-cycle.model.ts
+// frontend/src/models/production-cycle.model.ts
 
 import { z } from 'zod';
-import { DomainEnum, CycleStatusEnum } from '../frontend/src/constants/enums';
+import { DomainEnum, CycleStatusEnum } from 'src/constants/enums';
 
 export const ProductionCycleSchema = z.object({
   id: z.number(),

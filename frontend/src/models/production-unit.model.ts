@@ -1,7 +1,7 @@
-// models/production-unit.model.ts
+// frontend/src/models/production-unit.model.ts
 
 import { z } from 'zod';
-import { UnitTypeEnum } from '../frontend/src/constants/enums';
+import { UnitTypeEnum } from 'src/constants/enums';
 
 export const ProductionUnitSchema = z.object({
   id: z.number(),
