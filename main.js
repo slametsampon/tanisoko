@@ -17093,6 +17093,16 @@ var init_event_history = __esm({
         super(...arguments);
         this.logs = [];
         this.filteredLogs = [];
+        // ✅ Sinkronisasi logs terbaru + logging
+        this.syncLogs = () => {
+          const before = this.logs.length;
+          this.logs = [...eventLogStore.items];
+          this.filteredLogs = [...this.logs];
+          const after = this.logs.length;
+          if (after !== before) {
+            console.info(`[EVENT-HISTORY] Logs updated: ${before} \u2192 ${after}`);
+          }
+        };
         this.handleFilterChanged = (e8) => {
           const { filter } = e8.detail;
           const { category, source, from, to, keyword } = filter;
@@ -17116,8 +17126,12 @@ var init_event_history = __esm({
       async connectedCallback() {
         super.connectedCallback();
         await loadEventLogData();
-        this.logs = [...eventLogStore.items];
-        this.filteredLogs = [...this.logs];
+        this.syncLogs();
+        window.addEventListener("event-log-updated", this.syncLogs);
+      }
+      disconnectedCallback() {
+        super.disconnectedCallback();
+        window.removeEventListener("event-log-updated", this.syncLogs);
       }
       render() {
         return x`
@@ -17404,6 +17418,7 @@ var init_simulator_service = __esm({
         if (eventLogStore.items.length > this.maxLogs) {
           eventLogStore.items.length = this.maxLogs;
         }
+        window.dispatchEvent(new CustomEvent("event-log-updated"));
       }
     };
     simulatorService = new SimulatorService();
