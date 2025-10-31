@@ -2,7 +2,7 @@
 
 import { LitElement, html } from 'lit';
 import { customElement, property, query } from 'lit/decorators.js';
-import { Device } from '@/models';
+import { Device } from 'src/models';
 
 @customElement('device-detail-modal')
 export class DeviceDetailModal extends LitElement {
@@ -51,7 +51,9 @@ export class DeviceDetailModal extends LitElement {
           ${d.type === 'sensor'
             ? html`<div><strong>Nilai:</strong> ${d.value} ${d.unit}</div>`
             : html`<div>
-                <strong>Status:</strong> ${d.current_state?.toUpperCase()}
+                <strong>Status:</strong> ${String(
+                  d.current_state
+                ).toUpperCase()}
               </div>`}
           <div><strong>Mode:</strong> ${d.operation_mode}</div>
           <div>

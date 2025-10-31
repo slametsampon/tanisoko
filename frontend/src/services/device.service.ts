@@ -1,6 +1,6 @@
 // frontend/src/services/device.service.ts
 
-import { Device } from '@/models';
+import { Device } from 'src/models';
 import { getRepository } from 'src/repositories/mock/mockRepositoryFactory';
 import { BaseRepository } from 'src/repositories/interfaces/BaseRepository';
 

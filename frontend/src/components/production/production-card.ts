@@ -2,7 +2,7 @@
 
 import { LitElement, html, css } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import { ProductionCycle, ProductionUnit } from '@/models';
+import { ProductionCycle, ProductionUnit } from 'src/models';
 
 @customElement('production-card')
 export class ProductionCard extends LitElement {

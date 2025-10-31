@@ -1,4 +1,4 @@
-// models/fish-species.model.ts
+// frontend/src/models/fish-species.model.ts
 
 import { z } from 'zod';
 
@@ -16,3 +16,4 @@ export const FishSpeciesSchema = z.object({
   ideal_do_min: z.number(),
   ideal_tds_max: z.number(),
 });
+export type FishSpecies = z.infer<typeof FishSpeciesSchema>;

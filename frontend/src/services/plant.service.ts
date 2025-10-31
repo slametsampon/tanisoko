@@ -1,6 +1,6 @@
 // frontend/src/services/plant.service.ts
 
-import { Plant } from '@/models';
+import { Plant } from 'src/models';
 import { getRepository } from '../repositories/mock/mockRepositoryFactory';
 import { BaseRepository } from '../repositories/interfaces/BaseRepository';
 

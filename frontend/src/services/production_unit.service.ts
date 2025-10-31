@@ -1,6 +1,6 @@
 // frontend/src/services/production_unit.service.ts
 
-import { ProductionUnit } from '@/models';
+import { ProductionUnit } from 'src/models';
 import { getRepository } from 'src/repositories/mock/mockRepositoryFactory';
 import { BaseRepository } from 'src/repositories/interfaces/BaseRepository';
 

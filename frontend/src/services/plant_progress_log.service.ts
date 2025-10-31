@@ -1,6 +1,6 @@
 // frontend/src/services/plant_progress_log.service.ts
 
-import { PlantProgressLog } from '@/models';
+import { PlantProgressLog } from 'src/models';
 import { getRepository } from 'src/repositories/mock/mockRepositoryFactory';
 import { BaseRepository } from 'src/repositories/interfaces/BaseRepository';
 

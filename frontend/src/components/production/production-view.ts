@@ -2,9 +2,9 @@
 
 import { LitElement, html } from 'lit';
 import { customElement, state, query } from 'lit/decorators.js';
-import { production_unitService } from '../../services/production_unit.service';
-import { production_cycleService } from '../../services/production_cycle.service';
-import { ProductionUnit, ProductionCycle } from '@/models';
+import { production_unitService } from 'src/services/production_unit.service';
+import { production_cycleService } from 'src/services/production_cycle.service';
+import { ProductionUnit, ProductionCycle } from 'src/models';
 import './production-card.ts';
 import './production-detail-modal.ts';
 

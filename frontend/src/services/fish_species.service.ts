@@ -1,6 +1,6 @@
 // frontend/src/services/fish_species.service.ts
 
-import { FishSpecies } from '@/models';
+import { FishSpecies } from 'src/models';
 import { getRepository } from '../repositories/mock/mockRepositoryFactory';
 import { BaseRepository } from '../repositories/interfaces/BaseRepository';
 

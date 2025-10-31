@@ -2,7 +2,7 @@
 
 import { LitElement, html } from 'lit';
 import { customElement, property, query } from 'lit/decorators.js';
-import { ProductionUnit, ProductionCycle } from '@/models';
+import { ProductionUnit, ProductionCycle } from 'src/models';
 
 @customElement('production-detail-modal')
 export class ProductionDetailModal extends LitElement {

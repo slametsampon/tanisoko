@@ -1,6 +1,6 @@
 // frontend/src/services/mortality_record.service.ts
 
-import { MortalityRecord } from '@/models';
+import { MortalityRecord } from 'src/models';
 import { getRepository } from 'src/repositories/mock/mockRepositoryFactory';
 import { BaseRepository } from 'src/repositories/interfaces/BaseRepository';
 

@@ -1,6 +1,6 @@
 // frontend/src/services/production_cycle.service.ts
 
-import { ProductionCycle } from '@/models';
+import { ProductionCycle } from 'src/models';
 import { getRepository } from 'src/repositories/mock/mockRepositoryFactory';
 import { BaseRepository } from 'src/repositories/interfaces/BaseRepository';
 

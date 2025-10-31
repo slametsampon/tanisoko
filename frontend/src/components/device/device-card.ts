@@ -2,7 +2,7 @@
 
 import { LitElement, html } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import { Device } from '@/models';
+import { Device } from 'src/models';
 
 @customElement('device-card')
 export class DeviceCard extends LitElement {
@@ -22,7 +22,11 @@ export class DeviceCard extends LitElement {
     // 🔥 Cek alarm status (sensor only)
     let alarm = false;
     if (isSensor && typeof d.value === 'number') {
-      alarm = d.value < d.alarm_min || d.value > d.alarm_max;
+      alarm =
+        typeof d.value === 'number' &&
+        typeof d.alarm_min === 'number' &&
+        typeof d.alarm_max === 'number' &&
+        (d.value < d.alarm_min || d.value > d.alarm_max);
     }
 
     const stateInfo = isSensor
@@ -36,7 +40,9 @@ export class DeviceCard extends LitElement {
             </span>
           </div>
         `
-      : html`<div class="text-sm">⚙️ ${d.current_state?.toUpperCase()}</div>`;
+      : html`<div class="text-sm">
+          ⚙️ ${String(d.current_state).toUpperCase()}
+        </div>`;
 
     return html`
       <div
