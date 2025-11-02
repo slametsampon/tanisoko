@@ -2,6 +2,7 @@
 
 import { LitElement, html } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
+import { AuthService } from '../../services/auth-service';
 
 @customElement('app-nav')
 export class AppNav extends LitElement {
@@ -90,19 +91,29 @@ export class AppNav extends LitElement {
   }
 
   private renderLinks() {
+    const role = AuthService.getUser()?.role ?? 'guest';
+
     return html`
-      <a
-        href="/dashboard"
-        @click=${this._navigate}
-        class=${this.isActive('dashboard')}
-        >📊 Dashboard</a
-      >
-      <a
-        href="/konfigurasi_hmi"
-        @click=${this._navigate}
-        class=${this.isActive('konfigurasi_hmi')}
-        >⚙️ Konfigurasi</a
-      >
+      ${AuthService.hasRoleAtLeast('operator')
+        ? html`
+            <a
+              href="/dashboard"
+              @click=${this._navigate}
+              class=${this.isActive('dashboard')}
+              >📊 Dashboard</a
+            >
+          `
+        : null}
+      ${AuthService.hasRoleAtLeast('engineer')
+        ? html`
+            <a
+              href="/konfigurasi_hmi"
+              @click=${this._navigate}
+              class=${this.isActive('konfigurasi_hmi')}
+              >⚙️ Konfigurasi</a
+            >
+          `
+        : null}
     `;
   }
 }

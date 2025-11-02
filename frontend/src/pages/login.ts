@@ -110,7 +110,7 @@ export class PageLogin extends LitElement {
       <!-- Background -->
       <section
         class="relative min-h-[90vh] flex items-center justify-center overflow-hidden
-               bg-gradient-to-br from-emerald-50 via-white to-sky-50
+               bg-linear-to-br from-emerald-50 via-white to-sky-50
                dark:from-slate-900 dark:via-slate-900 dark:to-slate-800"
       >
         <!-- dekorasi blob -->
@@ -132,7 +132,7 @@ export class PageLogin extends LitElement {
           <div class="px-8 pt-8 text-center">
             <div
               class="mx-auto mb-4 grid place-items-center h-16 w-16 rounded-2xl
-                     bg-gradient-to-br from-emerald-500 to-sky-500 text-white shadow-lg shadow-emerald-500/30"
+                     bg-linear-to-br from-emerald-500 to-sky-500 text-white shadow-lg shadow-emerald-500/30"
             >
               <!-- user icon -->
               <svg class="h-8 w-8" viewBox="0 0 24 24" fill="none">
@@ -147,7 +147,7 @@ export class PageLogin extends LitElement {
             </div>
             <h1
               class="text-2xl md:text-3xl font-extrabold
-                       bg-gradient-to-r from-emerald-600 to-sky-600 bg-clip-text text-transparent
+                       bg-linear-to-r from-emerald-600 to-sky-600 bg-clip-text text-transparent
                        dark:from-emerald-400 dark:to-sky-400"
             >
               Selamat Datang Kembali 👋

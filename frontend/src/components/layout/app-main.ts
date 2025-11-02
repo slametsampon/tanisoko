@@ -3,7 +3,8 @@
 import { LitElement, html } from 'lit';
 import { customElement, property, state, query } from 'lit/decorators.js';
 import { Router } from '@vaadin/router';
-import { AuthService, PERMS, type Role } from '../../services/auth-service';
+import { AuthService } from '../../services/auth-service';
+import type { Role } from '../roles';
 import '../../pages/home';
 
 @customElement('app-main')
@@ -68,25 +69,29 @@ export class AppMain extends LitElement {
         },
       },
       {
-        path: '/konfigurasi/:model',
-        component: 'page-konfigurasi-model',
-        action: async (ctx) => {
-          console.log('[router] Route matched:', ctx.pathname);
-          console.log('[router] Params:', ctx.params);
-          await import('../../pages/konfigurasi/model-page');
+        path: '/konfigurasi_hmi',
+        component: 'page-konfigurasi',
+        action: async (ctx, commands) => {
+          const guard = requireRoleAtLeast('engineer')(ctx, commands);
+          if (guard) return guard;
+          await import('../../pages/konfigurasi_hmi');
         },
       },
       {
-        path: '/konfigurasi_hmi',
-        component: 'page-konfigurasi',
-        action: async () => {
-          await import('../../pages/konfigurasi_hmi');
+        path: '/konfigurasi/:model',
+        component: 'page-konfigurasi-model',
+        action: async (ctx, commands) => {
+          const guard = requireRoleAtLeast('engineer')(ctx, commands);
+          if (guard) return guard;
+          await import('../../pages/konfigurasi/model-page');
         },
       },
       {
         path: '/dashboard',
         component: 'page-dashboard',
-        action: async () => {
+        action: async (ctx, commands) => {
+          const guard = requireRoleAtLeast('operator')(ctx, commands);
+          if (guard) return guard;
           await import('../../pages/dashboard');
         },
       },

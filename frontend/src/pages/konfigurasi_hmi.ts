@@ -4,8 +4,9 @@ import { LitElement, html } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
 import { modelDefinitions } from 'src/config/model-definitions';
 
-import 'src/components/konfigurasi/sidebar-model-menu';
 import 'src/components/konfigurasi/dynamic-main-content';
+import 'src/components/konfigurasi/sidebar-menu-desktop';
+import 'src/components/konfigurasi/sidebar-menu-mobile';
 
 type ModelKey = keyof typeof modelDefinitions;
 
@@ -70,19 +71,19 @@ export class PageKonfigurasi extends LitElement {
   };
 
   render() {
-    console.log('[RENDER] isMenuOpen =', this.isMenuOpen); // 👈 Tambah ini
     return html`
       <section
         class="md:flex min-h-screen"
         @model-select=${this.handleModelSelect}
       >
-        <sidebar-model-menu
+        <!-- Sidebar Desktop -->
+        <sidebar-menu-desktop
           .currentModel=${this.currentModel}
-        ></sidebar-model-menu>
+        ></sidebar-menu-desktop>
 
-        <div class="flex-1 p-4 bg-gray-50 min-h-screen relative z-999">
-          <!-- Hamburger for mobile -->
-          <div class="md:hidden relative inline-block mb-4 z-999">
+        <div class="flex-1 p-4 bg-gray-50 min-h-screen relative z-0">
+          <!-- Hamburger (mobile only) -->
+          <div class="md:hidden relative inline-block mb-4">
             <button
               id="menuToggle"
               class="inline-flex items-center px-3 py-2 border rounded text-green-700 border-green-700 hover:bg-green-100"
@@ -97,10 +98,9 @@ export class PageKonfigurasi extends LitElement {
                     id="dropdownMenu"
                     class="absolute top-full left-0 bg-white border shadow-lg rounded mt-2 w-48 z-[999]"
                   >
-                    <sidebar-model-menu
+                    <sidebar-menu-mobile
                       .currentModel=${this.currentModel}
-                      .isMobile=${true}
-                    ></sidebar-model-menu>
+                    ></sidebar-menu-mobile>
                   </div>
                 `
               : null}

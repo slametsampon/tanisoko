@@ -1,4 +1,5 @@
 // frontend/src/components/layout/app-shell.ts
+
 import { LitElement, html } from 'lit';
 import { customElement, state, query } from 'lit/decorators.js';
 import { provide } from '@lit/context';
