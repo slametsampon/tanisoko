@@ -16391,18 +16391,19 @@ var init_sidebar_model_menu = __esm({
       constructor() {
         super(...arguments);
         this.currentModel = null;
+        this.isMobile = false;
       }
+      // <-- NEW
       createRenderRoot() {
         return this;
       }
-      handleNavClick(model) {
-        this.dispatchEvent(
-          new CustomEvent("model-select", {
-            detail: { model },
-            bubbles: true,
-            composed: true
-          })
-        );
+      render() {
+        const baseClass = this.isMobile ? "block border px-4 py-2 w-full z-50" : "hidden md:block border-r-2 px-4 py-6 max-w-[180px] z-50";
+        return x`
+      <div class="${baseClass}">
+        <nav class="space-y-2">${this.renderMenuItems()}</nav>
+      </div>
+    `;
       }
       renderMenuItems() {
         return Object.keys(serviceMap).map(
@@ -16416,18 +16417,22 @@ var init_sidebar_model_menu = __esm({
       `
         );
       }
-      render() {
-        return x`
-      <!-- Sidebar -->
-      <div class="hidden md:block border-r-2 px-4 py-6 max-w-[180px]">
-        <nav class="space-y-2">${this.renderMenuItems()}</nav>
-      </div>
-    `;
+      handleNavClick(model) {
+        this.dispatchEvent(
+          new CustomEvent("model-select", {
+            detail: { model },
+            bubbles: true,
+            composed: true
+          })
+        );
       }
     };
     __decorateClass([
       n4({ type: String })
     ], SidebarModelMenu.prototype, "currentModel", 2);
+    __decorateClass([
+      n4({ type: Boolean })
+    ], SidebarModelMenu.prototype, "isMobile", 2);
     SidebarModelMenu = __decorateClass([
       t3("sidebar-model-menu")
     ], SidebarModelMenu);
@@ -16467,7 +16472,7 @@ var init_dynamic_main_content = __esm({
       render() {
         if (!this.model) {
           return x`
-        <main class="bg-white rounded-xl shadow p-4">
+        <main class="bg-white rounded-xl shadow p-4 z-0">
           <h2 class="text-2xl font-bold mb-4">📁 Panel Konfigurasi Sistem</h2>
           <p class="text-gray-700 mb-2">
             Selamat datang di halaman konfigurasi sistem IoT. Silakan pilih
@@ -16540,6 +16545,7 @@ var init_konfigurasi_hmi = __esm({
         this.syncModelFromPath();
         window.addEventListener("popstate", this.syncModelFromPath);
         window.addEventListener("click", this.handleOutsideClick);
+        console.log("[INIT] PageKonfigurasi connected");
       }
       disconnectedCallback() {
         window.removeEventListener("popstate", this.syncModelFromPath);
@@ -16556,8 +16562,10 @@ var init_konfigurasi_hmi = __esm({
       toggleMenu(e8) {
         e8.stopPropagation();
         this.isMenuOpen = !this.isMenuOpen;
+        console.log("[TOGGLE] Menu state:", this.isMenuOpen);
       }
       render() {
+        console.log("[RENDER] isMenuOpen =", this.isMenuOpen);
         return x`
       <section
         class="md:flex min-h-screen"
@@ -16567,9 +16575,9 @@ var init_konfigurasi_hmi = __esm({
           .currentModel=${this.currentModel}
         ></sidebar-model-menu>
 
-        <div class="flex-1 p-4 bg-gray-50 min-h-screen relative">
+        <div class="flex-1 p-4 bg-gray-50 min-h-screen relative z-999">
           <!-- Hamburger for mobile -->
-          <div class="md:hidden relative inline-block mb-4">
+          <div class="md:hidden relative inline-block mb-4 z-999">
             <button
               id="menuToggle"
               class="inline-flex items-center px-3 py-2 border rounded text-green-700 border-green-700 hover:bg-green-100"
@@ -16581,10 +16589,11 @@ var init_konfigurasi_hmi = __esm({
             ${this.isMenuOpen ? x`
                   <div
                     id="dropdownMenu"
-                    class="absolute top-full left-0 bg-white border shadow-lg rounded mt-2 w-48 z-50"
+                    class="absolute top-full left-0 bg-white border shadow-lg rounded mt-2 w-48 z-[999]"
                   >
                     <sidebar-model-menu
                       .currentModel=${this.currentModel}
+                      .isMobile=${true}
                     ></sidebar-model-menu>
                   </div>
                 ` : null}
@@ -18199,7 +18208,7 @@ var AppFooter = class extends i4 {
           <div class="flex items-center gap-2">
             <span class="text-base">©</span>
             <span>
-              ${(/* @__PURE__ */ new Date()).getFullYear()} TaniSoko v${"1.6.0"} — All
+              ${(/* @__PURE__ */ new Date()).getFullYear()} TaniSoko v${"1.6.2"} — All
               rights reserved.
             </span>
           </div>
