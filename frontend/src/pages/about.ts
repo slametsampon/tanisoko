@@ -1,3 +1,5 @@
+// frontend/src/pages/about.ts
+
 import { LitElement, html } from 'lit';
 import { customElement } from 'lit/decorators.js';
 
@@ -27,6 +29,29 @@ export class AboutPage extends LitElement {
           Kami berkomitmen untuk menghadirkan solusi yang dapat diandalkan,
           transparan, dan berbasis teknologi terbuka. Setiap bagian sistem ini
           dikembangkan melalui pendekatan modular dan riset teknologi terbaru.
+        </p>
+
+        <h2 class="text-xl font-semibold text-green-700 mt-8 mb-4">
+          🌾 Makna Filosofis Nama "TaniSoko"
+        </h2>
+
+        <p class="text-base text-gray-700 leading-relaxed mb-4">
+          <span class="font-semibold text-green-600">TaniSoko</span> berasal
+          dari dua kata: <span class="italic font-medium">"Tani"</span> yang
+          dalam Bahasa Jawa dan Indonesia berarti
+          <span class="italic">bertani</span> — melambangkan aktivitas, profesi,
+          dan domain utama sistem kami, yaitu agrikultur berbasis teknologi.
+        </p>
+
+        <p class="text-base text-gray-700 leading-relaxed mb-4">
+          Kata kedua, <span class="italic font-medium">"Soko"</span>, dalam
+          Bahasa Jawa berarti <span class="italic">tiang</span>,
+          <span class="italic">penyangga</span>, atau
+          <span class="italic">fondasi</span>. Nama ini dipilih untuk
+          merepresentasikan visi kami bahwa sistem
+          <span class="font-semibold text-green-600">TaniSoko</span> menjadi
+          fondasi yang menopang transformasi dunia pertanian modern, berbasis
+          data dan otomatisasi.
         </p>
 
         <h2 class="text-xl font-semibold text-green-700 mt-8 mb-4">
