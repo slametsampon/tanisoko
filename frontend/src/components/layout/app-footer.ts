@@ -36,7 +36,7 @@ export class AppFooter extends LitElement {
             >
             <span class="text-gray-400">|</span>
             <a
-              href="https://github.com/slametsampon/spa-template"
+              href="https://github.com/slametsampon/tanisoko"
               target="_blank"
               rel="noopener"
               class="text-blue-600 dark:text-blue-400 hover:underline hover:text-blue-700 dark:hover:text-blue-300 transition"
