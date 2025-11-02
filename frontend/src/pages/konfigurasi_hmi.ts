@@ -26,6 +26,7 @@ export class PageKonfigurasi extends LitElement {
     this.syncModelFromPath();
     window.addEventListener('popstate', this.syncModelFromPath);
     window.addEventListener('click', this.handleOutsideClick);
+    console.log('[INIT] PageKonfigurasi connected');
   }
 
   disconnectedCallback() {
@@ -55,6 +56,7 @@ export class PageKonfigurasi extends LitElement {
   private toggleMenu(e: Event) {
     e.stopPropagation();
     this.isMenuOpen = !this.isMenuOpen;
+    console.log('[TOGGLE] Menu state:', this.isMenuOpen); // 👈 Tambah ini
   }
 
   private handleOutsideClick = (e: MouseEvent) => {
@@ -68,6 +70,7 @@ export class PageKonfigurasi extends LitElement {
   };
 
   render() {
+    console.log('[RENDER] isMenuOpen =', this.isMenuOpen); // 👈 Tambah ini
     return html`
       <section
         class="md:flex min-h-screen"
@@ -77,9 +80,9 @@ export class PageKonfigurasi extends LitElement {
           .currentModel=${this.currentModel}
         ></sidebar-model-menu>
 
-        <div class="flex-1 p-4 bg-gray-50 min-h-screen relative">
+        <div class="flex-1 p-4 bg-gray-50 min-h-screen relative z-999">
           <!-- Hamburger for mobile -->
-          <div class="md:hidden relative inline-block mb-4">
+          <div class="md:hidden relative inline-block mb-4 z-999">
             <button
               id="menuToggle"
               class="inline-flex items-center px-3 py-2 border rounded text-green-700 border-green-700 hover:bg-green-100"
@@ -92,10 +95,11 @@ export class PageKonfigurasi extends LitElement {
               ? html`
                   <div
                     id="dropdownMenu"
-                    class="absolute top-full left-0 bg-white border shadow-lg rounded mt-2 w-48 z-50"
+                    class="absolute top-full left-0 bg-white border shadow-lg rounded mt-2 w-48 z-[999]"
                   >
                     <sidebar-model-menu
                       .currentModel=${this.currentModel}
+                      .isMobile=${true}
                     ></sidebar-model-menu>
                   </div>
                 `

@@ -7,19 +7,22 @@ import { serviceMap } from 'src/services/service-map';
 @customElement('sidebar-model-menu')
 export class SidebarModelMenu extends LitElement {
   @property({ type: String }) currentModel: string | null = null;
+  @property({ type: Boolean }) isMobile = false; // <-- NEW
 
   createRenderRoot() {
     return this;
   }
 
-  private handleNavClick(model: string) {
-    this.dispatchEvent(
-      new CustomEvent('model-select', {
-        detail: { model },
-        bubbles: true,
-        composed: true,
-      })
-    );
+  render() {
+    const baseClass = this.isMobile
+      ? 'block border px-4 py-2 w-full z-50' // Mobile visible
+      : 'hidden md:block border-r-2 px-4 py-6 max-w-[180px] z-50'; // Desktop only
+
+    return html`
+      <div class="${baseClass}">
+        <nav class="space-y-2">${this.renderMenuItems()}</nav>
+      </div>
+    `;
   }
 
   private renderMenuItems() {
@@ -38,12 +41,13 @@ export class SidebarModelMenu extends LitElement {
     );
   }
 
-  render() {
-    return html`
-      <!-- Sidebar -->
-      <div class="hidden md:block border-r-2 px-4 py-6 max-w-[180px]">
-        <nav class="space-y-2">${this.renderMenuItems()}</nav>
-      </div>
-    `;
+  private handleNavClick(model: string) {
+    this.dispatchEvent(
+      new CustomEvent('model-select', {
+        detail: { model },
+        bubbles: true,
+        composed: true,
+      })
+    );
   }
 }

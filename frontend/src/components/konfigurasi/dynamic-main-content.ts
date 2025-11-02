@@ -33,7 +33,7 @@ export class DynamicMainContent extends LitElement {
   render() {
     if (!this.model) {
       return html`
-        <main class="bg-white rounded-xl shadow p-4">
+        <main class="bg-white rounded-xl shadow p-4 z-0">
           <h2 class="text-2xl font-bold mb-4">📁 Panel Konfigurasi Sistem</h2>
           <p class="text-gray-700 mb-2">
             Selamat datang di halaman konfigurasi sistem IoT. Silakan pilih
