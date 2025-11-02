@@ -1654,6 +1654,29 @@ var init_about = __esm({
         </p>
 
         <h2 class="text-xl font-semibold text-green-700 mt-8 mb-4">
+          🌾 Makna Filosofis Nama "TaniSoko"
+        </h2>
+
+        <p class="text-base text-gray-700 leading-relaxed mb-4">
+          <span class="font-semibold text-green-600">TaniSoko</span> berasal
+          dari dua kata: <span class="italic font-medium">"Tani"</span> yang
+          dalam Bahasa Jawa dan Indonesia berarti
+          <span class="italic">bertani</span> — melambangkan aktivitas, profesi,
+          dan domain utama sistem kami, yaitu agrikultur berbasis teknologi.
+        </p>
+
+        <p class="text-base text-gray-700 leading-relaxed mb-4">
+          Kata kedua, <span class="italic font-medium">"Soko"</span>, dalam
+          Bahasa Jawa berarti <span class="italic">tiang</span>,
+          <span class="italic">penyangga</span>, atau
+          <span class="italic">fondasi</span>. Nama ini dipilih untuk
+          merepresentasikan visi kami bahwa sistem
+          <span class="font-semibold text-green-600">TaniSoko</span> menjadi
+          fondasi yang menopang transformasi dunia pertanian modern, berbasis
+          data dan otomatisasi.
+        </p>
+
+        <h2 class="text-xl font-semibold text-green-700 mt-8 mb-4">
           Sumber Daya & Teknologi
         </h2>
 
@@ -18261,7 +18284,7 @@ var AppFooter = class extends i4 {
           <div class="flex items-center gap-2">
             <span class="text-base">©</span>
             <span>
-              ${(/* @__PURE__ */ new Date()).getFullYear()} TaniSoko v${"1.7.1"} — All
+              ${(/* @__PURE__ */ new Date()).getFullYear()} TaniSoko v${"1.8.0"} — All
               rights reserved.
             </span>
           </div>
