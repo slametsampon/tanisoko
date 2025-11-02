@@ -29,6 +29,7 @@ export class AppNav extends LitElement {
     // jika klik di luar komponen app-nav → tutup submenu
     if (!this.contains(target)) {
       this.produksiOpen = false;
+      this.menuOpen = false;
     }
   };
 
