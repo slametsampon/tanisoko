@@ -1252,7 +1252,7 @@ var init_login = __esm({
       <!-- Background -->
       <section
         class="relative min-h-[90vh] flex items-center justify-center overflow-hidden
-               bg-gradient-to-br from-emerald-50 via-white to-sky-50
+               bg-linear-to-br from-emerald-50 via-white to-sky-50
                dark:from-slate-900 dark:via-slate-900 dark:to-slate-800"
       >
         <!-- dekorasi blob -->
@@ -1274,7 +1274,7 @@ var init_login = __esm({
           <div class="px-8 pt-8 text-center">
             <div
               class="mx-auto mb-4 grid place-items-center h-16 w-16 rounded-2xl
-                     bg-gradient-to-br from-emerald-500 to-sky-500 text-white shadow-lg shadow-emerald-500/30"
+                     bg-linear-to-br from-emerald-500 to-sky-500 text-white shadow-lg shadow-emerald-500/30"
             >
               <!-- user icon -->
               <svg class="h-8 w-8" viewBox="0 0 24 24" fill="none">
@@ -1289,7 +1289,7 @@ var init_login = __esm({
             </div>
             <h1
               class="text-2xl md:text-3xl font-extrabold
-                       bg-gradient-to-r from-emerald-600 to-sky-600 bg-clip-text text-transparent
+                       bg-linear-to-r from-emerald-600 to-sky-600 bg-clip-text text-transparent
                        dark:from-emerald-400 dark:to-sky-400"
             >
               Selamat Datang Kembali 👋
@@ -16379,66 +16379,6 @@ var init_model_page = __esm({
   }
 });
 
-// src/components/konfigurasi/sidebar-model-menu.ts
-var SidebarModelMenu;
-var init_sidebar_model_menu = __esm({
-  "src/components/konfigurasi/sidebar-model-menu.ts"() {
-    "use strict";
-    init_lit();
-    init_decorators();
-    init_service_map();
-    SidebarModelMenu = class extends i4 {
-      constructor() {
-        super(...arguments);
-        this.currentModel = null;
-        this.isMobile = false;
-      }
-      // <-- NEW
-      createRenderRoot() {
-        return this;
-      }
-      render() {
-        const baseClass = this.isMobile ? "block border px-4 py-2 w-full z-50" : "hidden md:block border-r-2 px-4 py-6 max-w-[180px] z-50";
-        return x`
-      <div class="${baseClass}">
-        <nav class="space-y-2">${this.renderMenuItems()}</nav>
-      </div>
-    `;
-      }
-      renderMenuItems() {
-        return Object.keys(serviceMap).map(
-          (key) => x`
-        <button
-          class="block w-full text-left p-2 rounded hover:bg-green-100 capitalize ${this.currentModel === key ? "bg-green-200 font-semibold" : ""}"
-          @click=${() => this.handleNavClick(key)}
-        >
-          🧩 ${key.replace(/_/g, " ")}
-        </button>
-      `
-        );
-      }
-      handleNavClick(model) {
-        this.dispatchEvent(
-          new CustomEvent("model-select", {
-            detail: { model },
-            bubbles: true,
-            composed: true
-          })
-        );
-      }
-    };
-    __decorateClass([
-      n4({ type: String })
-    ], SidebarModelMenu.prototype, "currentModel", 2);
-    __decorateClass([
-      n4({ type: Boolean })
-    ], SidebarModelMenu.prototype, "isMobile", 2);
-    SidebarModelMenu = __decorateClass([
-      t3("sidebar-model-menu")
-    ], SidebarModelMenu);
-  }
-});
-
 // src/components/konfigurasi/dynamic-main-content.ts
 var DynamicMainContent;
 var init_dynamic_main_content = __esm({
@@ -16503,6 +16443,112 @@ var init_dynamic_main_content = __esm({
   }
 });
 
+// src/components/konfigurasi/sidebar-menu-desktop.ts
+var SidebarMenuDesktop;
+var init_sidebar_menu_desktop = __esm({
+  "src/components/konfigurasi/sidebar-menu-desktop.ts"() {
+    "use strict";
+    init_lit();
+    init_decorators();
+    init_service_map();
+    SidebarMenuDesktop = class extends i4 {
+      constructor() {
+        super(...arguments);
+        this.currentModel = null;
+      }
+      createRenderRoot() {
+        return this;
+      }
+      handleNavClick(model) {
+        this.dispatchEvent(
+          new CustomEvent("model-select", {
+            detail: { model },
+            bubbles: true,
+            composed: true
+          })
+        );
+      }
+      render() {
+        return x`
+      <div class="hidden md:block border-r-2 px-4 py-6 max-w-[180px] z-50">
+        <nav class="space-y-2">
+          ${Object.keys(serviceMap).map(
+          (key) => x`
+              <button
+                class="block w-full text-left p-2 rounded hover:bg-green-100 capitalize ${this.currentModel === key ? "bg-green-200 font-semibold" : ""}"
+                @click=${() => this.handleNavClick(key)}
+              >
+                🧩 ${key.replace(/_/g, " ")}
+              </button>
+            `
+        )}
+        </nav>
+      </div>
+    `;
+      }
+    };
+    __decorateClass([
+      n4({ type: String })
+    ], SidebarMenuDesktop.prototype, "currentModel", 2);
+    SidebarMenuDesktop = __decorateClass([
+      t3("sidebar-menu-desktop")
+    ], SidebarMenuDesktop);
+  }
+});
+
+// src/components/konfigurasi/sidebar-menu-mobile.ts
+var SidebarMenuMobile;
+var init_sidebar_menu_mobile = __esm({
+  "src/components/konfigurasi/sidebar-menu-mobile.ts"() {
+    "use strict";
+    init_lit();
+    init_decorators();
+    init_service_map();
+    SidebarMenuMobile = class extends i4 {
+      constructor() {
+        super(...arguments);
+        this.currentModel = null;
+      }
+      createRenderRoot() {
+        return this;
+      }
+      handleNavClick(model) {
+        this.dispatchEvent(
+          new CustomEvent("model-select", {
+            detail: { model },
+            bubbles: true,
+            composed: true
+          })
+        );
+      }
+      render() {
+        return x`
+      <div class="block md:hidden px-2 py-2 w-full">
+        <nav class="space-y-2">
+          ${Object.keys(serviceMap).map(
+          (key) => x`
+              <button
+                class="block w-full text-left p-2 rounded hover:bg-green-100 capitalize ${this.currentModel === key ? "bg-green-200 font-semibold" : ""}"
+                @click=${() => this.handleNavClick(key)}
+              >
+                🧩 ${key.replace(/_/g, " ")}
+              </button>
+            `
+        )}
+        </nav>
+      </div>
+    `;
+      }
+    };
+    __decorateClass([
+      n4({ type: String })
+    ], SidebarMenuMobile.prototype, "currentModel", 2);
+    SidebarMenuMobile = __decorateClass([
+      t3("sidebar-menu-mobile")
+    ], SidebarMenuMobile);
+  }
+});
+
 // src/pages/konfigurasi_hmi.ts
 var konfigurasi_hmi_exports = {};
 __export(konfigurasi_hmi_exports, {
@@ -16515,8 +16561,9 @@ var init_konfigurasi_hmi = __esm({
     init_lit();
     init_decorators();
     init_model_definitions();
-    init_sidebar_model_menu();
     init_dynamic_main_content();
+    init_sidebar_menu_desktop();
+    init_sidebar_menu_mobile();
     PageKonfigurasi = class extends i4 {
       constructor() {
         super(...arguments);
@@ -16565,19 +16612,19 @@ var init_konfigurasi_hmi = __esm({
         console.log("[TOGGLE] Menu state:", this.isMenuOpen);
       }
       render() {
-        console.log("[RENDER] isMenuOpen =", this.isMenuOpen);
         return x`
       <section
         class="md:flex min-h-screen"
         @model-select=${this.handleModelSelect}
       >
-        <sidebar-model-menu
+        <!-- Sidebar Desktop -->
+        <sidebar-menu-desktop
           .currentModel=${this.currentModel}
-        ></sidebar-model-menu>
+        ></sidebar-menu-desktop>
 
-        <div class="flex-1 p-4 bg-gray-50 min-h-screen relative z-999">
-          <!-- Hamburger for mobile -->
-          <div class="md:hidden relative inline-block mb-4 z-999">
+        <div class="flex-1 p-4 bg-gray-50 min-h-screen relative z-0">
+          <!-- Hamburger (mobile only) -->
+          <div class="md:hidden relative inline-block mb-4">
             <button
               id="menuToggle"
               class="inline-flex items-center px-3 py-2 border rounded text-green-700 border-green-700 hover:bg-green-100"
@@ -16591,10 +16638,9 @@ var init_konfigurasi_hmi = __esm({
                     id="dropdownMenu"
                     class="absolute top-full left-0 bg-white border shadow-lg rounded mt-2 w-48 z-[999]"
                   >
-                    <sidebar-model-menu
+                    <sidebar-menu-mobile
                       .currentModel=${this.currentModel}
-                      .isMobile=${true}
-                    ></sidebar-model-menu>
+                    ></sidebar-menu-mobile>
                   </div>
                 ` : null}
           </div>
@@ -17845,6 +17891,7 @@ init_decorators();
 // src/components/layout/app-nav.ts
 init_lit();
 init_decorators();
+init_auth_service();
 var AppNav = class extends i4 {
   constructor() {
     super(...arguments);
@@ -17920,19 +17967,24 @@ var AppNav = class extends i4 {
     `;
   }
   renderLinks() {
+    const role = AuthService.getUser()?.role ?? "guest";
     return x`
-      <a
-        href="/dashboard"
-        @click=${this._navigate}
-        class=${this.isActive("dashboard")}
-        >📊 Dashboard</a
-      >
-      <a
-        href="/konfigurasi_hmi"
-        @click=${this._navigate}
-        class=${this.isActive("konfigurasi_hmi")}
-        >⚙️ Konfigurasi</a
-      >
+      ${AuthService.hasRoleAtLeast("operator") ? x`
+            <a
+              href="/dashboard"
+              @click=${this._navigate}
+              class=${this.isActive("dashboard")}
+              >📊 Dashboard</a
+            >
+          ` : null}
+      ${AuthService.hasRoleAtLeast("engineer") ? x`
+            <a
+              href="/konfigurasi_hmi"
+              @click=${this._navigate}
+              class=${this.isActive("konfigurasi_hmi")}
+              >⚙️ Konfigurasi</a
+            >
+          ` : null}
     `;
   }
 };
@@ -18208,7 +18260,7 @@ var AppFooter = class extends i4 {
           <div class="flex items-center gap-2">
             <span class="text-base">©</span>
             <span>
-              ${(/* @__PURE__ */ new Date()).getFullYear()} TaniSoko v${"1.6.2"} — All
+              ${(/* @__PURE__ */ new Date()).getFullYear()} TaniSoko v${"1.7.0"} — All
               rights reserved.
             </span>
           </div>
@@ -20305,25 +20357,29 @@ var AppMain = class extends i4 {
         }
       },
       {
-        path: "/konfigurasi/:model",
-        component: "page-konfigurasi-model",
-        action: async (ctx) => {
-          console.log("[router] Route matched:", ctx.pathname);
-          console.log("[router] Params:", ctx.params);
-          await Promise.resolve().then(() => (init_model_page(), model_page_exports));
+        path: "/konfigurasi_hmi",
+        component: "page-konfigurasi",
+        action: async (ctx, commands) => {
+          const guard = requireRoleAtLeast("engineer")(ctx, commands);
+          if (guard) return guard;
+          await Promise.resolve().then(() => (init_konfigurasi_hmi(), konfigurasi_hmi_exports));
         }
       },
       {
-        path: "/konfigurasi_hmi",
-        component: "page-konfigurasi",
-        action: async () => {
-          await Promise.resolve().then(() => (init_konfigurasi_hmi(), konfigurasi_hmi_exports));
+        path: "/konfigurasi/:model",
+        component: "page-konfigurasi-model",
+        action: async (ctx, commands) => {
+          const guard = requireRoleAtLeast("engineer")(ctx, commands);
+          if (guard) return guard;
+          await Promise.resolve().then(() => (init_model_page(), model_page_exports));
         }
       },
       {
         path: "/dashboard",
         component: "page-dashboard",
-        action: async () => {
+        action: async (ctx, commands) => {
+          const guard = requireRoleAtLeast("operator")(ctx, commands);
+          if (guard) return guard;
           await Promise.resolve().then(() => (init_dashboard(), dashboard_exports));
         }
       },
