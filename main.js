@@ -17902,6 +17902,7 @@ var AppNav = class extends i4 {
       const target = e8.target;
       if (!this.contains(target)) {
         this.produksiOpen = false;
+        this.menuOpen = false;
       }
     };
   }
@@ -18260,7 +18261,7 @@ var AppFooter = class extends i4 {
           <div class="flex items-center gap-2">
             <span class="text-base">©</span>
             <span>
-              ${(/* @__PURE__ */ new Date()).getFullYear()} TaniSoko v${"1.7.0"} — All
+              ${(/* @__PURE__ */ new Date()).getFullYear()} TaniSoko v${"1.7.1"} — All
               rights reserved.
             </span>
           </div>
