@@ -1,7 +1,7 @@
 {
   "name": "tanisoko",
   "private": true,
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Platform for building and running agro apps",
   "workspaces": [
     "frontend",
@@ -23,6 +23,7 @@
     "concurrently": "^9.2.0",
     "cross-env": "^10.0.0",
     "rimraf": "^6.0.1",
+    "tsconfig-paths": "^4.2.0",
     "typescript": "^5.9.2"
   }
 }

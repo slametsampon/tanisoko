@@ -1,6 +1,6 @@
 // frontend/esbuild.config.js
 
-const esbuild = require('esbuild');
+require('tsconfig-paths').register(); // 👈 Ini pentingconst esbuild = require('esbuild');
 const path = require('path');
 const fs = require('fs');
 const mime = require('mime');
