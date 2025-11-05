@@ -1,12 +1,16 @@
 // backend/index.ts
 
 import Fastify from 'fastify';
-import controllerRoutes from './src/routes/controller.route';
+import { controllerRoutes } from './src/routes/controller.route.js';
 
 const app = Fastify();
 
 app.register(controllerRoutes);
 
-app.listen({ port: 3000 }, () => {
-  console.log('🚀 Fastify server is running at http://localhost:3000');
+app.listen({ port: 3000 }, (err, address) => {
+  if (err) {
+    console.error(err);
+    process.exit(1);
+  }
+  console.log(`🚀 Server ready at ${address}`);
 });

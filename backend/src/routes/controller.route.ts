@@ -1,9 +1,12 @@
 // backend/src/routes/controller.route.ts
 
 import { FastifyInstance } from 'fastify';
+import {
+  getControllers,
+  createController,
+} from '../controllers/controller.controller.js';
 
-export default async function controllerRoutes(app: FastifyInstance) {
-  app.get('/api/controllers', async (request, reply) => {
-    return { data: [] }; // Dummy response
-  });
+export async function controllerRoutes(app: FastifyInstance) {
+  app.get('/api/controllers', getControllers);
+  app.post('/api/controllers', createController);
 }
