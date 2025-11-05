@@ -1,9 +1,9 @@
 // frontend/esbuild.config.js
 
-require('tsconfig-paths').register(); // 👈 Ini pentingconst esbuild = require('esbuild');
 const path = require('path');
 const fs = require('fs');
 const mime = require('mime');
+require('tsconfig-paths').register(); // 👈 Ini pentingconst esbuild = require('esbuild');
 
 const isDev = process.env.NODE_ENV === 'development';
 const isPreRelease = process.env.NODE_ENV === 'pre-release';
