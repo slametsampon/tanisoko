@@ -1,4 +1,4 @@
-// models/mortality-record.model.ts
+// shared/models/mortality-record.model.ts
 
 import { z } from 'zod';
 import { UnitTypeEnum } from '../constants/enums';

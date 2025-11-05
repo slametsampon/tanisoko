@@ -2,13 +2,13 @@
   - [🧭 FASE 1 – Fondasi \& Definisi Domain](#-fase-1--fondasi--definisi-domain)
     - [🎯 Tujuan:](#-tujuan)
     - [✅ Task List](#-task-list)
-  - [🧱 FASE 2 – Setup Monorepo \& Mock System](#-fase-2--setup-monorepo--mock-system)
+  - [✅ **FASE 2 – Setup Monorepo \& Mock System (Update)**](#-fase-2--setup-monorepo--mock-system-update)
     - [🎯 Tujuan:](#-tujuan-1)
     - [✅ Task List](#-task-list-1)
   - [🧩 FASE 3 – Desain Frontend Modular (CDD)](#-fase-3--desain-frontend-modular-cdd)
     - [🎯 Tujuan:](#-tujuan-2)
     - [✅ Task List](#-task-list-2)
-  - [🧠 FASE 4 – Rancang \& Implementasi Backend API](#-fase-4--rancang--implementasi-backend-api)
+  - [✅ **FASE 4 – Rancang \& Implementasi Backend API (Update)**](#-fase-4--rancang--implementasi-backend-api-update)
     - [🎯 Tujuan:](#-tujuan-3)
     - [✅ Task List](#-task-list-3)
   - [🔌 FASE 5 – Firmware ESP32 \& Integrasi MQTT](#-fase-5--firmware-esp32--integrasi-mqtt)
@@ -57,39 +57,45 @@ Menetapkan visi, cakupan domain, dan struktur data dasar sistem.
 
 ---
 
-## 🧱 FASE 2 – Setup Monorepo & Mock System
+## ✅ **FASE 2 – Setup Monorepo & Mock System (Update)**
 
 > ⏳ Minggu 3–4
 
 ### 🎯 Tujuan:
 
-Membuat struktur monorepo dan mulai pengembangan frontend berbasis mock.
+Membuat struktur monorepo dan mulai pengembangan mock system dengan simulasi backend–MQTT–frontend (tanpa ESP).
 
 ### ✅ Task List
 
-- [ ] Inisialisasi project monorepo
-- [ ] Buat struktur direktori:
+- [x] Inisialisasi project monorepo (`npm init -w`)
 
-```
+- [x] Buat struktur direktori:
 
-/firmware
-/backend
-/frontend
-/shared
-/mqtt-test
-/docs
+  ```txt
+  /firmware         # ESP32 (belum digunakan)
+  /backend          # Fastify + MQTT (publish dummy)
+  /frontend         # LitElement + Tailwind + esbuild
+  /shared           # (opsional) Type definisi bersama
+  /mqtt-test        # Skrip MQTT CLI, playground
+  /docs             # Dokumentasi
+  ```
 
-```
+- [x] Setup tooling awal:
 
-- [ ] Setup tooling awal:
-- [ ] `esbuild` untuk frontend
-- [ ] `tsconfig.json` shared
-- [ ] Git init + .gitignore + README.md
-- [ ] Buat mock data `.json` untuk:
-- [ ] List sensor
-- [ ] Log historis
-- [ ] Status perangkat
-- [ ] Buat service layer frontend (`services/api.ts`) dengan `fetch()` ke mock
+  - [x] `esbuild` untuk frontend
+  - [x] `tsconfig.base.json` untuk shared base
+  - [x] Git init + .gitignore + README.md
+
+- [x] Setup broker MQTT lokal (Mosquitto)
+
+  - [x] Aktifkan `listener 9001` untuk WebSocket
+  - [x] Test dengan `mosquitto_pub` / `mosquitto_sub`
+
+- [x] Buat mock publisher MQTT di `backend/src/mqtt/publisher.ts`
+
+- [x] Setup client MQTT di frontend (`services/mqtt-client.ts`)
+
+- [x] Uji subscribe data dummy di UI
 
 ---
 
@@ -119,27 +125,46 @@ Membangun UI berbasis komponen dengan dummy data & simulasi interaksi.
 
 ---
 
-## 🧠 FASE 4 – Rancang & Implementasi Backend API
+## ✅ **FASE 4 – Rancang & Implementasi Backend API (Update)**
 
 > ⏳ Minggu 7–8
 
 ### 🎯 Tujuan:
 
-Membuat server Fastify dengan endpoint REST & MQTT bridge.
+Mengembangkan backend Fastify sebagai bridge API dan penghasil data dummy via MQTT.
 
 ### ✅ Task List
 
-- [ ] Setup project backend dengan TypeScript
-- [ ] Setup Fastify + Plugin dasar
-- [ ] Buat koneksi SQLite + helper fungsi CRUD
-- [ ] Implementasi endpoint:
-- [ ] `GET /devices`
-- [ ] `POST /control`
-- [ ] `GET /logs`
-- [ ] Tambah MQTT bridge:
-- [ ] Subscribe topik sensor
-- [ ] Publish ke control topic
-- [ ] Tes komunikasi ke MQTT lokal (Mosquitto)
+- [x] Setup project backend dengan TypeScript + `mqtt`
+
+- [x] Struktur modular:
+
+  ```txt
+  backend/
+  ├── src/
+  │   ├── api/               # REST route handler
+  │   ├── mqtt/
+  │   │   ├── client.ts      # MQTT koneksi ke broker
+  │   │   ├── publisher.ts   # Simulasi publish sensor
+  │   │   └── subscriber.ts  # (opsional) log ke DB
+  │   ├── db/                # SQLite helper
+  │   ├── config/            # Konfigurasi topic, env
+  │   └── index.ts           # Fastify entry
+  ```
+
+- [x] Implementasi MQTT publisher:
+
+  - Publish ke topic `tanisoko/sensor/dummy1`
+  - Data: suhu, kelembaban, TDS (simulasi)
+
+- [x] Tambah REST endpoint untuk `GET /sensor-log` (dummy atau dari SQLite)
+
+- [ ] (Opsional) Simpan pesan MQTT ke SQLite via subscriber
+
+- [ ] Tes end-to-end:
+
+  - Jalankan backend → publish MQTT
+  - Frontend terima data via WebSocket MQTT
 
 ---
 
@@ -225,8 +250,8 @@ Menjalankan sistem di lapangan terbatas & dokumentasi deployment.
 Dokumen roadmap ini adalah kompas jangka pendek dan menengah untuk membangun **TaniSoko sebagai pilar digital pertanian modern**.  
 Silakan gunakan secara fleksibel, sesuaikan dengan waktu dan sumber daya yang tersedia.
 
-> Diperbarui: Oktober 2025  
-> Oleh: Slamet – Pemilik & Arsitek TaniSoko
+> **Diperbarui**: **November 2025** > **Oleh**: Slamet — Pemilik & Arsitek TaniSoko
+> **Catatan**: Tahap MQTT Tanpa ESP telah ditambahkan di Fase 2 & 4 untuk mempercepat integrasi frontend–backend dengan sistem real-time lokal.
 
 ```
 

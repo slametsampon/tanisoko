@@ -1,0 +1,29 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "baseUrl": ".",
+    "rootDir": ".", // 👈 Penting: agar semua file dianggap valid
+    "outDir": "dist", // 👈 Output hasil build ke dist/
+    "declaration": true, // 👈 Generate .d.ts untuk shared type
+    "emitDeclarationOnly": false, // 👈 Kita tetap butuh JS & d.ts
+    "composite": true
+  },
+  "include": [
+    "**/*.ts",
+    "models/chicken-breed.model.ts",
+    "models/device-log.model.ts",
+    "models/device.model.ts",
+    "models/event-log.model.ts",
+    "models/farm.model.ts",
+    "models/feeding-record.model.ts",
+    "models/fish-species.model.ts",
+    "../frontend/src/models/controller.model.ts"
+  ]
+}

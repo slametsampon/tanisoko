@@ -1,7 +1,5 @@
 // frontend/taiilwind.config.js
 
-// frontend/tailwind.config.js
-
 module.exports = {
   content: [
     './src/**/*.{ts,html}',

@@ -13,10 +13,30 @@
     "useDefineForClassFields": false, // ✅ penting untuk decorator Lit
     "strict": true,
     "esModuleInterop": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "paths": {
+      "shared/*": ["../shared/*"],
+      "@shared/*": ["../shared/dist/*"]
+    }
   },
   "include": [
     "src/**/*",
-    "src/models/**/*" // pastikan models ikut
-  ]
+    "src/models/**/*", // pastikan models ikut
+    "../shared/models/chicken-breed.model.ts",
+    "../shared/models/device-log.model.ts",
+    "../shared/models/device.model.ts",
+    "../shared/models/event-log.model.ts",
+    "../shared/models/farm.model.ts",
+    "../shared/models/feeding-record.model.ts",
+    "../shared/models/fish-species.model.ts",
+    "../shared/models/mortality-record.model.ts",
+    "../shared/models/plant-progress-log.model.ts",
+    "../shared/models/plant.model.ts",
+    "../shared/models/production-cycle.model.ts",
+    "../shared/models/production-unit.model.ts",
+    "../shared/models/user.model.ts",
+    "../shared/models/controller.model.ts",
+    "../shared/constants"
+  ],
+  "references": [{ "path": "../shared" }]
 }
