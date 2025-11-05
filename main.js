@@ -15117,32 +15117,54 @@ var init_zod = __esm({
   }
 });
 
-// src/models/chicken-breed.model.ts
-var ChickenBreedSchema;
-var init_chicken_breed_model = __esm({
-  "src/models/chicken-breed.model.ts"() {
+// ../shared/dist/models/user.model.js
+var UserRoleEnum, UserInputSchema, UserRecordSchema, LoginSchema;
+var init_user_model = __esm({
+  "../shared/dist/models/user.model.js"() {
     "use strict";
     init_zod();
-    ChickenBreedSchema = external_exports.object({
-      id: external_exports.number(),
-      name: external_exports.string(),
-      type: external_exports.enum(["broiler", "layer"]),
-      description: external_exports.string(),
-      growth_cycle_days: external_exports.number(),
-      average_weight_gram: external_exports.number(),
-      ideal_temp_min: external_exports.number(),
-      ideal_temp_max: external_exports.number(),
-      ideal_humidity_min: external_exports.number(),
-      ideal_humidity_max: external_exports.number(),
-      notes: external_exports.string()
+    UserRoleEnum = external_exports.enum(["admin", "engineer", "operator", "guest"]);
+    UserInputSchema = external_exports.object({
+      username: external_exports.string().min(3),
+      password: external_exports.string().min(6).optional(),
+      role: UserRoleEnum,
+      avatarUrl: external_exports.string().url().nullable().optional()
+    });
+    UserRecordSchema = external_exports.object({
+      username: external_exports.string(),
+      passwordHash: external_exports.string(),
+      role: UserRoleEnum,
+      avatarUrl: external_exports.string().nullable().optional(),
+      createdAt: external_exports.number(),
+      updatedAt: external_exports.number()
+    });
+    LoginSchema = external_exports.object({
+      username: external_exports.string(),
+      password: external_exports.string()
     });
   }
 });
 
-// src/models/device.model.ts
+// ../shared/dist/models/farm.model.js
+var FarmSchema;
+var init_farm_model = __esm({
+  "../shared/dist/models/farm.model.js"() {
+    "use strict";
+    init_zod();
+    FarmSchema = external_exports.object({
+      id: external_exports.number(),
+      user_id: external_exports.number(),
+      name: external_exports.string(),
+      location: external_exports.string(),
+      type: external_exports.enum(["hydroponic", "horticulture"])
+    });
+  }
+});
+
+// ../shared/dist/models/device.model.js
 var UnitEnum, ConnectivityStatusEnum, ValueStatusEnum, PlatformEnum, DeviceTypeEnum, StateTypeEnum, OperationModeEnum, DeviceSchema;
 var init_device_model = __esm({
-  "src/models/device.model.ts"() {
+  "../shared/dist/models/device.model.js"() {
     "use strict";
     init_zod();
     UnitEnum = external_exports.enum([
@@ -15227,153 +15249,10 @@ var init_device_model = __esm({
   }
 });
 
-// src/models/farm.model.ts
-var FarmSchema;
-var init_farm_model = __esm({
-  "src/models/farm.model.ts"() {
-    "use strict";
-    init_zod();
-    FarmSchema = external_exports.object({
-      id: external_exports.number(),
-      user_id: external_exports.number(),
-      name: external_exports.string(),
-      location: external_exports.string(),
-      type: external_exports.enum(["hydroponic", "horticulture"])
-    });
-  }
-});
-
-// src/constants/enums.ts
-var UnitTypeEnum, DomainEnum, CycleStatusEnum;
-var init_enums = __esm({
-  "src/constants/enums.ts"() {
-    "use strict";
-    init_zod();
-    UnitTypeEnum = external_exports.enum(["zone", "pond", "coop"]);
-    DomainEnum = external_exports.enum(["hydroponic", "aquaculture", "poultry"]);
-    CycleStatusEnum = external_exports.enum(["aktif", "selesai", "panen", "gagal"]);
-  }
-});
-
-// src/models/feeding-record.model.ts
-var FeedingRecordSchema;
-var init_feeding_record_model = __esm({
-  "src/models/feeding-record.model.ts"() {
-    "use strict";
-    init_zod();
-    init_enums();
-    FeedingRecordSchema = external_exports.object({
-      id: external_exports.number(),
-      cycle_id: external_exports.number(),
-      unit_id: external_exports.number(),
-      unit_type: UnitTypeEnum,
-      timestamp: external_exports.string(),
-      feed_type: external_exports.string(),
-      method: external_exports.string(),
-      amount_gram: external_exports.number(),
-      recorded_by: external_exports.string(),
-      note: external_exports.string().optional()
-    });
-  }
-});
-
-// src/models/fish-species.model.ts
-var FishSpeciesSchema;
-var init_fish_species_model = __esm({
-  "src/models/fish-species.model.ts"() {
-    "use strict";
-    init_zod();
-    FishSpeciesSchema = external_exports.object({
-      id: external_exports.number(),
-      name: external_exports.string(),
-      description: external_exports.string(),
-      growth_cycle_days: external_exports.number(),
-      average_weight_gram: external_exports.number(),
-      feed_type: external_exports.string(),
-      ideal_temp_min: external_exports.number(),
-      ideal_temp_max: external_exports.number(),
-      ideal_ph_min: external_exports.number(),
-      ideal_ph_max: external_exports.number(),
-      ideal_do_min: external_exports.number(),
-      ideal_tds_max: external_exports.number()
-    });
-  }
-});
-
-// src/models/plant.model.ts
-var PlantSchema;
-var init_plant_model = __esm({
-  "src/models/plant.model.ts"() {
-    "use strict";
-    init_zod();
-    PlantSchema = external_exports.object({
-      id: external_exports.number(),
-      name: external_exports.string(),
-      variety: external_exports.string(),
-      description: external_exports.string(),
-      ideal_duration_days: external_exports.number(),
-      average_yield_gram: external_exports.number(),
-      nutrient_requirement: external_exports.string(),
-      temperature_min: external_exports.number(),
-      temperature_max: external_exports.number(),
-      humidity_min: external_exports.number(),
-      humidity_max: external_exports.number(),
-      ph_min: external_exports.number(),
-      ph_max: external_exports.number(),
-      ec_min: external_exports.number(),
-      ec_max: external_exports.number()
-    });
-  }
-});
-
-// src/models/production-cycle.model.ts
-var ProductionCycleSchema;
-var init_production_cycle_model = __esm({
-  "src/models/production-cycle.model.ts"() {
-    "use strict";
-    init_zod();
-    init_enums();
-    ProductionCycleSchema = external_exports.object({
-      id: external_exports.number(),
-      farm_id: external_exports.number(),
-      start_date: external_exports.string(),
-      end_date: external_exports.string(),
-      status: CycleStatusEnum,
-      domain: DomainEnum,
-      notes: external_exports.string().optional(),
-      plant_id: external_exports.number().nullable(),
-      fish_species_id: external_exports.number().nullable(),
-      pond_id: external_exports.number().nullable(),
-      chicken_breed_id: external_exports.number().nullable(),
-      coop_id: external_exports.number().nullable()
-    });
-  }
-});
-
-// src/models/production-unit.model.ts
-var ProductionUnitSchema;
-var init_production_unit_model = __esm({
-  "src/models/production-unit.model.ts"() {
-    "use strict";
-    init_zod();
-    init_enums();
-    ProductionUnitSchema = external_exports.object({
-      id: external_exports.number(),
-      farm_id: external_exports.number(),
-      type: UnitTypeEnum,
-      name: external_exports.string().min(1),
-      capacity: external_exports.number().positive(),
-      dimensions_length: external_exports.number().positive(),
-      dimensions_width: external_exports.number().positive(),
-      dimensions_height: external_exports.number().positive().optional()
-    });
-  }
-});
-
-// src/models/controller.model.ts
+// ../shared/dist/models/controller.model.js
 var ControllerTypeEnum, ThresholdTypeEnum, ControlModeEnum, ControllerSchema;
 var init_controller_model = __esm({
-  "src/models/controller.model.ts"() {
+  "../shared/dist/models/controller.model.js"() {
     "use strict";
     init_zod();
     ControllerTypeEnum = external_exports.enum([
@@ -15410,20 +15289,178 @@ var init_controller_model = __esm({
   }
 });
 
+// ../shared/dist/models/plant.model.js
+var PlantSchema;
+var init_plant_model = __esm({
+  "../shared/dist/models/plant.model.js"() {
+    "use strict";
+    init_zod();
+    PlantSchema = external_exports.object({
+      id: external_exports.number(),
+      name: external_exports.string(),
+      variety: external_exports.string(),
+      description: external_exports.string(),
+      ideal_duration_days: external_exports.number(),
+      average_yield_gram: external_exports.number(),
+      nutrient_requirement: external_exports.string(),
+      temperature_min: external_exports.number(),
+      temperature_max: external_exports.number(),
+      humidity_min: external_exports.number(),
+      humidity_max: external_exports.number(),
+      ph_min: external_exports.number(),
+      ph_max: external_exports.number(),
+      ec_min: external_exports.number(),
+      ec_max: external_exports.number()
+    });
+  }
+});
+
+// ../shared/dist/models/fish-species.model.js
+var FishSpeciesSchema;
+var init_fish_species_model = __esm({
+  "../shared/dist/models/fish-species.model.js"() {
+    "use strict";
+    init_zod();
+    FishSpeciesSchema = external_exports.object({
+      id: external_exports.number(),
+      name: external_exports.string(),
+      description: external_exports.string(),
+      growth_cycle_days: external_exports.number(),
+      average_weight_gram: external_exports.number(),
+      feed_type: external_exports.string(),
+      ideal_temp_min: external_exports.number(),
+      ideal_temp_max: external_exports.number(),
+      ideal_ph_min: external_exports.number(),
+      ideal_ph_max: external_exports.number(),
+      ideal_do_min: external_exports.number(),
+      ideal_tds_max: external_exports.number()
+    });
+  }
+});
+
+// ../shared/dist/models/chicken-breed.model.js
+var ChickenBreedSchema;
+var init_chicken_breed_model = __esm({
+  "../shared/dist/models/chicken-breed.model.js"() {
+    "use strict";
+    init_zod();
+    ChickenBreedSchema = external_exports.object({
+      id: external_exports.number(),
+      name: external_exports.string(),
+      type: external_exports.enum(["broiler", "layer"]),
+      description: external_exports.string(),
+      growth_cycle_days: external_exports.number(),
+      average_weight_gram: external_exports.number(),
+      ideal_temp_min: external_exports.number(),
+      ideal_temp_max: external_exports.number(),
+      ideal_humidity_min: external_exports.number(),
+      ideal_humidity_max: external_exports.number(),
+      notes: external_exports.string()
+    });
+  }
+});
+
+// ../shared/dist/constants/enums.js
+var UnitTypeEnum, DomainEnum, CycleStatusEnum;
+var init_enums = __esm({
+  "../shared/dist/constants/enums.js"() {
+    "use strict";
+    init_zod();
+    UnitTypeEnum = external_exports.enum(["zone", "pond", "coop"]);
+    DomainEnum = external_exports.enum(["hydroponic", "aquaculture", "poultry"]);
+    CycleStatusEnum = external_exports.enum(["aktif", "selesai", "panen", "gagal"]);
+  }
+});
+
+// ../shared/dist/models/production-unit.model.js
+var ProductionUnitSchema;
+var init_production_unit_model = __esm({
+  "../shared/dist/models/production-unit.model.js"() {
+    "use strict";
+    init_zod();
+    init_enums();
+    ProductionUnitSchema = external_exports.object({
+      id: external_exports.number(),
+      farm_id: external_exports.number(),
+      type: UnitTypeEnum,
+      name: external_exports.string().min(1),
+      capacity: external_exports.number().positive(),
+      dimensions_length: external_exports.number().positive(),
+      dimensions_width: external_exports.number().positive(),
+      dimensions_height: external_exports.number().positive().optional()
+    });
+  }
+});
+
+// ../shared/dist/models/production-cycle.model.js
+var ProductionCycleSchema;
+var init_production_cycle_model = __esm({
+  "../shared/dist/models/production-cycle.model.js"() {
+    "use strict";
+    init_zod();
+    init_enums();
+    ProductionCycleSchema = external_exports.object({
+      id: external_exports.number(),
+      farm_id: external_exports.number(),
+      start_date: external_exports.string(),
+      end_date: external_exports.string(),
+      status: CycleStatusEnum,
+      domain: DomainEnum,
+      notes: external_exports.string().optional(),
+      plant_id: external_exports.number().nullable(),
+      fish_species_id: external_exports.number().nullable(),
+      pond_id: external_exports.number().nullable(),
+      chicken_breed_id: external_exports.number().nullable(),
+      coop_id: external_exports.number().nullable()
+    });
+  }
+});
+
+// ../shared/dist/models/feeding-record.model.js
+var FeedingRecordSchema;
+var init_feeding_record_model = __esm({
+  "../shared/dist/models/feeding-record.model.js"() {
+    "use strict";
+    init_zod();
+    init_enums();
+    FeedingRecordSchema = external_exports.object({
+      id: external_exports.number(),
+      cycle_id: external_exports.number(),
+      unit_id: external_exports.number(),
+      unit_type: UnitTypeEnum,
+      timestamp: external_exports.string(),
+      feed_type: external_exports.string(),
+      method: external_exports.string(),
+      amount_gram: external_exports.number(),
+      recorded_by: external_exports.string(),
+      note: external_exports.string().optional()
+    });
+  }
+});
+
+// src/models/index.ts
+var init_models = __esm({
+  "src/models/index.ts"() {
+    "use strict";
+    init_user_model();
+    init_farm_model();
+    init_device_model();
+    init_controller_model();
+    init_plant_model();
+    init_fish_species_model();
+    init_chicken_breed_model();
+    init_production_unit_model();
+    init_production_cycle_model();
+    init_feeding_record_model();
+  }
+});
+
 // src/config/model-definitions.ts
 var modelDefinitions;
 var init_model_definitions = __esm({
   "src/config/model-definitions.ts"() {
     "use strict";
-    init_chicken_breed_model();
-    init_device_model();
-    init_farm_model();
-    init_feeding_record_model();
-    init_fish_species_model();
-    init_plant_model();
-    init_production_cycle_model();
-    init_production_unit_model();
-    init_controller_model();
+    init_models();
     modelDefinitions = {
       chicken_breed: {
         schema: ChickenBreedSchema,
@@ -18284,7 +18321,7 @@ var AppFooter = class extends i4 {
           <div class="flex items-center gap-2">
             <span class="text-base">©</span>
             <span>
-              ${(/* @__PURE__ */ new Date()).getFullYear()} TaniSoko v${"1.8.0"} — All
+              ${(/* @__PURE__ */ new Date()).getFullYear()} TaniSoko v${"2.0.1"} — All
               rights reserved.
             </span>
           </div>
