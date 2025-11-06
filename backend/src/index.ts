@@ -1,7 +1,7 @@
-// backend/index.ts
+// backend/src/index.ts
 
 import Fastify from 'fastify';
-import { controllerRoutes } from './src/routes/controller.route.js';
+import { controllerRoutes } from '../src/routes/controller.route';
 
 const app = Fastify();
 

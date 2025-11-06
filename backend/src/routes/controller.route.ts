@@ -7,6 +7,6 @@ import {
 } from '../controllers/controller.controller.js';
 
 export async function controllerRoutes(app: FastifyInstance) {
-  app.get('/api/controllers', getControllers);
-  app.post('/api/controllers', createController);
+  app.get('/controllers', getControllers);
+  app.post('/controllers', createController);
 }
