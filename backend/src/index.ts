@@ -1,7 +1,8 @@
 // backend/src/index.ts
 
 import Fastify from 'fastify';
-import { controllerRoutes } from '../src/routes/controller.route';
+import { controllerRoutes } from './routes/controller.route';
+import './mqtt/client';
 
 const app = Fastify();
 

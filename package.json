@@ -1,7 +1,7 @@
 {
   "name": "tanisoko",
   "private": true,
-  "version": "2.0.1",
+  "version": "2.1.0",
   "description": "Platform for building and running agro apps",
   "workspaces": [
     "frontend",
