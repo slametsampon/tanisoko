@@ -1,0 +1,105 @@
+Project tanisoko_hidroponik {
+  database_type: "PostgreSQL"
+  note: "ERD untuk domain hidroponik & hortikultura"
+}
+
+Table user {
+  id int [pk, increment]
+  name varchar
+  email varchar
+  password_hash varchar
+  role varchar
+}
+
+Table farm {
+  id int [pk, increment]
+  user_id int [ref: > user.id]
+  name varchar
+  location varchar
+  type varchar
+}
+
+Table plant {
+  id int [pk, increment]
+  name varchar
+  variety varchar
+  description text
+  ideal_duration_days int
+  average_yield_gram float
+  nutrient_requirement text
+  temperature_min float
+  temperature_max float
+  humidity_min float
+  humidity_max float
+  ph_min float
+  ph_max float
+  ec_min float
+  ec_max float
+}
+
+Table production_unit {
+  id int [pk, increment]
+  farm_id int [ref: > farm.id]
+  unit_type varchar
+  name varchar
+  description text
+  capacity int
+  length_cm int
+  width_cm int
+  height_cm int
+  shape varchar
+  media_type varchar
+  environment varchar
+}
+
+Table production_cycle {
+  id int [pk, increment]
+  farm_id int [ref: > farm.id]
+  plant_id int [ref: > plant.id]
+  zone_id int [ref: > production_unit.id]
+  start_date date
+  expected_harvest_date date
+  status varchar
+  domain varchar
+  total_planted int
+  notes text
+}
+
+Table device {
+  id int [pk, increment]
+  zone_id int [ref: > production_unit.id]
+  name varchar
+  node_id varchar
+  status varchar
+  platform varchar
+  type varchar
+  function varchar
+  pin varchar
+  unit varchar
+  value float
+  state_type varchar
+  current_state varchar
+  calibration varchar
+  control_mode varchar
+  operation_mode varchar
+}
+
+Table device_log {
+  id int [pk, increment]
+  device_id int [ref: > device.id]
+  timestamp datetime
+  type varchar
+  value text
+  previous_value text
+  recorded_by varchar
+  meta json
+}
+
+Table plant_progress_log {
+  id int [pk, increment]
+  batch_id int [ref: > production_cycle.id]
+  timestamp date
+  height_cm float
+  health_score varchar
+  observation_notes text
+}

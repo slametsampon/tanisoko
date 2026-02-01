@@ -1,0 +1,109 @@
+Project tanisoko_peternakan {
+  database_type: "PostgreSQL"
+  note: "ERD untuk domain peternakan ayam pedaging"
+}
+
+Table user {
+  id int [pk, increment]
+  name varchar
+  email varchar
+  password_hash varchar
+  role varchar
+}
+
+Table farm {
+  id int [pk, increment]
+  user_id int [ref: > user.id]
+  name varchar
+  location varchar
+  type varchar
+}
+
+Table chicken_breed {
+  id int [pk, increment]
+  name varchar
+  description text
+  growth_duration_days int
+  feed_type varchar
+  ideal_temperature_min float
+  ideal_temperature_max float
+}
+
+Table production_unit {
+  id int [pk, increment]
+  farm_id int [ref: > farm.id]
+  unit_type varchar
+  name varchar
+  description text
+  capacity int
+  length_cm int
+  width_cm int
+  height_cm int
+  shape varchar
+  media_type varchar
+  environment varchar
+}
+
+Table production_cycle {
+  id int [pk, increment]
+  farm_id int [ref: > farm.id]
+  chicken_breed_id int [ref: > chicken_breed.id]
+  coop_id int [ref: > production_unit.id]
+  start_date date
+  expected_harvest_date date
+  status varchar
+  domain varchar
+  total_stocked int
+  notes text
+}
+
+Table device {
+  id int [pk, increment]
+  zone_id int [ref: > production_unit.id]
+  name varchar
+  node_id varchar
+  status varchar
+  platform varchar
+  type varchar
+  function varchar
+  pin varchar
+  unit varchar
+  value float
+  state_type varchar
+  current_state varchar
+  calibration varchar
+  control_mode varchar
+  operation_mode varchar
+}
+
+Table device_log {
+  id int [pk, increment]
+  device_id int [ref: > device.id]
+  timestamp datetime
+  type varchar
+  value text
+  previous_value text
+  recorded_by varchar
+  meta json
+}
+
+Table feeding_record {
+  id int [pk, increment]
+  cycle_id int [ref: > production_cycle.id]
+  unit_type varchar
+  unit_id int [ref: > production_unit.id]
+  timestamp datetime
+  amount_gram float
+  feed_type varchar
+  note text
+}
+
+Table mortality_record {
+  id int [pk, increment]
+  cycle_id int [ref: > production_cycle.id]
+  unit_type varchar
+  unit_id int [ref: > production_unit.id]
+  timestamp datetime
+  count int
+  reason text
+}

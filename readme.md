@@ -91,8 +91,6 @@ TaniSoko dirancang dengan pendekatan **Separation of Concern (SoC)** untuk menja
 
 - **Brand Name:** TaniSoko
 - **Makna:** “Tani” (pertanian) + “Soko” (tiang/fondasi) → Pilar digital pertanian.
-- **Rekomendasi Domain:** `tanisoko.id`, `tanisoko.com`, `app.tanisoko.id`
-- **Social Handle:** `@tanisoko` (untuk konsistensi branding)
 
 ---
 
@@ -111,5 +109,5 @@ TaniSoko dirancang dengan pendekatan **Separation of Concern (SoC)** untuk menja
 Terima kasih telah bergabung dalam perjalanan kami membangun masa depan pertanian Indonesia yang lebih cerdas dan berdaya saing.  
 Mari bersama membangun **ekosistem teknologi agribisnis** yang tangguh dan adaptif melalui **TaniSoko** — _Pilar Digital Pertanian Modern_.
 
-> **GitHub:** [github.com-tanisoko](https://github.com/slametsampon/tanisoko) _(placeholder, sesuaikan dengan repo Anda)_  
-> **Kontak:** `info@tanisoko.id` _(placeholder email, ubah sesuai kebutuhan)_
+> **GitHub:** [github.com-tanisoko](https://github.com/slametsampon/tanisoko)  
+> **Kontak:** `slametsambwi@gmail.com` _(placeholder email, ubah sesuai kebutuhan)_
