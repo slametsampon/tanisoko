@@ -1,14 +1,24 @@
 // frontend/src/config/model-definitions.ts
 
-import { ChickenBreedSchema } from 'src/models/chicken-breed.model';
-import { DeviceSchema } from 'src/models/device.model';
-import { FarmSchema } from 'src/models/farm.model';
-import { FeedingRecordSchema } from 'src/models/feeding-record.model';
-import { FishSpeciesSchema } from 'src/models/fish-species.model';
-import { PlantSchema } from 'src/models/plant.model';
-import { ProductionCycleSchema } from 'src/models/production-cycle.model';
-import { ProductionUnitSchema } from 'src/models/production-unit.model';
-import { ControllerSchema } from 'src/models/controller.model';
+// import { ChickenBreedSchema } from 'src/models/chicken-breed.model';
+// import { DeviceSchema } from 'src/models/device.model';
+// import { FarmSchema } from 'src/models/farm.model';
+// import { FeedingRecordSchema } from 'src/models/feeding-record.model';
+// import { FishSpeciesSchema } from 'src/models/fish-species.model';
+// import { PlantSchema } from 'src/models/plant.model';
+// import { ProductionCycleSchema } from 'src/models/production-cycle.model';
+// import { ProductionUnitSchema } from 'src/models/production-unit.model';
+import {
+  ControllerSchema,
+  ChickenBreedSchema,
+  DeviceSchema,
+  FarmSchema,
+  FeedingRecordSchema,
+  FishSpeciesSchema,
+  PlantSchema,
+  ProductionCycleSchema,
+  ProductionUnitSchema,
+} from 'src/models/index';
 
 type FieldDef = {
   key: string;

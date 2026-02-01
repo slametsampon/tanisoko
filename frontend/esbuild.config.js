@@ -4,10 +4,12 @@ const esbuild = require('esbuild');
 const path = require('path');
 const fs = require('fs');
 const mime = require('mime');
+require('tsconfig-paths').register(); // 👈 Ini pentingconst esbuild = require('esbuild');
 
 const isDev = process.env.NODE_ENV === 'development';
 const isPreRelease = process.env.NODE_ENV === 'pre-release';
 const isProd = process.env.NODE_ENV === 'production';
+
 const pkg = JSON.parse(
   fs.readFileSync(path.resolve(__dirname, '../package.json'), 'utf8')
 );
@@ -32,7 +34,7 @@ const buildOptions = {
     'process.env.NODE_ENV': JSON.stringify(
       process.env.NODE_ENV || 'development'
     ),
-    __APP_VERSION__: JSON.stringify(pkg.version), // 👈 Inject versi dari package.json
+    __APP_VERSION__: JSON.stringify(pkg.version),
   },
   loader: {
     '.ts': 'ts',
@@ -88,7 +90,7 @@ const copyFolderRecursive = (src, dest) => {
   });
 };
 
-// Dev Server (fallback to index.html)
+// Dev Server
 function startDevServer(serveDir, port) {
   const http = require('http');
 
@@ -149,8 +151,9 @@ const main = async () => {
 
   await startBuild();
 
-  // ⬇️ Copy and patch index.html → base href injection
-  const indexSrc = fs.readFileSync('frontend/src/index.html', 'utf8');
+  // ⬇️ Fix jalur di sini ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+  const indexSrc = fs.readFileSync('src/index.html', 'utf8'); // ✅ ini jalur benar
+
   const basePathFinal = publicPath.endsWith('/')
     ? publicPath
     : publicPath + '/';
@@ -164,10 +167,9 @@ const main = async () => {
     console.log('📝 Wrote 404.html for GitHub Pages SPA fallback.');
   }
 
-  // ⬇️ Copy assets
-  copyFolderRecursive('frontend/src/assets', path.join(outputDir, 'assets'));
+  // Copy static assets
+  copyFolderRecursive('src/assets', path.join(outputDir, 'assets'));
 
-  // Start dev server if needed
   if (isDev || process.argv.includes('--serve')) {
     startDevServer(outputDir, 51451);
   }

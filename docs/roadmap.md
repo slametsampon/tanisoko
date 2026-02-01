@@ -2,24 +2,28 @@
   - [🧭 FASE 1 – Fondasi \& Definisi Domain](#-fase-1--fondasi--definisi-domain)
     - [🎯 Tujuan:](#-tujuan)
     - [✅ Task List](#-task-list)
-  - [🧱 FASE 2 – Setup Monorepo \& Mock System](#-fase-2--setup-monorepo--mock-system)
+  - [✅ **FASE 2 – Setup Monorepo \& Mock System (Update)**](#-fase-2--setup-monorepo--mock-system-update)
     - [🎯 Tujuan:](#-tujuan-1)
     - [✅ Task List](#-task-list-1)
   - [🧩 FASE 3 – Desain Frontend Modular (CDD)](#-fase-3--desain-frontend-modular-cdd)
     - [🎯 Tujuan:](#-tujuan-2)
     - [✅ Task List](#-task-list-2)
-  - [🧠 FASE 4 – Rancang \& Implementasi Backend API](#-fase-4--rancang--implementasi-backend-api)
+  - [✅ **FASE 4 – Rancang \& Implementasi Backend API + MQTT (Final Update)**](#-fase-4--rancang--implementasi-backend-api--mqtt-final-update)
     - [🎯 Tujuan:](#-tujuan-3)
-    - [✅ Task List](#-task-list-3)
+    - [📦 Struktur Final](#-struktur-final)
+    - [✅ Task List (Final)](#-task-list-final)
+    - [🧪 Contoh Alur Pengujian:](#-contoh-alur-pengujian)
+    - [🔄 Aliran Kerja (Diagram Sederhana):](#-aliran-kerja-diagram-sederhana)
+    - [✨ Catatan Tambahan](#-catatan-tambahan)
   - [🔌 FASE 5 – Firmware ESP32 \& Integrasi MQTT](#-fase-5--firmware-esp32--integrasi-mqtt)
     - [🎯 Tujuan:](#-tujuan-4)
-    - [✅ Task List](#-task-list-4)
+    - [✅ Task List](#-task-list-3)
   - [🔗 FASE 6 – Integrasi \& Pengujian End-to-End](#-fase-6--integrasi--pengujian-end-to-end)
     - [🎯 Tujuan:](#-tujuan-5)
-    - [✅ Task List](#-task-list-5)
+    - [✅ Task List](#-task-list-4)
   - [🚀 FASE 7 – Deployment \& Pilot Lapangan](#-fase-7--deployment--pilot-lapangan)
     - [🎯 Tujuan:](#-tujuan-6)
-    - [✅ Task List](#-task-list-6)
+    - [✅ Task List](#-task-list-5)
   - [📘 Tambahan: Versi Lanjutan (Opsional v1.5+)](#-tambahan-versi-lanjutan-opsional-v15)
   - [✨ Penutup](#-penutup)
 
@@ -57,39 +61,45 @@ Menetapkan visi, cakupan domain, dan struktur data dasar sistem.
 
 ---
 
-## 🧱 FASE 2 – Setup Monorepo & Mock System
+## ✅ **FASE 2 – Setup Monorepo & Mock System (Update)**
 
 > ⏳ Minggu 3–4
 
 ### 🎯 Tujuan:
 
-Membuat struktur monorepo dan mulai pengembangan frontend berbasis mock.
+Membuat struktur monorepo dan mulai pengembangan mock system dengan simulasi backend–MQTT–frontend (tanpa ESP).
 
 ### ✅ Task List
 
-- [ ] Inisialisasi project monorepo
-- [ ] Buat struktur direktori:
+- [x] Inisialisasi project monorepo (`npm init -w`)
 
-```
+- [x] Buat struktur direktori:
 
-/firmware
-/backend
-/frontend
-/shared
-/mqtt-test
-/docs
+  ```txt
+  /firmware         # ESP32 (belum digunakan)
+  /backend          # Fastify + MQTT (publish dummy)
+  /frontend         # LitElement + Tailwind + esbuild
+  /shared           # (opsional) Type definisi bersama
+  /mqtt-test        # Skrip MQTT CLI, playground
+  /docs             # Dokumentasi
+  ```
 
-```
+- [x] Setup tooling awal:
 
-- [ ] Setup tooling awal:
-- [ ] `esbuild` untuk frontend
-- [ ] `tsconfig.json` shared
-- [ ] Git init + .gitignore + README.md
-- [ ] Buat mock data `.json` untuk:
-- [ ] List sensor
-- [ ] Log historis
-- [ ] Status perangkat
-- [ ] Buat service layer frontend (`services/api.ts`) dengan `fetch()` ke mock
+  - [x] `esbuild` untuk frontend
+  - [x] `tsconfig.base.json` untuk shared base
+  - [x] Git init + .gitignore + README.md
+
+- [x] Setup broker MQTT lokal (Mosquitto)
+
+  - [x] Aktifkan `listener 9001` untuk WebSocket
+  - [x] Test dengan `mosquitto_pub` / `mosquitto_sub`
+
+- [x] Buat mock publisher MQTT di `backend/src/mqtt/publisher.ts`
+
+- [x] Setup client MQTT di frontend (`services/mqtt-client.ts`)
+
+- [x] Uji subscribe data dummy di UI
 
 ---
 
@@ -119,27 +129,112 @@ Membangun UI berbasis komponen dengan dummy data & simulasi interaksi.
 
 ---
 
-## 🧠 FASE 4 – Rancang & Implementasi Backend API
+## ✅ **FASE 4 – Rancang & Implementasi Backend API + MQTT (Final Update)**
 
 > ⏳ Minggu 7–8
 
 ### 🎯 Tujuan:
 
-Membuat server Fastify dengan endpoint REST & MQTT bridge.
+Mengembangkan backend berbasis **Fastify** dan **MQTT** secara modular untuk menghubungkan frontend, IoT node, dan broker MQTT. Fokus utama adalah membangun REST API yang dapat mem-publish pesan MQTT ke broker (tanpa perangkat ESP32 dulu), sekaligus menerima dan menampilkan pesan yang masuk dari broker.
 
-### ✅ Task List
+### 📦 Struktur Final
 
-- [ ] Setup project backend dengan TypeScript
-- [ ] Setup Fastify + Plugin dasar
-- [ ] Buat koneksi SQLite + helper fungsi CRUD
-- [ ] Implementasi endpoint:
-- [ ] `GET /devices`
-- [ ] `POST /control`
-- [ ] `GET /logs`
-- [ ] Tambah MQTT bridge:
-- [ ] Subscribe topik sensor
-- [ ] Publish ke control topic
-- [ ] Tes komunikasi ke MQTT lokal (Mosquitto)
+```txt
+backend/
+├── src/
+│   ├── controllers/             # Logika REST handler (bisnis)
+│   │   └── controller.controller.ts
+│   ├── routes/                  # HTTP routing
+│   │   └── controller.route.ts
+│   ├── mqtt/                    # MQTT client & langganan awal
+│   │   └── client.ts
+│   ├── services/                # Utility MQTT publish/subscribe
+│   │   └── mqtt.service.ts
+│   └── index.ts                 # Fastify server entry point
+```
+
+---
+
+### ✅ Task List (Final)
+
+- [x] Setup project backend:
+
+  - Fastify + TypeScript
+  - MQTT client (package `mqtt`)
+  - Runtime dev (`tsx`, `tsconfig-paths`, `ts-node-dev` diganti)
+
+- [x] Buat struktur modular:
+
+  - `controllers/` → tempat handler seperti `createControllerStatus()`
+  - `routes/` → definisi path, schema, dan handler Fastify
+  - `mqtt/` → client MQTT, otomatis connect dan subscribe
+  - `services/` → wrapper `publish()` MQTT reusable
+
+- [x] Implementasi koneksi MQTT:
+
+  - Auto connect saat server startup
+  - Subscribe topik `tanisoko/controller/+/status`
+  - Tampilkan pesan yang masuk di konsol
+
+- [x] Tambah endpoint REST:
+
+  - `POST /controllers/:id/status` → publish payload ke topik MQTT
+  - Validasi dengan Zod schema jika dibutuhkan
+
+- [x] Testing E2E:
+
+  - Jalankan server backend
+  - Jalankan `mosquitto_sub` → lihat pesan masuk
+  - Gunakan `Invoke-WebRequest` (Windows) atau `curl` (WSL) untuk POST data
+
+- [ ] (Opsional) Simpan data MQTT ke SQLite (nanti di fase log)
+
+---
+
+### 🧪 Contoh Alur Pengujian:
+
+**1. Subscribe dari terminal (PowerShell / CMD):**
+
+```bash
+mosquitto_sub -h localhost -t tanisoko/controller/+/status
+```
+
+**2. Kirim POST ke backend:**
+
+```powershell
+Invoke-WebRequest -Uri http://localhost:3000/controllers/abc123/status `
+  -Method POST `
+  -ContentType "application/json" `
+  -Body '{ "status": "online", "temp": 27.4 }'
+```
+
+> Maka akan muncul payload JSON pada terminal `mosquitto_sub`.
+
+---
+
+### 🔄 Aliran Kerja (Diagram Sederhana):
+
+```
+[Frontend / Operator / Test Script]
+            │
+    HTTP POST /controllers/:id/status
+            ↓
+     [Fastify Backend API]
+            ↓
+      Publish via MQTT
+            ↓
+[Broker MQTT (Mosquitto) menerima & relay]
+            ↓
+  [ESP32 / Sub client / Subscriber tool]
+```
+
+---
+
+### ✨ Catatan Tambahan
+
+- Struktur ini siap untuk **diintegrasikan langsung** ke frontend atau firmware (fase 5).
+- File `mqtt.service.ts` memisahkan logika MQTT agar **mudah diuji** dan digunakan ulang di fitur lain.
+- Pendekatan ini sangat cocok untuk arsitektur IoT modern berbasis pub/sub.
 
 ---
 
@@ -225,8 +320,8 @@ Menjalankan sistem di lapangan terbatas & dokumentasi deployment.
 Dokumen roadmap ini adalah kompas jangka pendek dan menengah untuk membangun **TaniSoko sebagai pilar digital pertanian modern**.  
 Silakan gunakan secara fleksibel, sesuaikan dengan waktu dan sumber daya yang tersedia.
 
-> Diperbarui: Oktober 2025  
-> Oleh: Slamet – Pemilik & Arsitek TaniSoko
+> **Diperbarui**: **November 2025** > **Oleh**: Slamet — Pemilik & Arsitek TaniSoko
+> **Catatan**: Tahap MQTT Tanpa ESP telah ditambahkan di Fase 2 & 4 untuk mempercepat integrasi frontend–backend dengan sistem real-time lokal.
 
 ```
 

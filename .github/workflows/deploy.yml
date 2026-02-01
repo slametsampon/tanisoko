@@ -20,8 +20,14 @@ jobs:
         with:
           node-version: 22.1.0
 
+      - name: ♻️ Clear npm cache
+        run: npm cache clean --force
+
       - name: 📦 Install dependencies
         run: npm ci
+
+      - name: 🧱 Build shared package
+        run: npm run build -w shared
 
       - name: 🛠 Build frontend
         run: npm run build:frontend

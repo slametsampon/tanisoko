@@ -1,0 +1,29 @@
+{
+  "name": "frontend",
+  "version": "1.0.0",
+  "main": "src/index.ts",
+  "scripts": {
+    "dev": "concurrently \"npm run tailwind:watch\" \"npm run esbuild:watch:serve\"",
+    "tailwind:watch": "npx tailwindcss -c tailwind.config.js -i ./src/style.css -o ../build/frontend/style.css --watch",
+    "tailwind:build": "npx tailwindcss -c tailwind.config.js -i ./src/style.css -o ../build/frontend/style.css --minify",
+    "esbuild:watch:serve": "cross-env NODE_ENV=development node esbuild.config.js --watch --serve",
+    "esbuild:build": "cross-env NODE_ENV=pre-release node esbuild.config.js",
+    "build": "npm run tailwind:build && npm run esbuild:build",
+    "deploy:github": "npm run build && gh-pages -d ../build/frontend"
+  },
+  "dependencies": {
+    "@lit/context": "^1.1.6",
+    "@vaadin/router": "^2.0.0",
+    "lit": "^3.3.1",
+    "lucide": "^0.542.0",
+    "mime": "^3.0.0",
+    "mqtt": "^5.14.1",
+    "tailwindcss": "^4.1.11",
+    "zod": "^4.1.12"
+  },
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.1.11",
+    "esbuild": "^0.25.8",
+    "gh-pages": "^6.3.0"
+  }
+}
